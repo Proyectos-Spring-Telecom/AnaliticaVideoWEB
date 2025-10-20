@@ -1,0 +1,15 @@
+.perm-head__icon {
+  position: relative;
+  z-index: 1;
+}
+
+.password-eye { position: absolute; right: .75rem; top: 50%; transform: translateY(-50%); text-decoration: none; color: inherit; }
+.form-control.pr-5 { padding-right: 2.25rem; }
+.password-requirements i { width: 1.25rem; text-align: center; }
+.password-requirements .ms-2 { margin-left: .5rem; }
+.password-requirements .text-danger { color: #dc3545; }
+.password-requirements .text-success { color: #198754; }
+
+.pwd-hint { font-size: 0.85rem; line-height: 1.2; margin-bottom: 0; display: flex; align-items: center; }
+.pwd-hint i { width: 1rem; text-align: center; font-size: 0.9rem; }
+.pwd-hint .ms-2 { margin-left: .5rem; }
