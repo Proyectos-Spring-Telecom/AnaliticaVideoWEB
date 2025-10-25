@@ -20,10 +20,10 @@ $white:     #ffffff;
 
 $light: var(--mat-sys-surface-bright);
 
-@function contrast-color($color, $dark:#0f172a, $light:#ffffff) {
-  @if (lightness($color) > 55%) { @return $dark; }
-  @return $light;
-}
+// @function contrast-color($color, $dark:#0f172a, $light:#ffffff) {
+//   @if (lightness($color) > 55%) { @return $dark; }
+//   @return $light;
+// }
 
 $primary-fixed:        color-mix(in srgb, #{$primary} 88%, white);
 $primary-fixed-dim:    color-mix(in srgb, #{$primary} 15%, white);
