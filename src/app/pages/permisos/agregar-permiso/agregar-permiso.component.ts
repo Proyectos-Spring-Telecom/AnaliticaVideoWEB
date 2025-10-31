@@ -78,6 +78,7 @@ export class AgregarPermisoComponent implements OnInit {
       idModulo: [null, Validators.required],
       nombre: ['', Validators.required],
       descripcion: ['', Validators.required],
+      estatus: [1]
     });
   }
 
@@ -124,6 +125,8 @@ export class AgregarPermisoComponent implements OnInit {
         .join('');
 
       Swal.fire({
+        background: '#141a21',
+        color: '#ffffff',
         title: '¡Faltan campos obligatorios!',
         html: `
           <p style="text-align: center; font-size: 15px; margin-bottom: 16px; color: white">
@@ -155,6 +158,8 @@ export class AgregarPermisoComponent implements OnInit {
           icon: 'success',
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Confirmar',
+          background: '#141a21',
+          color: '#ffffff',
         });
         this.regresar();
       },
@@ -167,6 +172,8 @@ export class AgregarPermisoComponent implements OnInit {
           icon: 'error',
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Confirmar',
+          background: '#141a21',
+          color: '#ffffff',
         });
       }
     );
@@ -214,6 +221,8 @@ export class AgregarPermisoComponent implements OnInit {
           <div style="max-height: 350px; overflow-y: auto;">${lista}</div>
         `,
         icon: 'error',
+        background: '#141a21',
+        color: '#ffffff',
         confirmButtonText: 'Entendido',
         customClass: {
           popup: 'swal2-padding swal2-border',
@@ -234,6 +243,8 @@ export class AgregarPermisoComponent implements OnInit {
           icon: 'success',
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Confirmar',
+          background: '#141a21',
+          color: '#ffffff',
         });
         this.regresar();
       },
@@ -246,6 +257,8 @@ export class AgregarPermisoComponent implements OnInit {
           icon: 'error',
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Confirmar',
+          background: '#141a21',
+          color: '#ffffff',
         });
       }
     );

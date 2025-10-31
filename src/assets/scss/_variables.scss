@@ -1,4 +1,3 @@
-
 @import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700");
 
 $font-family: "Poppins", sans-serif;
@@ -10,20 +9,20 @@ $header-height: 60px !default;
 $borderColor: var(--mat-sys-outline-variant);
 $borderformColor: var(--mat-sys-outline-variant);
 
-$primary:   #1e40af;  // Indigo
-$secondary: #681330;  // Secondary
-$accent:    #f43f5e;  // Rose
-$error:     #dc2626;  // Red
-$warning:   #f59e0b;  // Amber
-$success:   #37a316;  // Success
+$primary:   #1e40af;
+$secondary: #681330;
+$accent:    #f43f5e;
+$error:     #dc2626;
+$warning:   #f59e0b;
+$success:   #37a316;
 $white:     #ffffff;
 
 $light: var(--mat-sys-surface-bright);
 
-// @function contrast-color($color, $dark:#0f172a, $light:#ffffff) {
-//   @if (lightness($color) > 55%) { @return $dark; }
-//   @return $light;
-// }
+@function contrast-color($color, $dark:#0f172a, $light:#ffffff) {
+  @if (lightness($color) > 55%) { @return $dark; }
+  @return $light;
+}
 
 $primary-fixed:        color-mix(in srgb, #{$primary} 88%, white);
 $primary-fixed-dim:    color-mix(in srgb, #{$primary} 15%, white);
@@ -36,25 +35,21 @@ $warning-light: color-mix(in srgb, #{$warning} 15%, white);
 $success-light: color-mix(in srgb, #{$success} 15%, white);
 
 :root {
-  /* Primary */
   --mat-sys-primary:            #{$primary};
   --mat-sys-on-primary:         #{contrast-color($primary)};
   --mat-sys-primary-fixed:      #{$primary-fixed};
   --mat-sys-primary-fixed-dim:  #{$primary-fixed-dim};
 
-  /* Secondary */
   --mat-sys-secondary:          #{$secondary};
   --mat-sys-on-secondary:       #{contrast-color($secondary)};
   --mat-sys-secondary-fixed:    #{$secondary-fixed};
   --mat-sys-secondary-fixed-dim:#{$secondary-fixed-dim};
 
-  /* Error */
   --mat-sys-error:              #{$error};
   --mat-sys-on-error:           #{contrast-color($error)};
   --mat-sys-error-fixed:        #{$error-fixed};
   --mat-sys-error-fixed-dim:    #{$error-fixed-dim};
 
-  /* Success / Warning (custom app vars) */
   --app-success:                #{$success};
   --app-on-success:             #{contrast-color($success)};
   --app-success-light:          #{$success-light};
@@ -63,7 +58,6 @@ $success-light: color-mix(in srgb, #{$success} 15%, white);
   --app-on-warning:             #{contrast-color($warning, #111, #111)};
   --app-warning-light:          #{$warning-light};
 
-  /* Superficie */
   --app-surface-bright:         #{$light};
 }
 
@@ -105,21 +99,18 @@ $dark-body-bg: #141a21;
 .text-warning   { color: var(--app-warning) !important; }
 .text-error     { color: var(--mat-sys-error) !important; }
 
-/* mat-flat-button -> .mat-mdc-unelevated-button */
 .mat-mdc-unelevated-button.bg-primary   { --mdc-filled-button-container-color: var(--mat-sys-primary);   --mdc-filled-button-label-text-color: var(--mat-sys-on-primary, #fff); }
 .mat-mdc-unelevated-button.bg-secondary { --mdc-filled-button-container-color: var(--mat-sys-secondary); --mdc-filled-button-label-text-color: var(--mat-sys-on-secondary, #fff); }
 .mat-mdc-unelevated-button.bg-success   { --mdc-filled-button-container-color: var(--app-success);       --mdc-filled-button-label-text-color: var(--app-on-success, #fff); }
 .mat-mdc-unelevated-button.bg-warning   { --mdc-filled-button-container-color: var(--app-warning);       --mdc-filled-button-label-text-color: var(--app-on-warning, #111); }
 .mat-mdc-unelevated-button.bg-error     { --mdc-filled-button-container-color: var(--mat-sys-error);     --mdc-filled-button-label-text-color: var(--mat-sys-on-error, #fff); }
 
-/* mat-raised-button */
 .mat-mdc-raised-button.bg-primary   { --mdc-filled-button-container-color: var(--mat-sys-primary);   --mdc-filled-button-label-text-color: var(--mat-sys-on-primary, #fff); }
 .mat-mdc-raised-button.bg-secondary { --mdc-filled-button-container-color: var(--mat-sys-secondary); --mdc-filled-button-label-text-color: var(--mat-sys-on-secondary, #fff); }
 .mat-mdc-raised-button.bg-success   { --mdc-filled-button-container-color: var(--app-success);       --mdc-filled-button-label-text-color: var(--app-on-success, #fff); }
 .mat-mdc-raised-button.bg-warning   { --mdc-filled-button-container-color: var(--app-warning);       --mdc-filled-button-label-text-color: var(--app-on-warning, #111); }
 .mat-mdc-raised-button.bg-error     { --mdc-filled-button-container-color: var(--mat-sys-error);     --mdc-filled-button-label-text-color: var(--mat-sys-on-error, #fff); }
 
-/* FAB / mini-fab */
 .mat-mdc-fab.bg-primary,
 .mat-mdc-mini-fab.bg-primary { --mdc-fab-container-color: var(--mat-sys-primary);   --mdc-fab-icon-color: var(--mat-sys-on-primary, #fff); }
 .mat-mdc-fab.bg-secondary,
@@ -131,35 +122,30 @@ $dark-body-bg: #141a21;
 .mat-mdc-fab.bg-warning,
 .mat-mdc-mini-fab.bg-warning { --mdc-fab-container-color: var(--app-warning); --mdc-fab-icon-color: var(--app-on-warning, #111); }
 
-/* Outlined (stroked) */
 .mat-mdc-outlined-button.text-primary   { --mdc-outlined-button-label-text-color: var(--mat-sys-primary);   --mdc-outlined-button-outline-color: var(--mat-sys-primary); }
 .mat-mdc-outlined-button.text-secondary { --mdc-outlined-button-label-text-color: var(--mat-sys-secondary); --mdc-outlined-button-outline-color: var(--mat-sys-secondary); }
 .mat-mdc-outlined-button.text-success   { --mdc-outlined-button-label-text-color: var(--app-success);       --mdc-outlined-button-outline-color: var(--app-success); }
 .mat-mdc-outlined-button.text-warning   { --mdc-outlined-button-label-text-color: var(--app-warning);       --mdc-outlined-button-outline-color: var(--app-warning); }
 .mat-mdc-outlined-button.text-error     { --mdc-outlined-button-label-text-color: var(--mat-sys-error);     --mdc-outlined-button-outline-color: var(--mat-sys-error); }
 
-/* Text buttons */
 .mat-mdc-button.text-primary   { --mdc-text-button-label-text-color: var(--mat-sys-primary); }
 .mat-mdc-button.text-secondary { --mdc-text-button-label-text-color: var(--mat-sys-secondary); }
 .mat-mdc-button.text-success   { --mdc-text-button-label-text-color: var(--app-success); }
 .mat-mdc-button.text-warning   { --mdc-text-button-label-text-color: var(--app-warning); }
 .mat-mdc-button.text-error     { --mdc-text-button-label-text-color: var(--mat-sys-error); }
 
-/* Icon buttons */
 .mat-mdc-icon-button.text-primary   { --mdc-icon-button-icon-color: var(--mat-sys-primary); }
 .mat-mdc-icon-button.text-secondary { --mdc-icon-button-icon-color: var(--mat-sys-secondary); }
 .mat-mdc-icon-button.text-success   { --mdc-icon-button-icon-color: var(--app-success); }
 .mat-mdc-icon-button.text-warning   { --mdc-icon-button-icon-color: var(--app-warning); }
 .mat-mdc-icon-button.text-error     { --mdc-icon-button-icon-color: var(--mat-sys-error); }
 
-/* Sin overlay de color en hover/focus/pressed */
 .mat-mdc-nav-list {
   --mdc-list-list-item-hover-state-layer-color:   transparent;
   --mdc-list-list-item-focus-state-layer-color:   transparent;
   --mdc-list-list-item-pressed-state-layer-color: transparent;
 }
 
-/* Ítem ACTIVO (y sigue igual en hover/focus) */
 .mat-mdc-nav-list .mdc-list-item--activated,
 .mat-mdc-nav-list .mat-mdc-list-item.activeMenu,
 .mat-mdc-nav-list .mdc-list-item--activated:hover,
@@ -168,21 +154,100 @@ $dark-body-bg: #141a21;
 .mat-mdc-nav-list .mat-mdc-list-item.activeMenu:focus {
   --mdc-list-list-item-container-color: var(--mat-sys-secondary);
   background-color: var(--mdc-list-list-item-container-color) !important;
-
   .mdc-list-item__primary-text,
-  .mat-mdc-list-item-icon {
+  .mdc-list-item__secondary-text,
+  .hide-menu,
+  [matListItemIcon],
+  .routeIcon,
+  i-tabler.routeIcon {
     color: var(--mat-sys-on-secondary, #fff) !important;
+    fill: var(--mat-sys-on-secondary, #fff) !important;
   }
 }
 
-/* Hover SOLO en NO activos: cambia el color del texto/ícono */
- .mat-mdc-list-item:not(.mdc-list-item--activated):not(.activeMenu):hover {
+.mat-mdc-nav-list .mat-mdc-list-item.mdc-list-item--activated,
+.mat-mdc-nav-list .mat-mdc-list-item.activeMenu {
+  cursor: default;
+  &:hover,
+  &:focus,
+  &:active {
+    --mdc-list-list-item-container-color: var(--mat-sys-secondary);
+    background-color: var(--mdc-list-list-item-container-color) !important;
+    .mdc-list-item__primary-text,
+    .mdc-list-item__secondary-text,
+    .hide-menu,
+    [matListItemIcon],
+    .routeIcon,
+    i-tabler.routeIcon {
+      color: var(--mat-sys-on-secondary, #fff) !important;
+      fill: var(--mat-sys-on-secondary, #fff) !important;
+    }
+    .mdc-list-item__ripple::before,
+    .mdc-list-item__ripple::after {
+      opacity: 0 !important;
+    }
+  }
+}
+
+.mat-mdc-nav-list 
+  .mat-mdc-list-item:not(.mdc-list-item--activated):not(.activeMenu):hover {
   --mdc-list-list-item-container-color: var(--mat-sys-secondary);
   background-color: var(--mdc-list-list-item-container-color) !important;
-
   .mdc-list-item__primary-text,
   .mdc-list-item__secondary-text,
-  .mat-mdc-list-item-icon {
+  .hide-menu,
+  [matListItemIcon],
+  .routeIcon,
+  i-tabler.routeIcon {
     color: var(--mat-sys-on-secondary, #fff) !important;
+    fill: var(--mat-sys-on-secondary, #fff) !important;
+  }
+}
+
+.mat-mdc-nav-list .menu-list-item.expanded,
+.mat-mdc-nav-list .menu-list-item.activemenu,
+.mat-mdc-nav-list .menu-list-item.activeMenu,
+.mat-mdc-nav-list .mat-mdc-list-item.expanded,
+.mat-mdc-nav-list .mat-mdc-list-item.activemenu,
+.mat-mdc-nav-list .mat-mdc-list-item.activeMenu {
+  --mdc-list-list-item-container-color: var(--mat-sys-secondary);
+  background-color: var(--mdc-list-list-item-container-color) !important;
+  .mdc-list-item__primary-text,
+  .mdc-list-item__secondary-text,
+  .hide-menu,
+  [matListItemIcon],
+  .routeIcon,
+  i-tabler,
+  i-tabler.routeIcon {
+    color: var(--mat-sys-on-secondary, #fff) !important;
+    fill: var(--mat-sys-on-secondary, #fff) !important;
+    opacity: 1 !important;
+  }
+}
+
+.mat-mdc-nav-list .menu-list-item.expanded:hover,
+.mat-mdc-nav-list .menu-list-item.activemenu:hover,
+.mat-mdc-nav-list .menu-list-item.activeMenu:hover,
+.mat-mdc-nav-list .mat-mdc-list-item.expanded:hover,
+.mat-mdc-nav-list .mat-mdc-list-item.activemenu:hover,
+.mat-mdc-nav-list .mat-mdc-list-item.activeMenu:hover,
+.mat-mdc-nav-list .menu-list-item.expanded:focus,
+.mat-mdc-nav-list .menu-list-item.activemenu:focus,
+.mat-mdc-nav-list .menu-list-item.activeMenu:focus,
+.mat-mdc-nav-list .mat-mdc-list-item.expanded:focus,
+.mat-mdc-nav-list .mat-mdc-list-item.activemenu:focus,
+.mat-mdc-nav-list .mat-mdc-list-item.activeMenu:focus {
+  --mdc-list-list-item-container-color: var(--mat-sys-secondary);
+  background-color: var(--mdc-list-list-item-container-color) !important;
+  .mdc-list-item__primary-text,
+  .mdc-list-item__secondary-text,
+  .hide-menu,
+  [matListItemIcon],
+  .routeIcon,
+  i-tabler,
+  i-tabler.routeIcon {
+    color: var(--mat-sys-on-secondary, #fff) !important;
+    fill: var(--mat-sys-on-secondary, #fff) !important;
+    opacity: 1 !important;
   }
 }

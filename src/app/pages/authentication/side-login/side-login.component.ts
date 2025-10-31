@@ -26,8 +26,8 @@ import Swal from 'sweetalert2';
 export class AppSideLoginComponent implements OnInit {
   options = this.settings.getOptions();
 
-    constructor(private router: Router,
-      private settings: CoreService,
+  constructor(private router: Router,
+    private settings: CoreService,
     private auth: AuthenticationService,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
@@ -48,7 +48,7 @@ export class AppSideLoginComponent implements OnInit {
     this.router.navigate(['/dashboard']);
   }
 
-    initForm() {
+  initForm() {
     this.loginForm = this.fb.group({
       userName: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
@@ -85,26 +85,30 @@ export class AppSideLoginComponent implements OnInit {
           this.loading = false;
           this.textLogin = 'Iniciar Sesión';
           Swal.fire({
-  icon: 'error',
-  title: '¡Ops!',
-  text: 'Ocurrió un error al procesar tu solicitud.',
-  confirmButtonText: 'Confirmar'
-});
+            icon: 'error',
+            title: '¡Ops!',
+            text: 'Ocurrió un error al procesar tu solicitud.',
+            confirmButtonText: 'Confirmar',
+            background: '#141a21',
+            color: '#ffffff',
+          });
 
           return throwError(() => '');
         })
       )
       .subscribe((result: User) => {
         this.auth.setData(result);
-       
+
         this.router.navigate(['/dashboard']);
 
-       Swal.fire({
-  icon: 'success',
-  title: '¡Operación Exitosa!',
-  text: 'Todo salió bien.',
-  confirmButtonText: 'Confirmar'
-});
+        Swal.fire({
+          icon: 'success',
+          title: '¡Operación Exitosa!',
+          text: 'Todo salió bien.',
+          confirmButtonText: 'Confirmar',
+          background: '#141a21',
+          color: '#ffffff',
+        });
 
 
         this.loading = false;

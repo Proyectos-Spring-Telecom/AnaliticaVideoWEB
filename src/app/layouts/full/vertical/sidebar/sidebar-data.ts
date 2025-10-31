@@ -2,64 +2,128 @@ import { NavItem } from './nav-item/nav-item';
 
 export const navItems: NavItem[] = [
   {
-    navCap: 'Administración',
+    navCap: 'Menú',
   },
   {
-    displayName: 'Dashboard',
+    displayName: 'Tablero',
     iconName: 'home',
     route: '/dashboard',
   },
   {
-    displayName: 'Permisos',
-    iconName: 'shield-lock',
-    route: '/permisos',
-  },
-  {
-    displayName: 'Módulos',
-    iconName: 'puzzle',
-    route: '/modulos',
-  },
-  {
-    displayName: 'Roles',
-    iconName: 'user-cog',
-    route: '/roles',
-  },
-  {
-    displayName: 'Usuarios',
-    iconName: 'users',
-    route: '/usuarios',
+    displayName: 'Administración',
+    iconName: 'box-multiple',
+    route: '/menu-level',
+    children: [
+      {
+        displayName: 'Módulos',
+        // iconName: 'puzzle',
+        route: '/modulos',
+      },
+      {
+        displayName: 'Permisos',
+        // iconName: 'shield-lock',
+        route: '/permisos',
+      },
+      {
+        displayName: 'Productos',
+        route: '/productos',
+      },
+      {
+        displayName: 'Marcas',
+        route: '/marcas',
+      },
+      {
+        displayName: 'Modelos',
+        route: '/modelos',
+      },
+      {
+        displayName: 'Equipos',
+        route: '/equipos',
+      },
+      {
+        displayName: 'Bitácora',
+        iconName: 'date',      // herramientas/equipo
+        // route: '/equipos',
+      },
+    ],
   },
   {
     displayName: 'Clientes',
     iconName: 'address-book',
-    route: '/clientes',
+    route: '/menu-level',
+    children: [
+      {
+        displayName: 'Agregar Cliente',
+        // iconName: 'user-cog',
+        // route: '/roles',
+      },
+      {
+        displayName: 'Lista Clientes',
+        // iconName: 'user-cog',
+        route: '/clientes',
+      },
+    ],
   },
   {
-    navCap: 'Gestión',
+    displayName: 'Usuarios',
+    iconName: 'users',
+    route: '/menu-level',
+    children: [
+      {
+        displayName: 'Agregar Usuario',
+        // iconName: 'user-cog',
+        // route: '/roles',
+      },
+      {
+        displayName: 'Lista Usuarios',
+        // iconName: 'user-cog',
+        route: '/usuarios',
+      },
+    ],
   },
   {
-  displayName: 'Productos',
-  iconName: 'packages',   // cajas/productos
-  route: '/productos',
-},
-{
-  displayName: 'Marcas',
-  iconName: 'trademark',  // marca registrada
-  route: '/marcas',
-},
-{
-  displayName: 'Modelos',
-  iconName: 'cube',       // modelo/pieza
-  route: '/modelos',
-},
-{
-  displayName: 'Equipos',
-  iconName: 'tools',      // herramientas/equipo
-  route: '/equipos',
-},
+    displayName: 'Roles',
+    iconName: 'user-cog',
+    route: '/menu-level',
+    children: [
+      {
+        displayName: 'Agregar Rol',
+        // iconName: 'user-cog',
+        // route: '/roles',
+      },
+      {
+        displayName: 'Lista Roles',
+        // iconName: 'user-cog',
+        route: '/roles',
+      },
+    ],
+  },
+  {
+    navCap: 'Operación',
+  },
+  {
+    displayName: 'Monitoreo',
+    iconName: 'chart-line',
+    // route: '/permisos',
+  },
+  {
+    displayName: 'Instalaciones',
+    iconName: 'tools',
+    // route: '/permisos',
+  },
+  {
+    displayName: 'Incidencias',
+    iconName: 'alert-triangle',
+    // route: '/permisos',
+  },
+  // {
+  //   displayName: 'Dashboard',
+  //   iconName: 'home',
+  //   route: '/dashboard',
+  // },
 
   {
-    navCap: 'Sesión',
+    navCap: 'Ajustes',
   },
   {
     displayName: 'Perfil Usuario',
@@ -67,7 +131,7 @@ export const navItems: NavItem[] = [
     route: '/permisos',
   },
   {
-    displayName: 'Login',
+    displayName: 'Cerrar Sesión+',
     iconName: 'lock',
     route: '/login',
   },
@@ -79,43 +143,7 @@ export const navItems: NavItem[] = [
   // {
   //   navCap: 'Other',
   // },
-  // {
-  //   displayName: 'Menu Level',
-  //   iconName: 'box-multiple',
-  //   route: '/menu-level',
-  //   children: [
-  //     {
-  //       displayName: 'Menu 1',
-  //       iconName: 'point',
-  //       route: '/menu-1',
-  //       children: [
-  //         {
-  //           displayName: 'Menu 1',
-  //           iconName: 'point',
-  //           route: '/menu-1',
-  //         },
 
-  //         {
-  //           displayName: 'Menu 2',
-  //           iconName: 'point',
-  //           route: '/menu-2',
-  //         },
-  //       ],
-  //     },
-
-  //     {
-  //       displayName: 'Menu 2',
-  //       iconName: 'point',
-  //       route: '/menu-2',
-  //     },
-  //   ],
-  // },
-  // {
-  //   displayName: 'Disabled',
-  //   iconName: 'ban',
-  //   route: '/disabled',
-  //   disabled: true,
-  // },
   // {
   //   displayName: 'Chip',
   //   iconName: 'mood-smile',

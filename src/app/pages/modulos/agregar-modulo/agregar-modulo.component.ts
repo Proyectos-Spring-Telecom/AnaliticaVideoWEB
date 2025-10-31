@@ -101,6 +101,8 @@ public submitButton: string = 'Guardar';
         `).join('');
 
       Swal.fire({
+        background: '#141a21',
+        color: '#ffffff',
         title: '¡Faltan campos obligatorios!',
         html: `
             <p style="text-align: center; font-size: 15px; margin-bottom: 16px; color: white">
@@ -123,6 +125,8 @@ public submitButton: string = 'Guardar';
         this.submitButton = 'Guardar';
         this.loading = false;
         Swal.fire({
+          background: '#141a21',
+        color: '#ffffff',
           title: '¡Operación Exitosa!',
           text: `Se agregó un nuevo módulo de manera exitosa.`,
           icon: 'success',
@@ -135,6 +139,8 @@ public submitButton: string = 'Guardar';
         this.submitButton = 'Guardar';
         this.loading = false;
         Swal.fire({
+          background: '#141a21',
+        color: '#ffffff',
           title: '¡Ops!',
           text: `Ocurrió un error al agregar el módulo.`,
           icon: 'error',
@@ -174,6 +180,8 @@ public submitButton: string = 'Guardar';
         `).join('');
 
       Swal.fire({
+        background: '#141a21',
+        color: '#ffffff',
         title: '¡Faltan campos obligatorios!',
         html: `
             <p style="text-align: center; font-size: 15px; margin-bottom: 16px; color: white">
@@ -194,6 +202,8 @@ public submitButton: string = 'Guardar';
         this.submitButton = 'Actualizar';
         this.loading = false;
         Swal.fire({
+          background: '#141a21',
+        color: '#ffffff',
           title: '¡Operación Exitosa!',
           text: `Los datos del módulo se actualizaron correctamente.`,
           icon: 'success',
@@ -206,6 +216,8 @@ public submitButton: string = 'Guardar';
         this.submitButton = 'Actualizar';
         this.loading = false;
         Swal.fire({
+          background: '#141a21',
+        color: '#ffffff',
           title: '¡Ops!',
           text: `Ocurrió un error al actualizar el módulo.`,
           icon: 'error',

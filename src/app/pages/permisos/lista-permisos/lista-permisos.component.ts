@@ -84,8 +84,8 @@ export class ListaPermisosComponent implements OnInit {
               Number(item?.estatus) === 1
                 ? 'Activo'
                 : Number(item?.estatus) === 0
-                ? 'Inactivo'
-                : null,
+                  ? 'Inactivo'
+                  : null,
           }));
 
           this.totalRegistros = totalRegistros;
@@ -128,7 +128,7 @@ export class ListaPermisosComponent implements OnInit {
     try {
       const colsOpt = grid?.option('columns');
       if (Array.isArray(colsOpt) && colsOpt.length) columnas = colsOpt;
-    } catch {}
+    } catch { }
     if (!columnas.length && grid?.getVisibleColumns) {
       columnas = grid.getVisibleColumns();
     }
@@ -205,15 +205,16 @@ export class ListaPermisosComponent implements OnInit {
   eliminarPermiso(permiso: any) {
     Swal.fire({
       title: '¡Eliminar Permiso!',
-      html: `¿Está seguro que requiere eliminar el permiso: <br> ${
-        permiso.Marca + ' ' + permiso.Modelo
-      }?`,
+      html: `¿Está seguro que requiere eliminar el permiso: <br> ${permiso.Marca + ' ' + permiso.Modelo
+        }?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar',
+      background: '#141a21',
+      color: '#ffffff',
     }).then((result) => {
       if (result.value) {
         this.permService.eliminarPermiso(permiso.Id).subscribe(
@@ -225,6 +226,8 @@ export class ListaPermisosComponent implements OnInit {
               showCancelButton: false,
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Confirmar',
+              background: '#141a21',
+              color: '#ffffff',
             });
             this.setupDataSource();
           },
@@ -234,6 +237,8 @@ export class ListaPermisosComponent implements OnInit {
               html: `Error al intentar eliminar el permiso.`,
               icon: 'error',
               showCancelButton: false,
+              background: '#141a21',
+              color: '#ffffff',
             });
           }
         );
@@ -251,6 +256,8 @@ export class ListaPermisosComponent implements OnInit {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar',
+      background: '#141a21',
+      color: '#ffffff',
     }).then((result) => {
       if (result.value) {
         this.permService.updateEstatus(rowData.id, 1).subscribe(
@@ -261,6 +268,8 @@ export class ListaPermisosComponent implements OnInit {
               icon: 'success',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Confirmar',
+              background: '#141a21',
+              color: '#ffffff',
             });
 
             this.setupDataSource();
@@ -274,6 +283,8 @@ export class ListaPermisosComponent implements OnInit {
               icon: 'error',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Confirmar',
+              background: '#141a21',
+              color: '#ffffff',
             });
           }
         );
@@ -291,6 +302,8 @@ export class ListaPermisosComponent implements OnInit {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar',
+      background: '#141a21',
+      color: '#ffffff',
     }).then((result) => {
       if (result.value) {
         this.permService.updateEstatus(rowData.id, 0).subscribe(
@@ -301,6 +314,8 @@ export class ListaPermisosComponent implements OnInit {
               icon: 'success',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Confirmar',
+              background: '#141a21',
+      color: '#ffffff',
             });
             this.setupDataSource();
             this.dataGrid.instance.refresh();
@@ -313,6 +328,8 @@ export class ListaPermisosComponent implements OnInit {
               icon: 'error',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Confirmar',
+              background: '#141a21',
+      color: '#ffffff',
             });
           }
         );

@@ -74,6 +74,8 @@ export class ListaModulosComponent implements OnInit {
       title: '¡Activar!',
       html: `¿Está seguro que requiere activar el módulo: <strong>${rowData.nombre}</strong>?`,
       icon: 'warning',
+      background: '#141a21',
+      color: '#ffffff',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
@@ -84,6 +86,8 @@ export class ListaModulosComponent implements OnInit {
         this.moduloService.updateEstatus(rowData.id, 1).subscribe(
           (response) => {
             Swal.fire({
+              background: '#141a21',
+              color: '#ffffff',
               title: '¡Confirmación Realizada!',
               html: `El módulo ha sido activado.`,
               icon: 'success',
@@ -97,6 +101,8 @@ export class ListaModulosComponent implements OnInit {
           },
           (error) => {
             Swal.fire({
+              background: '#141a21',
+              color: '#ffffff',
               title: '¡Ops!',
               html: `${error}`,
               icon: 'error',
@@ -119,6 +125,8 @@ export class ListaModulosComponent implements OnInit {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar',
+      background: '#141a21',
+      color: '#ffffff',
     }).then((result) => {
       if (result.value) {
         this.moduloService.updateEstatus(rowData.id, 0).subscribe(
@@ -129,6 +137,8 @@ export class ListaModulosComponent implements OnInit {
               icon: 'success',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Confirmar',
+              background: '#141a21',
+              color: '#ffffff',
             });
             this.setupDataSource();
             this.dataGrid.instance.refresh();
@@ -141,6 +151,8 @@ export class ListaModulosComponent implements OnInit {
               icon: 'error',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Confirmar',
+              background: '#141a21',
+              color: '#ffffff',
             });
           }
         );
