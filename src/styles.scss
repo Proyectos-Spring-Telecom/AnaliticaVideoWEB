@@ -195,6 +195,70 @@ body {
 
 
 //Formulario
+
+/* Select con look de input (misma altura, radios, padding, bg y focus) */
+.perm-ig .form-floating select.form-control {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: calc(3.5rem + 2px);
+  padding: 1rem 3rem 1rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--mat-sys-outline-variant);
+  background-color: var(--app-surface-2, #1f2832);
+  color: var(--app-text, #e6e7ea);
+  line-height: 1.25;
+}
+
+.perm-ig .form-floating select.form-control:focus {
+  outline: none;
+  border-color: var(--mat-sys-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mat-sys-primary) 25%, transparent);
+}
+
+.perm-ig .form-floating select.form-control:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* Oculta la flecha nativa en navegadores legacy */
+.perm-ig .form-floating select.form-control::-ms-expand { display: none; }
+
+/* Caret custom para que luzca como input con ícono a la derecha */
+.perm-ig .form-floating {
+  position: relative;
+}
+
+.perm-ig .form-floating::after {
+  content: '▾';
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: .9rem;
+  opacity: .7;
+}
+
+/* Alinea el label flotante del select igual que el del input */
+.perm-ig .form-floating select.form-control + label {
+  transform: scale(.85) translateY(-.6rem) translateX(.15rem);
+  opacity: .8;
+  background: transparent;
+  left: .85rem;
+}
+
+/* Igualar el “chip” de ícono a la izquierda entre ambos campos */
+.perm-ig .input-group-text {
+  min-width: 48px;
+  height: calc(3.5rem + 2px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem 0 0 0.75rem;
+}
+
 .perm-head__icon {
   position: relative;
   z-index: 1;

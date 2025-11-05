@@ -4,11 +4,11 @@ export const navItems: NavItem[] = [
   {
     navCap: 'Menú',
   },
-  {
-    displayName: 'Tablero',
-    iconName: 'home',
-    route: '/dashboard',
-  },
+  // {
+  //   displayName: 'Tablero',
+  //   iconName: 'home',
+  //   route: '/dashboard',
+  // },
   {
     displayName: 'Administración',
     iconName: 'box-multiple',
@@ -104,7 +104,7 @@ export const navItems: NavItem[] = [
   {
     displayName: 'Monitoreo',
     iconName: 'chart-line',
-    // route: '/permisos',
+    route: '/monitoreo',
   },
   {
     displayName: 'Instalaciones',

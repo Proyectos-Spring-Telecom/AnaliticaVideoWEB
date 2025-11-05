@@ -45,7 +45,7 @@ export class AppSideLoginComponent implements OnInit {
 
   submit() {
     // console.log(this.form.value);
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/monitoreo']);
   }
 
   initForm() {
@@ -99,7 +99,7 @@ export class AppSideLoginComponent implements OnInit {
       .subscribe((result: User) => {
         this.auth.setData(result);
 
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/monitoreo']);
 
         Swal.fire({
           icon: 'success',
@@ -118,6 +118,6 @@ export class AppSideLoginComponent implements OnInit {
 
   onSubmits() {
     // console.log(this.form.value);
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/monitoreo']);
   }
 }

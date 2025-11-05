@@ -1,12 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { routeAnimation } from 'src/app/pipe/module-open.animation';
-
-interface DatoPie {
-  etiqueta: string;
-  value: number;
-}
-
-type Item = { grupo?: string; rango?: string; valor: number };
+import { IncidenciasService } from 'src/app/services/moduleService/incidencias.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,219 +12,314 @@ type Item = { grupo?: string; rango?: string; valor: number };
 export class DashboardComponent implements OnInit {
   now = new Date();
 
-  // Banner
-  hit = {
-    genero: 'Hombre',
-    edad: 35,
-    estado: 'Feliz',
-    id: 60165
-  };
+  hit = { genero: '', edad: null as number | null, estado: '', id: null as number | null };
+  hitFecha: Date | null = null;
+  hitFechaLabel: string | null = null;
 
+  totalPersonas = 0;
+  totalHombres = 0;
+  totalMujeres = 0;
 
-  // Totales
-  totalPersonas = 545;
-  totalHombres = 141;
-  totalMujeres = 404;
+  mensajeAgrupar = 'Arrastre un encabezado de columna aquí para agrupar por esa columna';
+  loading = false;
+  loadingMessage = 'Cargando...';
 
-  // Data Gráfica
+  fechaInicio: Date = new Date();
+  fechaFin: Date = new Date();
 
+  ultimoHit: any = null;
+  totalFiltrado = 0;
 
+  private page = 1;
+  private limit = 200;
 
-  consultar(): void {
-    // Aquí conectas tu servicio para recargar:
-    // 1) hit, 2) totales, 3) dataSource de cada gráfica.
-    // Dejo mock para que la vista ya funcione.
-    // this.miServicio.obtenerDashboard(this.fechaInicio, this.fechaFin)
-    //   .subscribe(resp => { ... });
-  }
+  chartHits = [
+    { grupo: 'Hombres', valor: 0, colors: 2 },
+    { grupo: 'Mujeres', valor: 0, colors: 1 },
+  ];
 
-  public informacionGrid: any;
-  public edadesAgrupadas: any;
-  public edadesMujeres: any;
-  public edadesHombres: any;
-  public showFilterRow: boolean;
-  public showHeaderFilter: boolean;
-  public loadingVisible: boolean = false;
-  public mensajeAgrupar: string =
-    'Arrastre un encabezado de columna aquí para agrupar por esa columna';
-  public loading: boolean = false;
-  public loadingMessage: string = 'Cargando...';
-  public distribucionPorHora: any;
-  public fechaSeleccionada: Date = new Date();
+  chartEdadesAmbos = [
+    { rango: '0 - 20', valor: 0, color: 1 },
+    { rango: '21 - 40', valor: 0, color: 2 },
+    { rango: '41 - 60', valor: 0, color: 3 },
+    { rango: '61+', valor: 0, color: 4 },
+  ];
 
-  public fechaInicio: Date = new Date();
-  public fechaFin: Date = new Date();
-  public resultadoRango: any;
-  public buttonInfo: boolean = false;
-  public buttonsFecha: boolean = true;
-  public modoConsultaPorRango: boolean = false;
-  public ultimoHit: any = null;
-  public totalFiltrado: number = 0;
+  chartEdadesMujeres = [
+    { rango: '0 - 20', valor: 0, color: 1 },
+    { rango: '21 - 40', valor: 0, color: 2 },
+    { rango: '41 - 60', valor: 0, color: 3 },
+    { rango: '61+', valor: 0, color: 4 },
+  ];
+
+  chartEdadesHombres = [
+    { rango: '0 - 20', valor: 0, color: 1 },
+    { rango: '21 - 40', valor: 0, color: 2 },
+    { rango: '41 - 60', valor: 0, color: 3 },
+    { rango: '61+', valor: 0, color: 4 },
+  ];
+
+  hitsPorHora = [{ hora: '00:00', hombres: 0, mujeres: 0 }];
+
+  registros: any[] = [];
+
+  constructor(private incidencias: IncidenciasService) {}
 
   ngOnInit(): void {
-    
+    this.cargarHoy();
+    this.cargarUltimoHit();
+    this.consultar();
   }
 
-
-  customizeEdadTooltip = (pointInfo: any) => {
-    return {
-      text: `${pointInfo.argumentText} Años:   ${pointInfo.valueText} Personas`,
-    };
-  };
-
-
-  customizeEdadMujeresTooltip = (pointInfo: any) => {
-    return {
-      text: `${pointInfo.argumentText}:   ${pointInfo.value} Mujeres`,
-    };
-  };
-
-
-  customizeEdadHombresTooltip = (pointInfo: any) => {
-    return {
-      text: `${pointInfo.argumentText}:   ${pointInfo.value} Hombres`,
-    };
-  };
-
-  // H/M: 1 = rosa, 2 = azul
-chartHits = [
-  { grupo: 'Hombres', valor: 190, colors: 2 },
-  { grupo: 'Mujeres', valor: 355, colors: 1 },
-];
-
-// Ambos: 1..4 mapean a tu colorMap
-chartEdadesAmbos = [
-  { rango: '0 - 20', valor: 50,  color: 1 },
-  { rango: '21 - 40', valor: 300, color: 2 },
-  { rango: '41 - 60', valor: 170, color: 3 },
-  { rango: '61+',    valor: 25,  color: 4 },
-];
-
-// Mujeres: 1..4 (paleta rosa)
-chartEdadesMujeres = [
-  { rango: '0 - 20', valor: 40,  color: 1 },
-  { rango: '21 - 40', valor: 250, color: 2 },
-  { rango: '41 - 60', valor: 100, color: 3 },
-  { rango: '61+',    valor: 14,  color: 4 },
-];
-
-// Hombres: 1..4 (paleta azul)
-chartEdadesHombres = [
-  { rango: '0 - 20', valor: 10,  color: 1 },
-  { rango: '21 - 40', valor: 50,  color: 2 },
-  { rango: '41 - 60', valor: 70,  color: 3 },
-  { rango: '61+',    valor: 11,  color: 4 },
-];
-
-// === Tus funciones tal cual ===
-// Datos para la barra apilada
-hitsPorHora = [
-  { hora: '09:00', hombres: 0,  mujeres: 0  },
-  { hora: '10:00', hombres: 1,  mujeres: 3  },
-  { hora: '11:00', hombres: 10, mujeres: 25 },
-  { hora: '12:00', hombres: 17, mujeres: 35 },
-  { hora: '13:00', hombres: 10, mujeres: 47 },
-  { hora: '14:00', hombres: 14, mujeres: 44 },
-  { hora: '15:00', hombres: 15, mujeres: 43 },
-  { hora: '16:00', hombres: 7,  mujeres: 46 },
-  { hora: '17:00', hombres: 13, mujeres: 48 },
-  { hora: '18:00', hombres: 17, mujeres: 43 },
-  { hora: '19:00', hombres: 20, mujeres: 37 },
-  { hora: '20:00', hombres: 17, mujeres: 33 },
-  { hora: '21:00', hombres: 0,  mujeres: 0  },
-];
-
-// 👇 Reutiliza el mismo customizePoint; lo extiendo para dxChart por nombre de serie
-customizePoint = (pointInfo: any) => {
-  // Si viene de la barra apilada, pintamos por nombre de serie
-  if (pointInfo?.seriesName) {
-    if (pointInfo.seriesName === 'Mujeres') return { color: '#ff69b4' }; // rosa
-    if (pointInfo.seriesName === 'Hombres') return { color: '#4a90e2' }; // azul
+  consultar(): void {
+    const fi = this.fmt(this.fechaInicio);
+    const ff = this.fmt(this.fechaFin);
+    this.loading = true;
+    this.incidencias.rangoPaginado(fi, ff, this.page, this.limit).subscribe({
+      next: (resp: any) => {
+        const items = this.pickArray(resp);
+        const regs = items.map(this.normalizeItem);
+        this.registros = regs;
+        this.totalFiltrado = Number(resp?.total ?? regs.length);
+        this.recalcularDesdeRegistros(regs);
+      },
+      error: () => {},
+      complete: () => (this.loading = false),
+    });
   }
 
-  // Si viene de las donas, usamos el índice que ya manejabas
-  switch (pointInfo?.data?.colors) {
-    case 1: return { color: '#ff69b4' }; // Mujeres
-    case 2: return { color: '#4a90e2' }; // Hombres
-    default: return {};
+  private cargarHoy(): void {
+    this.loading = true;
+    this.incidencias.hoy().subscribe({
+      next: (resp: any) => {
+        const items = this.pickArray(resp);
+        const regs = items.map(this.normalizeItem);
+        this.registros = regs;
+        this.totalFiltrado = Number(resp?.total ?? regs.length);
+        this.recalcularDesdeRegistros(regs);
+
+        if (resp?.totales) {
+          this.totalPersonas = Number(resp.totales.total ?? this.totalPersonas);
+          this.totalHombres = Number(resp.totales.hombres ?? this.totalHombres);
+          this.totalMujeres = Number(resp.totales.mujeres ?? this.totalMujeres);
+          this.chartHits = [
+            { grupo: 'Hombres', valor: this.totalHombres, colors: 2 },
+            { grupo: 'Mujeres', valor: this.totalMujeres, colors: 1 },
+          ];
+        }
+        if (Array.isArray(resp?.hitsPorHora)) this.hitsPorHora = this.normalizarHoras(resp.hitsPorHora);
+        if (Array.isArray(resp?.edadesAmbos)) this.chartEdadesAmbos = this.ensureEdadShape(resp.edadesAmbos);
+        if (Array.isArray(resp?.edadesMujeres)) this.chartEdadesMujeres = this.ensureEdadShape(resp.edadesMujeres);
+        if (Array.isArray(resp?.edadesHombres)) this.chartEdadesHombres = this.ensureEdadShape(resp.edadesHombres);
+      },
+      error: () => {},
+      complete: () => (this.loading = false),
+    });
   }
-};
 
+  private cargarUltimoHit(): void {
+    this.incidencias.ultimoHit().subscribe({
+      next: (resp: any) => {
+        const u = this.normalizeItem(resp);
+        this.hit = { genero: u.genero, edad: u.edad, estado: u.estado, id: u.id };
+        this.hitFecha = u.fechaHora ?? null;
+        this.hitFechaLabel = this.formatFechaLabel(u.fechaRaw);
+      },
+      error: () => {},
+    });
+  }
 
-customizeEdadPoint = (point: any) => {
-  const colorMap: { [k: number]: string } = {
-    1: '#8e44ad',
-    2: '#f39c12',
-    3: '#16a085',
-    4: '#c0392b',
+  customizeEdadTooltip = (p: any) => ({ text: `${p.argumentText} Años:   ${p.valueText} Personas` });
+  customizeEdadMujeresTooltip = (p: any) => ({ text: `${p.argumentText}:   ${p.value} Mujeres` });
+  customizeEdadHombresTooltip = (p: any) => ({ text: `${p.argumentText}:   ${p.value} Hombres` });
+
+  customizePoint = (p: any) => {
+    if (p?.seriesName === 'Mujeres') return { color: '#ff69b4' };
+    if (p?.seriesName === 'Hombres') return { color: '#4a90e2' };
+    switch (p?.data?.colors) {
+      case 1: return { color: '#ff69b4' };
+      case 2: return { color: '#4a90e2' };
+      default: return {};
+    }
   };
-  return { color: colorMap[point.data.color] || '#7f8c8d' };
-};
 
-
-
-customizeEdadMujeresPoint = (point: any) => {
-  const colorMap: { [k: number]: string } = {
-    1: '#ff69b4',
-    2: '#f06292',
-    3: '#ec407a',
-    4: '#c2185b',
+  customizeEdadPoint = (p: any) => {
+    const colorMap: any = { 1: '#8e44ad', 2: '#f39c12', 3: '#16a085', 4: '#c0392b' };
+    return { color: colorMap[p.data.color] || '#7f8c8d' };
   };
-  return { color: colorMap[point.data.color] || '#e1bee7' };
-};
 
-
-customizeEdadHombresPoint = (point: any) => {
-  const colorMap: { [k: number]: string } = {
-    1: '#0d6efd',
-    2: '#3b8beb',
-    3: '#5caeff',
-    4: '#b6d4fe',
+  customizeEdadMujeresPoint = (p: any) => {
+    const colorMap: any = { 1: '#ff69b4', 2: '#f06292', 3: '#ec407a', 4: '#c2185b' };
+    return { color: colorMap[p.data.color] || '#e1bee7' };
   };
-  return { color: colorMap[point.data.color] || '#cfd8dc' };
-};
 
+  customizeEdadHombresPoint = (p: any) => {
+    const colorMap: any = { 1: '#0d6efd', 2: '#3b8beb', 3: '#5caeff', 4: '#b6d4fe' };
+    return { color: colorMap[p.data.color] || '#cfd8dc' };
+  };
 
-
-
-   areas: any[];
-
-   pointClickHandler(e: any) {
-    this.toggleVisibility(e.target);
+  pointClickHandler(e: any) {
+    this.toggleVisibility(e?.target);
   }
 
   legendClickHandler(e: any) {
-    const arg = e.target;
-    const item = e.component.getAllSeries()[0].getPointsByArg(arg)[0];
-
-    this.toggleVisibility(item);
+    const arg = e?.target;
+    const cmp = e?.component;
+    if (!arg || !cmp) return;
+    const series = cmp.getAllSeries?.()[0];
+    if (!series) return;
+    const pts = series.getPointsByArg?.(arg) || [];
+    const item = pts[0];
+    if (item) this.toggleVisibility(item);
   }
 
   toggleVisibility(item: any) {
-    if (item.isVisible()) {
-      item.hide();
-    } else {
-      item.show();
-    }
+    if (!item?.isVisible || !item?.hide || !item?.show) return;
+    item.isVisible() ? item.hide() : item.show();
   }
 
-  // Datos demo (sustituye por los tuyos al consultar)
-registros = [
-  { genero: 'Hombre', edad: 35, estado: 'Feliz',   fechaHora: new Date(), id: 60165 },
-  { genero: 'Hombre', edad: 39, estado: 'Neutral', fechaHora: new Date(), id: 60164 },
-  { genero: 'Mujer',  edad: 42, estado: 'Neutral', fechaHora: new Date(), id: 60163 },
-  { genero: 'Hombre', edad: 30, estado: 'Neutral', fechaHora: new Date(), id: 60162 },
-  { genero: 'Mujer',  edad: 42, estado: 'Neutral', fechaHora: new Date(), id: 60161 },
-  { genero: 'Hombre', edad: 28, estado: 'Neutral', fechaHora: new Date(), id: 60160 },
-  { genero: 'Mujer',  edad: 45, estado: 'Neutral', fechaHora: new Date(), id: 60159 },
-  { genero: 'Mujer',  edad: 28, estado: 'Neutral', fechaHora: new Date(), id: 60158 },
-  { genero: 'Mujer',  edad: 26, estado: 'Neutral', fechaHora: new Date(), id: 60157 },
-  { genero: 'Hombre', edad: 28, estado: 'Neutral', fechaHora: new Date(), id: 60156 },
-];
+  edadText = (cellInfo: any) => (cellInfo?.value || cellInfo?.value === 0) ? `${cellInfo.value} Años` : '';
 
-// Muestra: “35 Años”
-edadText = (cellInfo: any) => (cellInfo?.value || cellInfo?.value === 0)
-  ? `${cellInfo.value} Años`
-  : '';
+  private fmt(d: Date): string {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
 
+  private pickArray(resp: any): any[] {
+    if (Array.isArray(resp)) return resp;
+    if (Array.isArray(resp?.items)) return resp.items;
+    if (Array.isArray(resp?.registros)) return resp.registros;
+    if (Array.isArray(resp?.data)) return resp.data;
+    return [];
+  }
+
+  private parseFecha(fecha: any): Date {
+    if (fecha instanceof Date) return fecha;
+    if (typeof fecha !== 'string') return new Date();
+    const s = fecha.trim();
+    const ts = Date.parse(s);
+    if (!isNaN(ts)) return new Date(ts);
+    const [dpart, tpart] = s.split(' ');
+    const [ddS, mmS, yyS] = (dpart || '').split(/[\/\-]/);
+    const dd = Number(ddS) || 1;
+    const mm = (Number(mmS) || 1) - 1;
+    const yyyy = Number(yyS) || new Date().getFullYear();
+    let hh = 0, mi = 0, ss = 0;
+    if (tpart) {
+      const [hS, mS, sS] = tpart.split(':');
+      hh = Number(hS) || 0;
+      mi = Number(mS) || 0;
+      ss = Number(sS) || 0;
+    }
+    return new Date(yyyy, mm, dd, hh, mi, ss);
+  }
+
+  private formatFechaLabel(fechaRaw: any): string | null {
+    if (!fechaRaw) return null;
+    const s = String(fechaRaw).trim();
+    const [dpart, tpart = '00:00:00'] = s.split(' ');
+    const [ddS, mmS, yyS] = dpart.split(/[\/\-]/);
+    const dd = Number(ddS); const mm = Number(mmS); const yyyy = Number(yyS);
+    const [hS, mS] = tpart.split(':');
+    if (!(dd && mm && yyyy)) return s;
+    const meses = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const hh = Number(hS || 0);
+    const mi = Number(mS || 0);
+    const ampm = hh >= 12 ? 'PM' : 'AM';
+    const hh12 = ((hh + 11) % 12) + 1;
+    const pad2 = (n: number) => String(n).padStart(2, '0');
+    return `${pad2(dd)}-${meses[mm - 1]}-${yyyy} ${hh12}:${pad2(mi)} ${ampm}`;
+  }
+
+  private normalizeItem = (x: any) => {
+    const g = String(x?.genero ?? '').trim().toLowerCase();
+    const genero = g === 'hombre' ? 'Hombre' : g === 'mujer' ? 'Mujer' : (x?.genero ?? '');
+    const edad = x?.edad != null ? Number(x.edad) : null;
+    const er = String(x?.estado ?? x?.estadoAnimo ?? '').trim().toLowerCase();
+    const estado = er ? er.charAt(0).toUpperCase() + er.slice(1) : '';
+    const id = x?.id != null ? Number(x.id) : null;
+    const fechaRaw = (x?.fechaHora ?? x?.fecha ?? '').toString().trim();
+    const fechaHora = fechaRaw ? this.parseFecha(fechaRaw) : null;
+    return { genero, edad, estado, id, fechaRaw, fechaHora };
+  };
+
+  private recalcularDesdeRegistros(regs: any[]): void {
+    this.totalPersonas = regs.length;
+    this.totalHombres = regs.filter(r => r.genero === 'Hombre').length;
+    this.totalMujeres = regs.filter(r => r.genero === 'Mujer').length;
+
+    this.chartHits = [
+      { grupo: 'Hombres', valor: this.totalHombres, colors: 2 },
+      { grupo: 'Mujeres', valor: this.totalMujeres, colors: 1 },
+    ];
+
+    const ambos = { a: 0, b: 0, c: 0, d: 0 };
+    const m = { a: 0, b: 0, c: 0, d: 0 };
+    const h = { a: 0, b: 0, c: 0, d: 0 };
+
+    for (const r of regs) {
+      const bucket = r.edad <= 20 ? 'a' : r.edad <= 40 ? 'b' : r.edad <= 60 ? 'c' : 'd';
+      if (bucket === 'a') ambos.a++; else if (bucket === 'b') ambos.b++; else if (bucket === 'c') ambos.c++; else ambos.d++;
+      if (r.genero === 'Mujer') {
+        if (bucket === 'a') m.a++; else if (bucket === 'b') m.b++; else if (bucket === 'c') m.c++; else m.d++;
+      } else if (r.genero === 'Hombre') {
+        if (bucket === 'a') h.a++; else if (bucket === 'b') h.b++; else if (bucket === 'c') h.c++; else h.d++;
+      }
+    }
+
+    this.chartEdadesAmbos = [
+      { rango: '0 - 20', valor: ambos.a, color: 1 },
+      { rango: '21 - 40', valor: ambos.b, color: 2 },
+      { rango: '41 - 60', valor: ambos.c, color: 3 },
+      { rango: '61+', valor: ambos.d, color: 4 },
+    ];
+
+    this.chartEdadesMujeres = [
+      { rango: '0 - 20', valor: m.a, color: 1 },
+      { rango: '21 - 40', valor: m.b, color: 2 },
+      { rango: '41 - 60', valor: m.c, color: 3 },
+      { rango: '61+', valor: m.d, color: 4 },
+    ];
+
+    this.chartEdadesHombres = [
+      { rango: '0 - 20', valor: h.a, color: 1 },
+      { rango: '21 - 40', valor: h.b, color: 2 },
+      { rango: '41 - 60', valor: h.c, color: 3 },
+      { rango: '61+', valor: h.d, color: 4 },
+    ];
+
+    const mapaHoras: Record<string, { hombres: number; mujeres: number }> = {};
+    for (const r of regs) {
+      const d: Date = r.fechaHora instanceof Date ? r.fechaHora : this.parseFecha(r.fechaHora);
+      const hh = String(d.getHours()).padStart(2, '0') + ':00';
+      if (!mapaHoras[hh]) mapaHoras[hh] = { hombres: 0, mujeres: 0 };
+      if (r.genero === 'Hombre') mapaHoras[hh].hombres++;
+      else if (r.genero === 'Mujer') mapaHoras[hh].mujeres++;
+    }
+    const horas = Object.keys(mapaHoras).sort();
+    this.hitsPorHora = horas.map(hh => ({ hora: hh, hombres: mapaHoras[hh].hombres, mujeres: mapaHoras[hh].mujeres }));
+  }
+
+  private normalizarHoras(arr: any[]): any[] {
+    return arr
+      .map(x => {
+        const hora = typeof x?.hora === 'string' ? x.hora : (x?.hour != null ? String(x.hour).padStart(2, '0') + ':00' : '00:00');
+        const hombres = Number(x?.hombres ?? x?.male ?? 0);
+        const mujeres = Number(x?.mujeres ?? x?.female ?? 0);
+        return { hora, hombres, mujeres };
+      })
+      .sort((a, b) => a.hora.localeCompare(b.hora));
+  }
+
+  private ensureEdadShape(arr: any[]): any[] {
+    const mapKey = (k: any) => typeof k === 'number' ? k : ({ '0-20': 1, '0 - 20': 1, '21-40': 2, '21 - 40': 2, '41-60': 3, '41 - 60': 3, '61+': 4 } as any)[k] || 1;
+    return arr.map(x => {
+      const rango = x?.rango ?? x?.label ?? '';
+      const valor = Number(x?.valor ?? x?.count ?? 0);
+      const color = mapKey(x?.color ?? rango);
+      return { rango, valor, color };
+    });
+  }
 }

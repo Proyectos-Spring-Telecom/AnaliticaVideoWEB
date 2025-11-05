@@ -74,7 +74,7 @@ export class ListaProductosComponent implements OnInit {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.value) {
-        this.producService.updateEstatus(rowData.id, 1).subscribe(
+        this.producService.updateEstatusActivar(rowData.id, 1).subscribe(
           (response) => {
             Swal.fire({
               background: '#141a21',
@@ -120,7 +120,7 @@ export class ListaProductosComponent implements OnInit {
       color: '#ffffff',
     }).then((result) => {
       if (result.value) {
-        this.producService.updateEstatus(rowData.id, 0).subscribe(
+        this.producService.updateEstatusDesactivar(rowData.id, 0).subscribe(
           (response) => {
             Swal.fire({
               title: '¡Confirmación Realizada!',

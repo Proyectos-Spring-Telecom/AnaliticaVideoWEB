@@ -89,6 +89,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./pages/equipos/equipos.module').then((m) => m.EquiposModule),
       },
+      {
+        path: 'monitoreo',
+        loadChildren: () =>
+          import('./pages/monitoreo/monitoreo.module').then((m) => m.MonitoreoModule),
+      },
     ],
   },
 

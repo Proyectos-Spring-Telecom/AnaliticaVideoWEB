@@ -15,7 +15,7 @@ export class ProductoService {
   }
 
   obtenerProductos(): Observable<any> {
-    return this.http.get(`${environment.API_SECURITY}/catProductos/list`);
+    return this.http.get(`${environment.API_SECURITY}/catProductos`);
   }
 
   agregarProducto(data: FormData) {
@@ -30,13 +30,24 @@ export class ProductoService {
     return this.http.get<any>(environment.API_SECURITY + '/catProductos/' + idProducto);
   }
 
-  actualizarProducto(idProducto: number, saveForm: any): Observable<any> {
-    return this.http.put(`${environment.API_SECURITY}/catProductos/` + idProducto, saveForm);
+  actualizarProducto(idProducto: number, saveForm: {
+		  nombre: string;
+		}) {
+		return this.http.patch<any>(`${environment.API_SECURITY}/catProductos/${idProducto}`, saveForm);
+	}
+
+  private apiUrl = `${environment.API_SECURITY}/catProductos/activar`;
+  private apiUrlDes = `${environment.API_SECURITY}/catProductos/desactivar`;
+  updateEstatusActivar(id: number, estatus: number): Observable<string> {
+    const url = `${this.apiUrl}/${id}`;
+    const body = { estatus };
+    return this.http.patch(url, body, { responseType: 'text' }).pipe(
+      catchError(error => throwError(() => error))
+    );
   }
 
-  private apiUrl = `${environment.API_SECURITY}/catProductos`;
-  updateEstatus(id: number, estatus: number): Observable<string> {
-    const url = `${this.apiUrl}/${id}/estatus`;
+  updateEstatusDesactivar(id: number, estatus: number): Observable<string> {
+    const url = `${this.apiUrlDes}/${id}`;
     const body = { estatus };
     return this.http.patch(url, body, { responseType: 'text' }).pipe(
       catchError(error => throwError(() => error))
