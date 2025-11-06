@@ -31,6 +31,8 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { MaterialModule } from './material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { interceptServiceInterceptor } from './pages/authentication/side-login/intercept.service';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideToastr } from 'ngx-toastr';
 
 export function HttpLoaderFactory(http: HttpClient): any {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -38,6 +40,17 @@ export function HttpLoaderFactory(http: HttpClient): any {
 
 export const appConfig: ApplicationConfig = {
   providers: [
+
+    provideRouter(routes),
+    provideAnimations(), // o provideAnimationsAsync(), pero SOLO uno
+    provideToastr({
+      timeOut: 4000,
+      progressAnimation: 'increasing',
+      positionClass: 'toast-top-right',
+      progressBar: true,
+      closeButton: true,
+      preventDuplicates: true,
+    }),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(
       routes,

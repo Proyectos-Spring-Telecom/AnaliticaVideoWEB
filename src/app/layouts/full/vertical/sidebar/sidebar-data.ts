@@ -131,7 +131,7 @@ export const navItems: NavItem[] = [
     route: '/permisos',
   },
   {
-    displayName: 'Cerrar Sesión+',
+    displayName: 'Cerrar Sesión',
     iconName: 'lock',
     route: '/login',
   },

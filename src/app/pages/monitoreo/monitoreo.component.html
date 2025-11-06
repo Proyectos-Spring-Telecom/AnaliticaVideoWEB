@@ -1,7 +1,7 @@
 <div [@routeAnimation] class="card card--panel perm-wrapper">
   <header class="perm-head" role="region" aria-label="Sección: Monitoreo">
     <div class="perm-head__icon" aria-hidden="true">
-      <mat-icon>view_module</mat-icon>
+      <mat-icon>map</mat-icon>
     </div>
     <div class="perm-head__text">
       <span class="eyebrow">Sección</span>
@@ -14,63 +14,61 @@
     </nav>
   </header>
   <div class="surface">
-    <div class="container-fluid py-1">
-      <div class="row g-1">
-        <div class="col-12 col-lg-4">
-          <div class="card insta-card h-100">
-            <div class="card-header d-flex align-items-center justify-content-between">
-              <span class="fw-semibold">
-                {{ viewMode === 'centrales'
-                ? 'Clientes'
-                : ('Instalaciones del cliente: ' + (selectedCentral?.nombreCliente || '')) }}
-              </span>
-              <span class="badge insta-badge">{{ listaInstalaciones.length }}</span>
-            </div>
-            <div class="card-body insta-body">
-              <div class="list-group">
-                <div class="list-group-item insta-item" *ngFor="let item of listaInstalaciones; let i = index"
-                  [class.active]="item.id === selectedId">
-                  <div (click)="selectInstalacion(item, i)">
-                    <div class="d-flex w-100 justify-content-between align-items-start">
-                      <h6 class="mb-1 fw-semibold insta-title">
-                        {{ item.nombreCliente }}
-                      </h6>
-                      <span class="insta-dot" [class.ok]="item.estatus === 1" [class.off]="item.estatus !== 1"></span>
-                    </div>
-                    <div class="small text-muted mb-1">
-                      Encargado:
-                      <span class="text-body-secondary fw-semibold">{{ item.nombreEncargado }}</span>
-                    </div>
-                    <div class="insta-address">
-                      <mat-icon class="me-1" inline>location_on</mat-icon>
-                      <span class="text-wrap">{{ item.direccion }}</span>
-                    </div>
+    <div class="row">
+      <div class="col-12 col-lg-4">
+        <div class="card insta-card h-100">
+          <div class="card-header d-flex align-items-center justify-content-between">
+            <span class="fw-semibold">
+              {{ viewMode === 'centrales'
+              ? 'Clientes'
+              : ('Instalaciones del cliente: ' + (selectedCentral?.nombreCliente || '')) }}
+            </span>
+            <span class="badge insta-badge">{{ listaInstalaciones.length }}</span>
+          </div>
+          <div class="card-body insta-body">
+            <div class="list-group">
+              <div class="list-group-item insta-item" *ngFor="let item of listaInstalaciones; let i = index"
+                [class.active]="item.id === selectedId">
+                <div (click)="selectInstalacion(item, i)">
+                  <div class="d-flex w-100 justify-content-between align-items-start">
+                    <h6 class="mb-1 fw-semibold insta-title">
+                      {{ item.nombreCliente }}
+                    </h6>
+                    <span class="insta-dot" [class.ok]="item.estatus === 1" [class.off]="item.estatus !== 1"></span>
                   </div>
-                  <div class="d-flex justify-content-end gap-2 pt-2">
-                    <button class="btn btn-sm" [class.btn-primary]="viewMode==='centrales'"
-                      [class.btn-outline-primary]="viewMode!=='centrales'"
-                      (click)="goToCentrales(); $event.stopPropagation()">
-                      Centrales
-                    </button>
-                    <button class="btn btn-sm"
-                      [class.btn-primary]="viewMode==='instalaciones' && selectedCentral?.id === item.id"
-                      [class.btn-outline-primary]="!(viewMode==='instalaciones' && selectedCentral?.id === item.id)"
-                      (click)="selectedCentral=item; goToInstalaciones(); $event.stopPropagation()">
-                      Instalaciones
-                    </button>
+                  <div class="small text-muted mb-1">
+                    Encargado:
+                    <span class="text-body-secondary fw-semibold">{{ item.nombreEncargado }}</span>
+                  </div>
+                  <div class="insta-address">
+                    <mat-icon class="me-1" inline>location_on</mat-icon>
+                    <span class="text-wrap">{{ item.direccion }}</span>
                   </div>
                 </div>
-                <div *ngIf="listaInstalaciones.length === 0" class="p-3 text-center text-muted small">
-                  Sin instalaciones disponibles.
+                <div class="d-flex justify-content-end gap-2 pt-2">
+                  <button class="btn btn-sm" [class.btn-primary]="viewMode==='centrales'"
+                    [class.btn-outline-primary]="viewMode!=='centrales'"
+                    (click)="goToCentrales(); $event.stopPropagation()">
+                    Centrales
+                  </button>
+                  <button class="btn btn-sm"
+                    [class.btn-primary]="viewMode==='instalaciones' && selectedCentral?.id === item.id"
+                    [class.btn-outline-primary]="!(viewMode==='instalaciones' && selectedCentral?.id === item.id)"
+                    (click)="selectedCentral=item; goToInstalaciones(); $event.stopPropagation()">
+                    Instalaciones
+                  </button>
                 </div>
+              </div>
+              <div *ngIf="listaInstalaciones.length === 0" class="p-3 text-center text-muted small">
+                Sin instalaciones disponibles.
               </div>
             </div>
           </div>
         </div>
-        <div class="col-12 col-lg-8">
-          <div class="map-wrapper shadow-sm rounded-3 position-relative">
-            <div id="map"></div>
-          </div>
+      </div>
+      <div class="col-12 col-lg-8">
+        <div class="map-wrapper shadow-sm rounded-3 position-relative">
+          <div id="map"></div>
         </div>
       </div>
     </div>

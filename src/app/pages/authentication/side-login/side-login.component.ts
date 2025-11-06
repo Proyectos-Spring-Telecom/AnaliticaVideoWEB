@@ -17,6 +17,7 @@ import { User } from 'src/app/entities/User';
 import { AuthenticationService } from 'src/app/services/auth.service';
 import { catchError, throwError } from 'rxjs';
 import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-side-login',
@@ -32,6 +33,7 @@ export class AppSideLoginComponent implements OnInit {
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
+    private toastr: ToastrService,
     private authService: AuthenticationService,) { }
 
   form = new FormGroup({
@@ -84,14 +86,7 @@ export class AppSideLoginComponent implements OnInit {
         catchError((error) => {
           this.loading = false;
           this.textLogin = 'Iniciar Sesión';
-          Swal.fire({
-            icon: 'error',
-            title: '¡Ops!',
-            text: 'Ocurrió un error al procesar tu solicitud.',
-            confirmButtonText: 'Confirmar',
-            background: '#141a21',
-            color: '#ffffff',
-          });
+          this.toastr.error('Credenciales Incorrectas.', '¡Ops!');
 
           return throwError(() => '');
         })
@@ -101,14 +96,7 @@ export class AppSideLoginComponent implements OnInit {
 
         this.router.navigate(['/monitoreo']);
 
-        Swal.fire({
-          icon: 'success',
-          title: '¡Operación Exitosa!',
-          text: 'Todo salió bien.',
-          confirmButtonText: 'Confirmar',
-          background: '#141a21',
-          color: '#ffffff',
-        });
+        this.toastr.success('Bienvenido al Sistema.', '¡Credenciales Correctas!');
 
 
         this.loading = false;

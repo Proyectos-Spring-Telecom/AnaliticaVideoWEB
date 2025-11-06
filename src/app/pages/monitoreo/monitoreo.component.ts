@@ -1,6 +1,7 @@
 // monitoreo.component.ts
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { routeAnimation } from 'src/app/pipe/module-open.animation';
 import { InstalacionCentral } from 'src/app/services/moduleService/instalacionesCentral.service';
 
@@ -34,14 +35,18 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly apiKey = 'AIzaSyDuJ3IBZIs2mRbR4alTg7OZIsk0sXEJHhg';
 
   private readonly MAP_ID?: string = undefined;
-  private readonly PIN_URL = 'assets/images/logos/marker_pin_granate_3_64.png';
+  private readonly PIN_URL = 'assets/images/logos/marker_spring.webp';
 
   constructor(
     private insService: InstalacionCentral,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
+    // setTimeout(() => {
+    //   this.toastr.success('Guardado correctamente', '¡Operación Exitosa!');
+    // }, 0);
     this.obtenerInstalacionesCentral();
   }
 
@@ -59,7 +64,7 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private pinIcon(size = 100): any {
     return {
-      url: this.PIN_URL, // Ruta: assets/images/logos/marker_pin_granate_3_64.png
+      url: this.PIN_URL,
       scaledSize: new google.maps.Size(size, size), // Tamaño del pin
       anchor: new google.maps.Point(size / 2, size - 8), // Mantiene la punta exacta en el punto del mapa
     };
@@ -320,11 +325,22 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
     if (MonitoreoComponent.iwStylesInstalled) return;
     const css = `
       .gm-style-iw, .gm-style-iw.gm-style-iw-c {
-        background: transparent !important;
+        background: #151f35 !important;
         box-shadow: none !important;
         border: none !important;
         padding: 0 !important;
       }
+        .gm-style .gm-style-iw-tc::after {
+            background: #151f35;
+            -webkit-clip-path: polygon(0 0, 50% 100%, 100% 0);
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            content: "";
+            height: 12px;
+            left: 0;
+            position: absolute;
+            top: -1px;
+            width: 25px;
+        }
       .gm-style-iw-d { padding: 0 !important; overflow: visible !important; }
       .gm-style .gm-style-iw-t::after { background: transparent !important; box-shadow: none !important; }
       .gm-style-iw-tc { padding: 0 !important; margin: 0 !important; }
@@ -345,7 +361,7 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
     return `
     <div style="
       background:#151f35; color:#e5e7eb;
-      padding:22px 18px 16px;
+      padding:0px 18px 16px;
       border-radius:12px; min-width:260px; max-width:320px; line-height:1.25rem;
       box-shadow:0 12px 28px rgba(0,0,0,.20);
     ">
@@ -367,14 +383,14 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
   private buildInfoHtmlInstalacion(c: any, ins: any): string {
     const estatusOk = Number(ins?.estatus) === 1;
     const idEquipo = ins?.idEquipo ?? '—';
-    const fhReg = ins?.fhRegistro ? String(ins.fhRegistro) : '—';
-    const fhAct = ins?.fechaActualizacion ? String(ins.fechaActualizacion) : '—';
+    const fhRegFmt = this.formatDate(ins?.fhRegistro);
+    const fhActFmt = this.formatDate(ins?.fechaActualizacion);
     const direccion = c?.direccion ?? '—';
 
     return `
     <div style="
       background:#151f35; color:#e5e7eb;
-      padding:22px 18px 16px;
+      padding:0px 18px 16px;
       border-radius:12px; min-width:260px; max-width:320px; line-height:1.25rem;
       box-shadow:0 12px 28px rgba(0,0,0,.20);
     ">
@@ -394,8 +410,8 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
             ${estatusOk ? 'Activo' : 'Inactivo'}
           </span>
         </div>
-        <div><strong>Registro:</strong> ${fhReg}</div>
-        <div><strong>Actualización:</strong> ${fhAct}</div>
+        <div><strong>Registro:</strong> ${fhRegFmt}</div>
+        <div><strong>Actualización:</strong> ${fhActFmt}</div>
       </div>
       <div style="display:flex;gap:.5rem;align-items:flex-start;color:#c6cfde;margin-top:8px;">
         <span style="margin-top:4px;width:8px;height:8px;border-radius:999px;background:#681330;display:inline-block;flex:0 0 8px;"></span>
@@ -406,12 +422,22 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
           background:#681330; color:#fff; border:0; cursor:pointer;
           border-radius:10px; padding:8px 12px; font-size:.85rem; font-weight:600;
         ">
-          Acción
+          Incidencias
         </button>
       </div>
     </div>
   `;
   }
+
+
+  private formatDate(value: any): string {
+    if (!value) return '—';
+    const d = value instanceof Date ? value : new Date(value);
+    if (Number.isNaN(d.getTime())) return '—';
+    // ej. "5 nov 2025, 10:44 a. m."
+    return new Intl.DateTimeFormat('es-MX', { dateStyle: 'medium', timeStyle: 'short' }).format(d);
+  }
+
 
   private loadGoogleMaps(): Promise<void> {
     if ((window as any).google?.maps) return Promise.resolve();

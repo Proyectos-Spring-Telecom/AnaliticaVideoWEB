@@ -38,7 +38,8 @@
               "node_modules/devextreme/dist/css/dx.fluent.saas.dark.compact.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/assets/scss/style.scss",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/ngx-toastr/toastr.css"
             ],
             "scripts": [],
             "browser": "src/main.ts"
@@ -108,7 +109,8 @@
             "styles": [
               "node_modules/devextreme/dist/css/dx.common.css",
               "node_modules/devextreme/dist/css/dx.fluent.saas.dark.compact.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/ngx-toastr/toastr.css"
             ],
             "scripts": []
           }

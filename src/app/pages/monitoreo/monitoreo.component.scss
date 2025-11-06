@@ -38,12 +38,14 @@
   box-shadow: 0 16px 42px rgba(0,0,0,.55);
 }
 
+/* Header "Clientes" sólido azul (sin difuminado) */
 .surface .insta-card .card-header {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--mat-sys-primary) 20%, transparent), transparent 65%);
-  border-bottom: 1px solid var(--mat-sys-outline-variant);
-  color: var(--mat-sys-on-surface);
-  box-shadow: 0 1px 0 rgba(255,255,255,.03) inset, 0 8px 20px rgba(0,0,0,.22);
+  background: #001c6a !important; /* azul sólido */
+  color: #fff !important;
+  border-bottom: 1px solid #001c6a !important;
+  box-shadow: none !important;
 }
+
 
 /* Badge */
 .surface .insta-badge {
@@ -196,3 +198,23 @@
 @media (min-width: 1400px) {
   .surface .map-wrapper { height: 65vh; }
 }
+
+/* Botones "Centrales" e "Instalaciones" en rojo sólido, sin difuminado */
+.perm-wrapper .surface .insta-card .btn.btn-sm,
+.perm-wrapper .surface .insta-card .btn-outline-primary.btn-sm,
+.perm-wrapper .surface .insta-card .btn-primary.btn-sm {
+  background: #681330 !important; /* rojo sólido */
+  border-color: #681330 !important;
+  color: #fff !important;
+  margin-left: 5px;
+  box-shadow: none !important; /* sin glow ni difuminado */
+}
+
+.perm-wrapper .surface .insta-card .btn.btn-sm:hover,
+.perm-wrapper .surface .insta-card .btn-outline-primary.btn-sm:hover,
+.perm-wrapper .surface .insta-card .btn-primary.btn-sm:hover {
+  background: #470c20 !important;  /* rojo más oscuro al hover */
+  border-color: #470c20 !important;
+}
+
+.toast-top-right { z-index: 99999999 !important; }
