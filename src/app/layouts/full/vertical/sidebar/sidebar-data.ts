@@ -40,11 +40,10 @@ export const navItems: NavItem[] = [
         displayName: 'Equipos',
         route: '/equipos',
       },
-      {
-        displayName: 'Bitácora',
-        iconName: 'date',      // herramientas/equipo
-        // route: '/equipos',
-      },
+      // {
+      //   displayName: 'Bitácora',
+      //   iconName: 'date',
+      // },
     ],
   },
   {
@@ -107,9 +106,14 @@ export const navItems: NavItem[] = [
     route: '/monitoreo',
   },
   {
+    displayName: 'Ins. Central',
+    iconName: 'antenna',
+    route: '/instalaciones-centrales',
+  },
+  {
     displayName: 'Instalaciones',
-    iconName: 'tools',
-    // route: '/permisos',
+    iconName: 'building-warehouse',
+    route: '/instalaciones',
   },
   {
     displayName: 'Incidencias',

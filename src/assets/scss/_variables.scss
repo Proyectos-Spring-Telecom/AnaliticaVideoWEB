@@ -251,3 +251,38 @@ $dark-body-bg: #141a21;
     opacity: 1 !important;
   }
 }
+
+
+/* === FIX: Tabler nunca se rellena en el sidebar === */
+
+/* 1) Por defecto: los <i-tabler> y svg de icono trabajan con stroke y sin fill */
+.mat-mdc-nav-list i-tabler,
+.mat-mdc-nav-list i-tabler.routeIcon,
+.mat-mdc-nav-list .routeIcon,
+.mat-mdc-nav-list [matListItemIcon] svg {
+  fill: none !important;           /* evita relleno */
+  stroke: currentColor !important;  /* Tabler usa currentColor para el trazo */
+}
+
+/* 2) En estados activo/hover del item, mantenemos SIN fill (solo cambia el color por herencia) */
+.mat-mdc-nav-list .mdc-list-item--activated i-tabler,
+.mat-mdc-nav-list .mat-mdc-list-item.activeMenu i-tabler,
+.mat-mdc-nav-list .mdc-list-item--activated i-tabler.routeIcon,
+.mat-mdc-nav-list .mat-mdc-list-item.activeMenu i-tabler.routeIcon,
+.mat-mdc-nav-list .mdc-list-item--activated [matListItemIcon] svg,
+.mat-mdc-nav-list .mat-mdc-list-item.activeMenu [matListItemIcon] svg,
+.mat-mdc-nav-list .mat-mdc-list-item:not(.mdc-list-item--activated):not(.activeMenu):hover i-tabler,
+.mat-mdc-nav-list .mat-mdc-list-item:not(.mdc-list-item--activated):not(.activeMenu):hover i-tabler.routeIcon,
+.mat-mdc-nav-list .mat-mdc-list-item:not(.mdc-list-item--activated):not(.activeMenu):hover [matListItemIcon] svg,
+.mat-mdc-nav-list .menu-list-item.expanded i-tabler,
+.mat-mdc-nav-list .menu-list-item.expanded i-tabler.routeIcon,
+.mat-mdc-nav-list .menu-list-item.expanded [matListItemIcon] svg {
+  fill: none !important;           /* prioridad sobre tus reglas previas que ponen fill */
+  stroke: currentColor !important; /* usa el color que ya pintas en el padre */
+}
+
+/* 3) Si en algún sitio forzaste fill por clase, lo anulamos igual */
+i-tabler[filled],
+i-tabler.routeIcon[filled] {
+  fill: none !important;
+}

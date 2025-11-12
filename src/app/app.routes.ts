@@ -94,6 +94,16 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./pages/monitoreo/monitoreo.module').then((m) => m.MonitoreoModule),
       },
+      {
+        path: 'instalaciones-centrales',
+        loadChildren: () =>
+          import('./pages/instalaciones-centrales/instalaciones-centrales.module').then((m) => m.InstalacionesCentralesModule),
+      },
+      {
+        path: 'instalaciones',
+        loadChildren: () =>
+          import('./pages/instalaciones/instalaciones.module').then((m) => m.InstalacionesModule),
+      },
     ],
   },
 

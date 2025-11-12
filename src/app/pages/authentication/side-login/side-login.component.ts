@@ -26,15 +26,18 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class AppSideLoginComponent implements OnInit {
   options = this.settings.getOptions();
+  public isDisabled = false;
 
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     private settings: CoreService,
     private auth: AuthenticationService,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private toastr: ToastrService,
-    private authService: AuthenticationService,) { }
+    private authService: AuthenticationService
+  ) {}
 
   form = new FormGroup({
     uname: new FormControl('', [Validators.required, Validators.minLength(6)]),
@@ -60,7 +63,7 @@ export class AppSideLoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initForm()
+    this.initForm();
   }
 
   loginForm: UntypedFormGroup;
@@ -71,6 +74,7 @@ export class AppSideLoginComponent implements OnInit {
   public textLogin: string = 'Iniciar Sesión';
   public loading: boolean = false;
   onSubmit() {
+    this.isDisabled = true;
     this.loading = true;
     this.textLogin = 'Cargando...';
     window.scrollTo({
@@ -87,17 +91,20 @@ export class AppSideLoginComponent implements OnInit {
           this.loading = false;
           this.textLogin = 'Iniciar Sesión';
           this.toastr.error('Credenciales Incorrectas.', '¡Ops!');
-
+          this.isDisabled = false;
           return throwError(() => '');
         })
       )
       .subscribe((result: User) => {
+        this.isDisabled = false;
         this.auth.setData(result);
 
         this.router.navigate(['/monitoreo']);
 
-        this.toastr.success('Bienvenido al Sistema.', '¡Credenciales Correctas!');
-
+        this.toastr.success(
+          'Bienvenido al Sistema.',
+          '¡Credenciales Correctas!'
+        );
 
         this.loading = false;
         this.textLogin = 'Iniciar Sesión';
