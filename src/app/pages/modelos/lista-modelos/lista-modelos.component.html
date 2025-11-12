@@ -46,8 +46,8 @@
         <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
         <dxi-column caption="Acciones" cellTemplate="Acciones" alignment="center" dataType="string"
           [width]="180"></dxi-column>
-        <dxi-column dataField="idProducto" caption="Producto" alignment="center" dataType="string"></dxi-column>
-        <dxi-column dataField="idMarca" caption="Marca" alignment="center" dataType="string"></dxi-column>
+        <dxi-column dataField="producto.nombre" caption="Producto" alignment="center" dataType="string"></dxi-column>
+        <dxi-column dataField="marca.nombre" caption="Marca" alignment="center" dataType="string"></dxi-column>
         <dxi-column dataField="nombre" caption="Nombre" alignment="center" dataType="string"></dxi-column>
         <dxi-column dataField="estatus" caption="Estatus" alignment="center" cellTemplate="est" dataType="string">
           <div *dxTemplate="let f of 'est'">

@@ -36,11 +36,11 @@
                     </h6>
                     <span class="insta-dot" [class.ok]="item.estatus === 1" [class.off]="item.estatus !== 1"></span>
                   </div>
-                  <div class="small text-muted mb-1">
+                  <div class="insta-address mt-1">
                     Encargado:
-                    <span class="text-body-secondary fw-semibold">{{ item.nombreEncargado }}</span>
+                    <span class="text-wrap">{{ item.nombreEncargado }}</span>
                   </div>
-                  <div class="insta-address">
+                  <div class="insta-address mt-1">
                     <mat-icon class="me-1" inline>location_on</mat-icon>
                     <span class="text-wrap">{{ item.direccion }}</span>
                   </div>

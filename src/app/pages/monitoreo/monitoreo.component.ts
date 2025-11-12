@@ -36,6 +36,8 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private readonly MAP_ID?: string = undefined;
   private readonly PIN_URL = 'assets/images/logos/marker_spring.webp';
+  private readonly CENTRAL_PIN_URL = 'assets/images/logos/marker_blue.webp';
+
 
   constructor(
     private insService: InstalacionCentral,
@@ -62,13 +64,14 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private pinIcon(size = 100): any {
-    return {
-      url: this.PIN_URL,
-      scaledSize: new google.maps.Size(size, size), // Tamaño del pin
-      anchor: new google.maps.Point(size / 2, size - 8), // Mantiene la punta exacta en el punto del mapa
-    };
-  }
+private pinIcon(url: string, size = 100): any {
+  return {
+    url,
+    scaledSize: new google.maps.Size(size, size),
+    anchor: new google.maps.Point(size / 2, size - 8),
+  };
+}
+
 
   obtenerInstalacionesCentral() {
     this.insService.obtenerInstalacionCentral().subscribe((response: any) => {
@@ -145,12 +148,12 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
 
       const pos = { lat, lng };
 
-      const marker = new google.maps.Marker({
-        map: this.map,
-        position: pos,
-        title: c.nombreCliente || 'Central',
-        icon: this.pinIcon(80),
-      });
+const marker = new google.maps.Marker({
+  map: this.map,
+  position: pos,
+  title: c.nombreCliente || 'Central',
+  icon: this.pinIcon(this.CENTRAL_PIN_URL, 80),
+});
 
       marker.addListener('mouseover', () => this.showHover(marker, this.buildInfoHtml(c)));
       marker.addListener('mouseout', () => this.hideHover(marker));
@@ -180,12 +183,14 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
 
       const pos = { lat, lng };
 
-      const marker = new google.maps.Marker({
-        map: this.map,
-        position: pos,
-        title: c?.nombreCliente ? `${c.nombreCliente} - Instalación` : 'Instalación',
-        icon: this.pinIcon(80),
-      });
+// En renderInstalacionesOnly()
+const marker = new google.maps.Marker({
+  map: this.map,
+  position: pos,
+  title: c?.nombreCliente ? `${c.nombreCliente} - Instalación` : 'Instalación',
+  icon: this.pinIcon(this.PIN_URL, 80),
+});
+
 
       marker.addListener('mouseover', () => this.showHover(marker, this.buildInfoHtmlInstalacion(c, ins)));
       marker.addListener('mouseout', () => this.hideHover(marker));

@@ -1,7 +1,8 @@
 <div [@routeAnimation] class="card card--panel perm-wrapper">
     <header class="perm-head" role="region" aria-label="Sección: Instalaciones">
         <div class="perm-head__icon" aria-hidden="true">
-            <mat-icon>view_module</mat-icon>
+            <mat-icon>factory</mat-icon>
+
         </div>
 
         <div class="perm-head__text">
@@ -46,64 +47,54 @@
                 <dxo-filter-row [visible]="showFilterRow"></dxo-filter-row>
                 <dxo-header-filter [visible]="showHeaderFilter"></dxo-header-filter>
                 <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
-                <<dxi-column caption="Acciones" cellTemplate="Acciones" alignment="center" dataType="string"
-                    [width]="180"></dxi-column>
+                <dxi-column caption="Acciones" cellTemplate="Acciones" alignment="center" dataType="string" [width]="180"></dxi-column>
+                <dxi-column dataField="equipo.numeroSerie" caption="Equipo" alignment="center" dataType="number"></dxi-column>
+                <dxi-column
+  dataField="fhRegistro"
+  caption="Fecha de Registro"
+  alignment="center"
+  dataType="datetime"
+  [format]="'dd/MM/yyyy HH:mm'">
+</dxi-column>
 
-                    
 
-                    <!-- Mostrar cliente en una sola columna -->
-                    <dxi-column dataField="idCliente" caption="Cliente" alignment="center"
-                        dataType="number"></dxi-column>
+                <dxi-column caption="Equipo" alignment="center" dataType="string" cellTemplate="tplEquipo"></dxi-column>
+                <div *dxTemplate="let r of 'tplEquipo'">
+                    {{ r.data?.equipo?.numeroSerie }} / {{ r.data?.equipo?.idModelo }}
+                </div>
 
-                    <!-- Campos del registro (excluyendo lat/lng) -->
-                    <dxi-column dataField="idEquipo" caption="ID Equipo" alignment="center"
-                        dataType="number"></dxi-column>
-                    <dxi-column dataField="idSedeCentral" caption="ID Sede Central" alignment="center"
-                        dataType="number"></dxi-column>
-                    <dxi-column dataField="fhRegistro" caption="Fecha Registro" alignment="center"
-                        dataType="datetime"></dxi-column>
-                    <dxi-column dataField="fechaActualizacion" caption="Fecha Actualización" alignment="center"
-                        dataType="datetime"></dxi-column>
-
-                    <!-- Equipo: en una sola columna, solo número de serie + idModelo -->
-                    <dxi-column caption="Equipo" alignment="center" dataType="string"
-                        cellTemplate="tplEquipo"></dxi-column>
-                    <div *dxTemplate="let r of 'tplEquipo'">
-                        {{ r.data?.equipo?.numeroSerie }} / {{ r.data?.equipo?.idModelo }}
+                <dxi-column dataField="estatus" caption="Estatus" alignment="center" cellTemplate="est"
+                    dataType="string">
+                    <div *dxTemplate="let f of 'est'">
+                        @if (f.data.estatus === 1) {
+                        <span class="estatus estatus-activo">Activo</span>
+                        } @else {
+                        <span class="estatus estatus-inactivo">Inactivo</span>
+                        }
                     </div>
-
-                    <dxi-column dataField="estatus" caption="Estatus" alignment="center" cellTemplate="est"
-                        dataType="string">
-                        <div *dxTemplate="let f of 'est'">
-                            @if (f.data.estatus === 1) {
-                            <span class="estatus estatus-activo">Activo</span>
-                            } @else {
-                            <span class="estatus estatus-inactivo">Inactivo</span>
-                            }
-                        </div>
-                    </dxi-column>
-                    <div *dxTemplate="let row of 'Acciones'" class="d-flex gap-3 justify-content-center">
-                        <div>
-                            <button valueExpr="id" id="actualizarButton" class="btnAcciones"
-                                (click)="actualizarModulo(row.data.id)">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                        </div>
-                        <div>
-                            @if (row.data.estatus === 0) {
-                            <button id="pinButton" class="btnAcciones" (click)="activar(row.data)">
-                                <i class="fa fa-arrow-up"></i>
-                            </button>
-                            } @else {
-                            <button id="deleteButton" class="btnAcciones" (click)="desactivar(row.data)">
-                                <i class="fa fa-arrow-down"></i>
-                            </button>
-                            }
-                        </div>
+                </dxi-column>
+                <div *dxTemplate="let row of 'Acciones'" class="d-flex gap-3 justify-content-center">
+                    <div>
+                        <button valueExpr="id" id="actualizarButton" class="btnAcciones"
+                            (click)="actualizarModulo(row.data.id)">
+                            <i class="fa fa-edit"></i>
+                        </button>
                     </div>
-                    <dxo-export [enabled]="false" [allowExportSelectedData]="true"
-                        [texts]="{ exportAll: 'Exportar todos los datos a Excel', exportSelectedRows: 'Exportar filas seleccionadas a Excel' }">
-                    </dxo-export>
+                    <div>
+                        @if (row.data.estatus === 0) {
+                        <button id="pinButton" class="btnAcciones" (click)="activar(row.data)">
+                            <i class="fa fa-arrow-up"></i>
+                        </button>
+                        } @else {
+                        <button id="deleteButton" class="btnAcciones" (click)="desactivar(row.data)">
+                            <i class="fa fa-arrow-down"></i>
+                        </button>
+                        }
+                    </div>
+                </div>
+                <dxo-export [enabled]="false" [allowExportSelectedData]="true"
+                    [texts]="{ exportAll: 'Exportar todos los datos a Excel', exportSelectedRows: 'Exportar filas seleccionadas a Excel' }">
+                </dxo-export>
             </dx-data-grid>
         </div>
     </div>

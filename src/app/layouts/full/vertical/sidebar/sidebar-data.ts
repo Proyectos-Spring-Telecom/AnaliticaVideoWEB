@@ -115,11 +115,10 @@ export const navItems: NavItem[] = [
     iconName: 'building-warehouse',
     route: '/instalaciones',
   },
-  {
-    displayName: 'Incidencias',
-    iconName: 'alert-triangle',
-    // route: '/permisos',
-  },
+  // {
+  //   displayName: 'Incidencias',
+  //   iconName: 'alert-triangle',
+  // },
   // {
   //   displayName: 'Dashboard',
   //   iconName: 'home',
@@ -132,7 +131,7 @@ export const navItems: NavItem[] = [
   {
     displayName: 'Perfil Usuario',
     iconName: 'user',
-    route: '/permisos',
+    // route: '/permisos',
   },
   {
     displayName: 'Cerrar Sesión',

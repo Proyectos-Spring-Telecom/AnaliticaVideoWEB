@@ -1,6 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { DxDataGridComponent } from 'devextreme-angular';
+import { io, Socket } from 'socket.io-client';
+
 import { routeAnimation } from 'src/app/pipe/module-open.animation';
 import { IncidenciasService } from 'src/app/services/moduleService/incidencias.service';
+import { SocketService } from 'src/app/services/moduleService/socket.service';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-dashboard',
@@ -62,10 +67,32 @@ export class DashboardComponent implements OnInit {
   hitsPorHora = [{ hora: '00:00', hombres: 0, mujeres: 0 }];
 
   registros: any[] = [];
+  @ViewChild('gridRef', { static: false }) gridRef: DxDataGridComponent;
 
-  constructor(private incidencias: IncidenciasService) {}
+  private socket!: Socket;
+  constructor(private incidencias: IncidenciasService) {
+    
+  }
+
 
   ngOnInit(): void {
+    this.socket = io('/incidencias', { // <— namespace
+    path: 'https://springtelecom/analiticaVideoAPI/api/socket.io',                     // <— endpoint real
+    transports: ['polling'],                                  // <— solo HTTPS
+    upgrade: false,                                           // <— evita WS
+    withCredentials: true
+  });
+
+  this.socket.on('connect', () => {
+     console.log('✅ Conectado al servidor de incidencias');
+   });
+  this.socket.on('nueva-incidencia', (inc) => console.log('🔔', inc));
+    // this.socketService.listen('nueva-incidencia').subscribe((data) => {
+    //   console.log('Nueva incidencia recibida:', data);
+    //   this.cargarHoy();
+    //   this.cargarUltimoHit();
+    //   this.consultar();
+    // });
     this.cargarHoy();
     this.cargarUltimoHit();
     this.consultar();
