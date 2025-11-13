@@ -126,3 +126,90 @@
 .estado.feliz   { background: #22c55e; }  /* verde */
 .estado.neutral { background: #94a3b8; }  /* gris */
 .estado.triste  { background: #c0392b; }  /* rojo */
+
+
+
+
+
+
+
+/* ====== Colores base ====== */
+$azul: #1e40af;   /* hombre  */
+$rosa: #f43f5e;   /* mujer   */
+$darkText: #0f172a;
+
+/* ====== Panel ====== */
+.panel {
+  position: relative;
+  transition: border-color .25s ease, box-shadow .25s ease, background-color .25s ease;
+}
+
+/* Borde/halo cuando hay highlight (5s) */
+.highlight-hombre { border-color: $azul !important; box-shadow: inset 5px 0 0 0 rgba(30, 64, 175, .12); }
+.highlight-mujer  { border-color: $rosa !important; box-shadow: inset 5px 0 0 0 rgba(244, 63, 94,  .12); }
+
+/* ====== Avatar ====== */
+/* Base: círculo blanco con ícono oscuro */
+.panel .avatar-white {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  position: relative;
+}
+.panel .avatar-white .avatar-icon,
+.panel .avatar-white mat-icon {
+  color: $darkText;
+}
+
+/* Quitar la línea blanca debajo del avatar (si existía) */
+.panel .avatar-white::after { content: none !important; }
+
+/* Durante highlight: pinta el círculo del color del género y el ícono en blanco */
+.highlight-hombre .avatar-white {
+  background: $azul !important;
+  border-color: transparent !important;
+}
+.highlight-hombre .avatar-white .avatar-icon,
+.highlight-hombre .avatar-white mat-icon {
+  color: #ffffff !important;
+}
+
+.highlight-mujer .avatar-white {
+  background: $rosa !important;
+  border-color: transparent !important;
+}
+.highlight-mujer .avatar-white .avatar-icon,
+.highlight-mujer .avatar-white mat-icon {
+  color: #ffffff !important;
+}
+
+/* ====== Chips / título (tema oscuro) ====== */
+.panel .chip,
+.panel .chip mat-icon { color: #ffffff !important; }
+
+/* ====== Pills: ID y Fecha ====== */
+/* Base: deben verse SIEMPRE blancas con texto negro */
+.panel .id-badge,
+.panel .time-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: $darkText;
+  border: 1px solid #e5e7eb;
+  line-height: 1.2;
+  transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+}
+
+/* Durante highlight: también cambian de color */
+.highlight-hombre .id-badge,
+.highlight-hombre .time-pill {
+  background: $azul !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+.highlight-mujer .id-badge,
+.highlight-mujer .time-pill {
+  background: $rosa !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}

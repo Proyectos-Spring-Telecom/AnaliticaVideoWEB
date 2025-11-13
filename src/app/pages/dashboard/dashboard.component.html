@@ -4,38 +4,46 @@
   <section class="container-fluid mt-1 p-5">
 
     <!-- Banner: Hit Actual -->
-    <div class="panel p-3 mb-3 d-flex align-items-center justify-content-between">
-      <div class="d-flex align-items-center gap-3">
-        <div class="avatar d-flex align-items-center justify-content-center">
-          <mat-icon>directions_walk</mat-icon>
-        </div>
+    <div class="panel p-3 mb-3 d-flex align-items-center justify-content-between border-start border-5 rounded"
+     [class.highlight-hombre]="highlightActive && colorEstado === 'hombre'"
+     [class.highlight-mujer]="highlightActive && colorEstado === 'mujer'">
 
-        <div>
-          <h3 class="title m-0">Hit Actual</h3>
+  <!-- IZQUIERDA -->
+  <div class="d-flex align-items-center gap-3">
+    <!-- Avatar -->
+    <div class="avatar avatar-white d-flex align-items-center justify-content-center rounded-circle me-3"
+         style="width:56px;height:56px">
+      <mat-icon class="fs-3 avatar-icon">directions_walk</mat-icon>
+    </div>
 
-<div class="d-flex align-items-center flex-wrap gap-2 mt-2">
-  <span *ngIf="hit.genero" class="chip d-inline-flex align-items-center gap-1">
-    <mat-icon fontIcon="person" class="mat-18"></mat-icon> {{ hit.genero }}
-  </span>
-  <span *ngIf="hit.edad !== null && hit.edad !== undefined" class="chip d-inline-flex align-items-center gap-1">
-    <mat-icon fontIcon="calendar_today" class="mat-18"></mat-icon> {{ hit.edad }} años
-  </span>
-  <span *ngIf="hit.estado" class="chip d-inline-flex align-items-center gap-1">
-    <mat-icon fontIcon="sentiment_satisfied_alt" class="mat-18"></mat-icon> {{ hit.estado }}
-  </span>
-</div>
+    <div>
+      <h3 class="title m-0 text-white">Hit Actual</h3>
 
-<div class="mt-2" *ngIf="hit.id !== null && hit.id !== undefined">
-  <span class="badge bg-light text-ligth">ID Registro: {{ hit.id }}</span>
-</div>
-
-        </div>
+      <div class="d-flex align-items-center flex-wrap gap-2 mt-2">
+        <span *ngIf="hit.genero" class="chip d-inline-flex align-items-center gap-1 text-white">
+          <mat-icon fontIcon="person" class="mat-18"></mat-icon> {{ hit.genero | titlecase }}
+        </span>
+        <span *ngIf="hit.edad !== null && hit.edad !== undefined"
+              class="chip d-inline-flex align-items-center gap-1 text-white">
+          <mat-icon fontIcon="calendar_today" class="mat-18"></mat-icon> {{ hit.edad }} años
+        </span>
+        <span *ngIf="hit.estado" class="chip d-inline-flex align-items-center gap-1 text-white">
+          <mat-icon fontIcon="sentiment_satisfied_alt" class="mat-18"></mat-icon> {{ hit.estado | titlecase }}
+        </span>
       </div>
 
-      <div class="text-end">
-        <span class="time-pill">{{ hitFechaLabel  }}</span>
+      <div class="mt-2" *ngIf="hit.id !== null && hit.id !== undefined">
+        <span class="id-badge">ID Registro: {{ hit.id }}</span>
       </div>
     </div>
+  </div>
+
+  <!-- DERECHA (fecha) -->
+  <div class="text-end">
+    <span class="time-pill">{{ hitFechaLabel }}</span>
+  </div>
+</div>
+
 
     <!-- Filtros -->
     <div class="row g-3 mt-5 align-items-end justify-content-end mb-3">
@@ -124,8 +132,8 @@
             </button>
           </div>
 
-          <dx-pie-chart [dataSource]="chartEdadesMujeres" id="pie" [innerRadius]="0.7"
-            [legend]="{ visible: true }" [customizePoint]="customizeEdadMujeresPoint"
+          <dx-pie-chart [dataSource]="chartEdadesMujeres" id="pie" [innerRadius]="0.7" [legend]="{ visible: true }"
+            [customizePoint]="customizeEdadMujeresPoint"
             [tooltip]="{ enabled: true, customizeTooltip: customizeEdadMujeresTooltip }">
             <dxi-series argumentField="rango" valueField="valor"></dxi-series>
             <dxo-label [visible]="false"></dxo-label>
@@ -153,8 +161,8 @@
             </button>
           </div>
 
-          <dx-pie-chart [dataSource]="chartEdadesHombres" id="pie" [innerRadius]="0.7"
-            [legend]="{ visible: true }" [customizePoint]="customizeEdadHombresPoint">
+          <dx-pie-chart [dataSource]="chartEdadesHombres" id="pie" [innerRadius]="0.7" [legend]="{ visible: true }"
+            [customizePoint]="customizeEdadHombresPoint">
             <dxi-series argumentField="rango" valueField="valor"></dxi-series>
             <dxo-tooltip [enabled]="true"></dxo-tooltip>
             <dxo-label [visible]="false"></dxo-label>
@@ -216,9 +224,12 @@
             <dxo-paging [pageSize]="10"></dxo-paging>
             <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[10, 20, 50, 100, 200]" [showInfo]="true"
               [infoText]="'Page {0} of {1} ({2} items)'"></dxo-pager>
-            <dxi-column alignment="center" dataField="genero" caption="Género" dataType="string" alignment="center" cellTemplate="gen"></dxi-column>
-            <dxi-column alignment="center" dataField="edad" caption="Edad" dataType="number"[customizeText]="edadText"></dxi-column>
-            <dxi-column alignment="center" dataField="estado" caption="Estado de Animo" dataType="string" alignment="center" cellTemplate="est"></dxi-column>
+            <dxi-column alignment="center" dataField="genero" caption="Género" dataType="string" alignment="center"
+              cellTemplate="gen"></dxi-column>
+            <dxi-column alignment="center" dataField="edad" caption="Edad" dataType="number"
+              [customizeText]="edadText"></dxi-column>
+            <dxi-column alignment="center" dataField="estado" caption="Estado de Animo" dataType="string"
+              alignment="center" cellTemplate="est"></dxi-column>
             <div *dxTemplate="let f of 'gen'">
               <span class="badge genero" [ngClass]="(f.data?.genero?.toLowerCase() === 'hombre') ? 'hombre' : 'mujer'">
                 {{ f.data?.genero }}

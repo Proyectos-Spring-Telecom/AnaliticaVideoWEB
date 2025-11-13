@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { DxDataGridComponent } from 'devextreme-angular';
 import { io, Socket } from 'socket.io-client';
 
@@ -70,33 +70,82 @@ export class DashboardComponent implements OnInit {
   @ViewChild('gridRef', { static: false }) gridRef: DxDataGridComponent;
 
   private socket!: Socket;
-  constructor(private incidencias: IncidenciasService) {
-    
+  constructor(private incidencias: IncidenciasService,
+    private cdr: ChangeDetectorRef, private ngZone: NgZone,
+  ) {
+
   }
 
-
   ngOnInit(): void {
-    this.socket = io('/incidencias', { // <— namespace
-    path: 'https://springtelecom/analiticaVideoAPI/api/socket.io',                     // <— endpoint real
-    transports: ['polling'],                                  // <— solo HTTPS
-    upgrade: false,                                           // <— evita WS
-    withCredentials: true
-  });
+    // Conectarse al namespace /incidencias
+    this.socket = io('https://springtelecom.mx/api/incidencias', { // ← host + NAMESPACE
+  path: '/analiticaVideoAPI/socket.io',                         // ← endpoint real de Socket.IO
+  transports: ['polling'],
+  upgrade: false,
+  withCredentials: false,
+  timeout: 10000
+});
 
-  this.socket.on('connect', () => {
-     console.log('✅ Conectado al servidor de incidencias');
-   });
-  this.socket.on('nueva-incidencia', (inc) => console.log('🔔', inc));
-    // this.socketService.listen('nueva-incidencia').subscribe((data) => {
-    //   console.log('Nueva incidencia recibida:', data);
-    //   this.cargarHoy();
-    //   this.cargarUltimoHit();
-    //   this.consultar();
-    // });
+    // Registrar todos los listeners antes de la conexión
+    this.socket.on('connect', () => {
+      console.log('✅ Conectado al namespace /incidencias', this.socket.id);
+      console.log('📡 Socket conectado, escuchando eventos...');
+    });
+
+    this.socket.on('connect_error', (e) => {
+      console.error('❌ Error de conexión:', e);
+    });
+
+    this.socket.on('disconnect', (reason) => {
+      console.log('❌ Desconectado:', reason);
+    });
+
+    // Escuchar eventos de nueva incidencia desde el namespace /incidencias
+    this.socket.on('nueva-incidencia', (incidencia) => {
+      this.cargarHoy();
+      this.cargarUltimoHit();
+      this.consultar();
+      console.log('🔔 Nueva incidencia recibida:', incidencia);
+      // Actualizar los datos cuando llega una nueva incidencia
+    });
+
+    // Listener genérico para depuración - captura todos los eventos
+    this.socket.onAny((eventName, ...args) => {
+      console.log('📨 Evento recibido:', eventName, args);
+    });
+
+    // Cargar datos iniciales
     this.cargarHoy();
     this.cargarUltimoHit();
     this.consultar();
   }
+
+  private cargarUltimoHit(): void {
+  this.incidencias.ultimoHit().subscribe({
+    next: (resp: any) => {
+      const u = this.normalizeItem(resp);
+
+      // setea datos SIEMPRE
+      this.hit = { genero: u.genero, edad: u.edad, estado: u.estado, id: u.id };
+      this.hitFecha = u.fechaHora ?? null;
+      this.hitFechaLabel = this.formatFechaLabel(u.fechaRaw);
+
+      // detecta si es NUEVO (no dispares en la primera carga)
+      const newKey = this.hitKey(u);
+      const isNew = this.currentHitKey !== null && newKey !== this.currentHitKey;
+      this.currentHitKey = newKey;
+
+      if (isNew) {
+        this.activarHighlight(u.genero);
+        this.playNewHitSound();
+      }
+
+      this.cdr.detectChanges();
+    },
+    error: () => {}
+  });
+}
+
 
   consultar(): void {
     const fi = this.fmt(this.fechaInicio);
@@ -110,7 +159,7 @@ export class DashboardComponent implements OnInit {
         this.totalFiltrado = Number(resp?.total ?? regs.length);
         this.recalcularDesdeRegistros(regs);
       },
-      error: () => {},
+      error: () => { },
       complete: () => (this.loading = false),
     });
   }
@@ -139,22 +188,50 @@ export class DashboardComponent implements OnInit {
         if (Array.isArray(resp?.edadesMujeres)) this.chartEdadesMujeres = this.ensureEdadShape(resp.edadesMujeres);
         if (Array.isArray(resp?.edadesHombres)) this.chartEdadesHombres = this.ensureEdadShape(resp.edadesHombres);
       },
-      error: () => {},
+      error: () => { },
       complete: () => (this.loading = false),
     });
   }
 
-  private cargarUltimoHit(): void {
-    this.incidencias.ultimoHit().subscribe({
-      next: (resp: any) => {
-        const u = this.normalizeItem(resp);
-        this.hit = { genero: u.genero, edad: u.edad, estado: u.estado, id: u.id };
-        this.hitFecha = u.fechaHora ?? null;
-        this.hitFechaLabel = this.formatFechaLabel(u.fechaRaw);
-      },
-      error: () => {},
-    });
-  }
+colorEstado: 'default' | 'hombre' | 'mujer' = 'default';
+highlightActive = false;
+
+private highlightTimer: any;
+private currentHitKey: string | null = null; // para detectar “nuevo”
+
+private hitKey(u: any): string {
+  // usa id + fecha para detectar cambios reales
+  return `${u?.id ?? 'x'}-${u?.fechaRaw ?? ''}`;
+}
+
+private generoToEstado(g?: string | null): 'default' | 'hombre' | 'mujer' {
+  const s = (g || '').trim().toLowerCase();
+  if (s === 'hombre' || s === 'masculino') return 'hombre';
+  if (s === 'mujer'  || s === 'femenino')  return 'mujer';
+  return 'default';
+}
+
+private activarHighlight(genero?: string | null): void {
+  clearTimeout(this.highlightTimer);
+  this.colorEstado = this.generoToEstado(genero);
+  this.highlightActive = this.colorEstado !== 'default';
+  this.cdr.markForCheck();
+
+  this.highlightTimer = setTimeout(() => {
+    this.highlightActive = false;
+    this.colorEstado = 'default';
+    this.cdr.markForCheck();
+  }, 5000);
+}
+
+private playNewHitSound(): void {
+  try {
+    const a = new Audio('assets/images/notificacaion.mp3');
+    a.volume = 0.8;
+    a.play().catch(() => {});
+  } catch {}
+}
+
 
   customizeEdadTooltip = (p: any) => ({ text: `${p.argumentText} Años:   ${p.valueText} Personas` });
   customizeEdadMujeresTooltip = (p: any) => ({ text: `${p.argumentText}:   ${p.value} Mujeres` });
@@ -251,7 +328,7 @@ export class DashboardComponent implements OnInit {
     const dd = Number(ddS); const mm = Number(mmS); const yyyy = Number(yyS);
     const [hS, mS] = tpart.split(':');
     if (!(dd && mm && yyyy)) return s;
-    const meses = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const meses = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const hh = Number(hS || 0);
     const mi = Number(mS || 0);
     const ampm = hh >= 12 ? 'PM' : 'AM';
