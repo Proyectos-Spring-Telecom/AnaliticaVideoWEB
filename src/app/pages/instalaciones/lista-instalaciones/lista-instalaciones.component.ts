@@ -5,7 +5,7 @@ import { DxDataGridComponent } from 'devextreme-angular';
 import CustomStore from 'devextreme/data/custom_store';
 import { lastValueFrom } from 'rxjs';
 import { routeAnimation } from 'src/app/pipe/module-open.animation';
-import { InstalacionCentral } from 'src/app/services/moduleService/instalacion-central.service';
+import { InstalacionCentralSede } from 'src/app/services/moduleService/instalacion-central.service';
 import { InstalacionService } from 'src/app/services/moduleService/instalaciones.service';
 import { ModulosService } from 'src/app/services/moduleService/modulos.service';
 import Swal from 'sweetalert2';
@@ -62,8 +62,8 @@ export class ListaInstalacionesComponent implements OnInit {
     });
   }
 
-  agregarModulo() {
-    this.router.navigateByUrl('/modulos/agregar-modulo');
+  agregarInstalacion() {
+    this.router.navigateByUrl('/instalaciones/agregar-instalacion');
   }
 
   actualizarModulo(idModulo: Number) {

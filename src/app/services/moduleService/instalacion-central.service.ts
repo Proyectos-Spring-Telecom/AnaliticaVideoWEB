@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class InstalacionCentral {
+export class InstalacionCentralSede {
   constructor(private http: HttpClient) {}
 
   obtenerInstalacionesData(page: number, limit: number): Observable<any> {
@@ -22,7 +22,7 @@ export class InstalacionCentral {
 
   obtenerInstalaciones(): Observable<any> {
     return this.http.get(
-      `${environment.API_SECURITY}/instalacion-central/list`
+      `${environment.API_SECURITY}/instalacion-central`
     );
   }
 

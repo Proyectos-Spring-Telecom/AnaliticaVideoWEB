@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MatIconModule } from '@angular/material/icon';
-import { DxButtonModule, DxDataGridModule } from 'devextreme-angular';
+import { DxButtonModule, DxDataGridModule, DxPopupModule } from 'devextreme-angular';
 import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ListaInstalacionesCentralesComponent } from './lista-instalaciones-centrales/lista-instalaciones-centrales.component';
@@ -23,7 +23,8 @@ import { AgregarInstalacionCentralComponent } from './agregar-instalacion-centra
     DxButtonModule,
     MaterialModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    DxPopupModule
   ]
 })
 export class InstalacionesCentralesModule { }

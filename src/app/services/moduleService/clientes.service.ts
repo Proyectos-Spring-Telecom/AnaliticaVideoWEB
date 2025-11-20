@@ -18,7 +18,7 @@ export class ClientesService {
 		return this.http.get(`${environment.API_SECURITY}/clientes/list`);
 	}
 
-  agregarCliente(data: FormData) {
+  agregarCliente(data: any) {
     return this.http.post(environment.API_SECURITY + '/clientes', data);
   }
 

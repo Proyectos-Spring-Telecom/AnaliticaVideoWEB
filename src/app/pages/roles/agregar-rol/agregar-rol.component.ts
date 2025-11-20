@@ -55,6 +55,7 @@ export class AgregarRolComponent implements OnInit {
     this.rolForm = this.fb.group({
       nombre: ['', Validators.required],
       descripcion: ['', Validators.required],
+      estatus: [1],
     });
   }
 
@@ -109,6 +110,7 @@ export class AgregarRolComponent implements OnInit {
             <div style="max-height: 350px; overflow-y: auto;">${lista}</div>
           `,
         icon: 'error',
+        background: '#141a21',
         confirmButtonText: 'Entendido',
         customClass: {
           popup: 'swal2-padding swal2-border',
@@ -125,17 +127,24 @@ export class AgregarRolComponent implements OnInit {
           title: '¡Operación Exitosa!',
           text: `Se agregó un nuevo rol de manera exitosa.`,
           icon: 'success',
+          background: '#141a21',
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Confirmar',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setTimeout(() => {
+              this.regresar();
+            }, 250);
+          }
         });
-        this.regresar();
       },
       (error) => {
         this.submitButton = 'Guardar';
         this.loading = false;
         Swal.fire({
           title: '¡Ops!',
-          text: `Ocurrió un error al agregar el rol.`,
+          background: '#141a21',
+          text: error?.error?.message,
           icon: 'error',
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Confirmar',
@@ -185,6 +194,7 @@ export class AgregarRolComponent implements OnInit {
             <div style="max-height: 350px; overflow-y: auto;">${lista}</div>
           `,
         icon: 'error',
+        background: '#141a21',
         confirmButtonText: 'Entendido',
         customClass: {
           popup: 'swal2-padding swal2-border',
@@ -193,23 +203,30 @@ export class AgregarRolComponent implements OnInit {
     }
     this.rolService.actualizarRoles(this.idRol, this.rolForm.value).subscribe(
       (response) => {
-        this.submitButton = 'Actualizar';
+        this.submitButton = 'Guardar';
         this.loading = false;
         Swal.fire({
+          background: '#141a21',
           title: '¡Operación Exitosa!',
           text: `Los datos del rol se actualizaron correctamente.`,
           icon: 'success',
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Confirmar',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setTimeout(() => {
+              this.regresar();
+            }, 250);
+          }
         });
-        this.regresar();
       },
       (error) => {
         this.submitButton = 'Actualizar';
         this.loading = false;
         Swal.fire({
+          background: '#141a21',
           title: '¡Ops!',
-          text: `Ocurrió un error al actualizar el rol.`,
+          text: error?.error?.message,
           icon: 'error',
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Confirmar',

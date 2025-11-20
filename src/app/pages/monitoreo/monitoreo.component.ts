@@ -64,13 +64,13 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-private pinIcon(url: string, size = 100): any {
-  return {
-    url,
-    scaledSize: new google.maps.Size(size, size),
-    anchor: new google.maps.Point(size / 2, size - 8),
-  };
-}
+  private pinIcon(url: string, size = 100): any {
+    return {
+      url,
+      scaledSize: new google.maps.Size(size, size),
+      anchor: new google.maps.Point(size / 2, size - 8),
+    };
+  }
 
 
   obtenerInstalacionesCentral() {
@@ -148,12 +148,12 @@ private pinIcon(url: string, size = 100): any {
 
       const pos = { lat, lng };
 
-const marker = new google.maps.Marker({
-  map: this.map,
-  position: pos,
-  title: c.nombreCliente || 'Central',
-  icon: this.pinIcon(this.CENTRAL_PIN_URL, 80),
-});
+      const marker = new google.maps.Marker({
+        map: this.map,
+        position: pos,
+        title: c.nombreCliente || 'Central',
+        icon: this.pinIcon(this.CENTRAL_PIN_URL, 80),
+      });
 
       marker.addListener('mouseover', () => this.showHover(marker, this.buildInfoHtml(c)));
       marker.addListener('mouseout', () => this.hideHover(marker));
@@ -183,13 +183,13 @@ const marker = new google.maps.Marker({
 
       const pos = { lat, lng };
 
-// En renderInstalacionesOnly()
-const marker = new google.maps.Marker({
-  map: this.map,
-  position: pos,
-  title: c?.nombreCliente ? `${c.nombreCliente} - Instalación` : 'Instalación',
-  icon: this.pinIcon(this.PIN_URL, 80),
-});
+      // En renderInstalacionesOnly()
+      const marker = new google.maps.Marker({
+        map: this.map,
+        position: pos,
+        title: c?.nombreCliente ? `${c.nombreCliente} - Instalación` : 'Instalación',
+        icon: this.pinIcon(this.PIN_URL, 80),
+      });
 
 
       marker.addListener('mouseover', () => this.showHover(marker, this.buildInfoHtmlInstalacion(c, ins)));

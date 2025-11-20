@@ -18,7 +18,7 @@
 
     <div class="surface">
         <div class="d-flex flex-wrap gap-10 justify-content-end w-100">
-            <button mat-flat-button class="bg-secondary">
+            <button mat-flat-button class="bg-secondary" (click)="agregarInsCentral()">
                 <i class="fa fa-plus"></i> Agregar</button>
             <button (click)="limpiarCampos()" mat-flat-button class="bg-success"><i class="fa fa-eraser"></i>
                 Limpiar</button>
@@ -46,8 +46,13 @@
                 <dxo-filter-row [visible]="showFilterRow"></dxo-filter-row>
                 <dxo-header-filter [visible]="showHeaderFilter"></dxo-header-filter>
                 <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
-                <dxi-column caption="Acciones" cellTemplate="Acciones" alignment="center" dataType="string"
-                    [width]="180"></dxi-column>
+                <dxi-column caption="Acciones" cellTemplate="Acciones" alignment="center" dataType="string" [width]="180"></dxi-column>
+                <dxi-column dataField="nombre" caption="Nombre Instalación" alignment="center" dataType="string" cellTemplate="nomInstalacion">
+                    <div *dxTemplate="let f of 'nomInstalacion' ">
+                        <div *ngIf="f.data.nombre"> {{f.data.nombre}} </div>
+                        <div *ngIf="f.data.nombre == null ">Sin registro</div>
+                    </div>
+                </dxi-column>
                 <dxi-column dataField="nombreCliente" caption="Cliente" alignment="center"
                     dataType="number"></dxi-column>
                 <dxi-column dataField="direccion" caption="Dirección" alignment="center" dataType="string"></dxi-column>
@@ -69,22 +74,15 @@
                     <dx-data-grid [dataSource]="row?.data?.instalaciones || []" [keyExpr]="'idEquipo'"
                         [showBorders]="true" [columnHidingEnabled]="true" [rowAlternationEnabled]="true"
                         [noDataText]="'Sin instalaciones para mostrar'">
-
                         <dxo-search-panel [visible]="true" [width]="200" placeholder="Buscar..."></dxo-search-panel>
                         <dxo-paging [pageSize]="10"></dxo-paging>
                         <dxo-pager [showInfo]="true"></dxo-pager>
-
-                        <!-- SIN: id, lat, lng -->
                         <dxi-column dataField="idEquipo" caption="ID Equipo" alignment="center"
                             dataType="number"></dxi-column>
-
-                        <!-- Fechas con pipe -->
                         <dxi-column dataField="fechaActualizacion" caption="Fecha Actualización" alignment="center"
                             cellTemplate="tplFechaActualizacion"></dxi-column>
                         <dxi-column dataField="fhRegistro" caption="Fecha Registro" alignment="center"
                             cellTemplate="tplFhRegistro"></dxi-column>
-
-                        <!-- Estatus con chip -->
                         <dxi-column dataField="estatus" caption="Estatus" alignment="center" cellTemplate="est"
                             dataType="string">
                             <div *dxTemplate="let f of 'est'">
@@ -95,18 +93,13 @@
                                 }
                             </div>
                         </dxi-column>
-
-                        <!-- Templates -->
                         <div *dxTemplate="let c of 'tplFechaActualizacion'">
                             {{ c.data?.fechaActualizacion | date:'dd/MM/yyyy HH:mm' }}
                         </div>
-
                         <div *dxTemplate="let c of 'tplFhRegistro'">
                             {{ c.data?.fhRegistro | date:'dd/MM/yyyy HH:mm' }}
                         </div>
-
                     </dx-data-grid>
-
                 </div>
                 <dxo-master-detail [enabled]="true" template="detail"></dxo-master-detail>
                 <div *dxTemplate="let row of 'Acciones'" class="d-flex gap-3 justify-content-center">

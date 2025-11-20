@@ -273,6 +273,7 @@ export class AgregarClienteComponent implements OnInit {
         .join('');
 
       Swal.fire({
+        background: '#141a21',
         title: '¡Faltan campos obligatorios!',
         html: `
         <p style="text-align:center;font-size:15px;margin-bottom:16px;color:white">
@@ -299,6 +300,7 @@ export class AgregarClienteComponent implements OnInit {
         this.submitButton = 'Guardar';
         this.loading = false;
         Swal.fire({
+          background: '#141a21',
           title: '¡Operación Exitosa!',
           text: 'Se agregó un nuevo cliente de manera exitosa.',
           icon: 'success',
@@ -307,12 +309,13 @@ export class AgregarClienteComponent implements OnInit {
         });
         this.regresar();
       },
-      () => {
+      (error) => {
         this.submitButton = 'Guardar';
         this.loading = false;
         Swal.fire({
+          background: '#141a21',
           title: '¡Ops!',
-          text: 'Ocurrió un error al agregar el cliente.',
+          text: error?.error?.message,
           icon: 'error',
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Confirmar',
@@ -386,6 +389,7 @@ export class AgregarClienteComponent implements OnInit {
         .join('');
 
       Swal.fire({
+        background: '#141a21',
         title: '¡Faltan campos obligatorios!',
         html: `
         <p style="text-align:center;font-size:15px;margin-bottom:16px;color:white">
@@ -428,6 +432,7 @@ export class AgregarClienteComponent implements OnInit {
               this.submitButton = 'Actualizar';
               this.loading = false;
               Swal.fire({
+                background: '#141a21',
                 title: '¡Operación Exitosa!',
                 text: 'Los datos del cliente se actualizaron correctamente.',
                 icon: 'success',
@@ -440,6 +445,7 @@ export class AgregarClienteComponent implements OnInit {
               this.submitButton = 'Actualizar';
               this.loading = false;
               Swal.fire({
+                background: '#141a21',
                 title: '¡Ops!',
                 text: 'Ocurrió un error al actualizar el cliente.',
                 icon: 'error',
@@ -453,6 +459,7 @@ export class AgregarClienteComponent implements OnInit {
           this.submitButton = 'Actualizar';
           this.loading = false;
           Swal.fire({
+            background: '#141a21',
             title: '¡Ops!',
             text: 'No fue posible preparar los documentos para actualizar.',
             icon: 'error',
@@ -467,390 +474,386 @@ export class AgregarClienteComponent implements OnInit {
     this.route.navigateByUrl('/clientes');
   }
 
-  private originalDocs = {
-    logotipo: '' as string,
-    constanciaSituacionFiscal: '' as string,
-    comprobanteDomicilio: '' as string,
-    actaConstitutiva: '' as string,
-  };
+    private originalDocs = {
+      logotipo: '' as string,
+      constanciaSituacionFiscal: '' as string,
+      comprobanteDomicilio: '' as string,
+      actaConstitutiva: '' as string,
+    };
 
-  private isFileLike(v: any): v is File {
-    return v instanceof File;
-  }
-
-  @ViewChild('logoFileInput') logoFileInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('csfFileInput') csfFileInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('compDomFileInput') compDomFileInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('actaFileInput') actaFileInput!: ElementRef<HTMLInputElement>;
-
-  logoPreviewUrl: string | ArrayBuffer | null = null;
-  csfPreviewUrl: string | ArrayBuffer | null = null;
-  compDomPreviewUrl: string | ArrayBuffer | null = null;
-  actaPreviewUrl: string | ArrayBuffer | null = null;
-
-  logoDragging = false;
-  csfDragging = false;
-  compDomDragging = false;
-  actaDragging = false;
-
-  csfFileName: string | null = null;
-  compDomFileName: string | null = null;
-  actaFileName: string | null = null;
-
-  private readonly MAX_MB = 3;
-
-  private isImage(file: File): boolean {
-    if (!file?.type) return /\.(png|jpe?g|webp)$/i.test(file.name);
-    return /^image\/(png|jpe?g|webp)$/i.test(file.type);
-  }
-  private isPdf(file: File): boolean {
-    if (!file?.type) return /\.pdf$/i.test(file.name);
-    return file.type === 'application/pdf';
-  }
-  private isOffice(file: File): boolean {
-    const t = file?.type;
-    if (!t) return /\.(docx?|xlsx?)$/i.test(file.name);
-    return [
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'application/vnd.ms-excel',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    ].includes(t);
-  }
-  private isImageUrl(u: string): boolean {
-    return /\.(png|jpe?g|webp|gif|bmp|svg|avif)(\?.*)?$/i.test(u);
-  }
-
-  private isAllowedLogo(file: File): boolean {
-    const okType = this.isImage(file) || this.isPdf(file) || this.isOffice(file);
-    const okSize = file.size <= this.MAX_MB * 1024 * 1024;
-    return okType && okSize;
-  }
-  private isAllowedDoc(file: File): boolean {
-    const okType = this.isPdf(file);
-    const okSize = file.size <= this.MAX_MB * 1024 * 1024;
-    return okType && okSize;
-  }
-
-  private loadPreview(file: File, setter: (url: string | ArrayBuffer | null) => void) {
-    if (!this.isImage(file)) {
-      setter(null);
-      return;
+    private isFileLike(v: any): v is File {
+      return v instanceof File;
     }
-    const reader = new FileReader();
-    reader.onload = () => setter(reader.result);
-    reader.readAsDataURL(file);
-  }
 
-  openLogoFilePicker() {
-    this.logoFileInput.nativeElement.click();
-  }
-  onLogoDragOver(e: DragEvent) {
-    e.preventDefault();
-    this.logoDragging = true;
-  }
-  onLogoDragLeave(e: DragEvent) {
-    e.preventDefault();
-    this.logoDragging = false;
-  }
-  onLogoDrop(e: DragEvent) {
-    e.preventDefault();
-    this.logoDragging = false;
-    const f = e.dataTransfer?.files?.[0] || null;
-    if (f) this.handleLogoFile(f);
-  }
-  onLogoFileSelected(e: Event) {
-    const input = e.target as HTMLInputElement;
-    const f = input.files?.[0] || null;
-    if (f) this.handleLogoFile(f);
-    if (input) input.value = '';
-  }
-  clearLogoImage(e: Event) {
-    e.stopPropagation();
-    this.logoPreviewUrl = null;
-    this.logoFileInput.nativeElement.value = '';
-    this.clienteForm.patchValue({ logotipo: this.DEFAULT_AVATAR_URL });
-    this.clienteForm.get('logotipo')?.setErrors(null);
-  }
-  private handleLogoFile(file: File) {
-    if (!this.isAllowedLogo(file)) {
-      this.clienteForm.get('logotipo')?.setErrors({ invalid: true });
-      return;
+    @ViewChild('logoFileInput') logoFileInput!: ElementRef<HTMLInputElement>;
+    @ViewChild('csfFileInput') csfFileInput!: ElementRef<HTMLInputElement>;
+    @ViewChild('compDomFileInput') compDomFileInput!: ElementRef<HTMLInputElement>;
+    @ViewChild('actaFileInput') actaFileInput!: ElementRef<HTMLInputElement>;
+
+    logoPreviewUrl: string | ArrayBuffer | null = null;
+    csfPreviewUrl: string | ArrayBuffer | null = null;
+    compDomPreviewUrl: string | ArrayBuffer | null = null;
+    actaPreviewUrl: string | ArrayBuffer | null = null;
+
+    logoDragging = false;
+    csfDragging = false;
+    compDomDragging = false;
+    actaDragging = false;
+
+    csfFileName: string | null = null;
+    compDomFileName: string | null = null;
+    actaFileName: string | null = null;
+
+    private readonly MAX_MB = 3;
+
+    private isImage(file: File): boolean {
+      if (!file?.type) return /\.(png|jpe?g|webp)$/i.test(file.name);
+      return /^image\/(png|jpe?g|webp)$/i.test(file.type);
     }
-    this.loadPreview(file, (url) => (this.logoPreviewUrl = url));
-    this.clienteForm.patchValue({ logotipo: file });
-    this.clienteForm.get('logotipo')?.setErrors(null);
-    this.uploadLogo(file);
-  }
-  private uploadingLogo = false;
-  private uploadLogo(file: File): void {
-    if (this.uploadingLogo) return;
-    this.uploadingLogo = true;
+    private isPdf(file: File): boolean {
+      if (!file?.type) return /\.pdf$/i.test(file.name);
+      return file.type === 'application/pdf';
+    }
+    private isOffice(file: File): boolean {
+      const t = file?.type;
+      if (!t) return /\.(docx?|xlsx?)$/i.test(file.name);
+      return [
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      ].includes(t);
+    }
+    private isImageUrl(u: string): boolean {
+      return /\.(png|jpe?g|webp|gif|bmp|svg|avif)(\?.*)?$/i.test(u);
+    }
 
-    const fd = new FormData();
-    fd.append('file', file, file.name);
-    fd.append('folder', 'clientes');
-    fd.append('idModule', '1');
+    private isAllowedLogo(file: File): boolean {
+      const okType = this.isImage(file) || this.isPdf(file) || this.isOffice(file);
+      const okSize = file.size <= this.MAX_MB * 1024 * 1024;
+      return okType && okSize;
+    }
+    private isAllowedDoc(file: File): boolean {
+      const okType = this.isPdf(file);
+      const okSize = file.size <= this.MAX_MB * 1024 * 1024;
+      return okType && okSize;
+    }
 
-    this.usuaService.uploadFile(fd)
-      .pipe(finalize(() => { this.uploadingLogo = false; }))
-      .subscribe({
-        next: (res: any) => {
-          const url = this.extractFileUrl(res);
-          if (url) {
-            this.clienteForm.patchValue({ logotipo: url });
-            this.logoPreviewUrl = this.isImageUrl(url) ? url : null;
-          } else {
+    private loadPreview(file: File, setter: (url: string | ArrayBuffer | null) => void) {
+      if (!this.isImage(file)) {
+        setter(null);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => setter(reader.result);
+      reader.readAsDataURL(file);
+    }
+
+    openLogoFilePicker() {
+      this.logoFileInput.nativeElement.click();
+    }
+    onLogoDragOver(e: DragEvent) {
+      e.preventDefault();
+      this.logoDragging = true;
+    }
+    onLogoDragLeave(e: DragEvent) {
+      e.preventDefault();
+      this.logoDragging = false;
+    }
+    onLogoDrop(e: DragEvent) {
+      e.preventDefault();
+      this.logoDragging = false;
+      const f = e.dataTransfer?.files?.[0] || null;
+      if (f) this.handleLogoFile(f);
+    }
+    onLogoFileSelected(e: Event) {
+      const input = e.target as HTMLInputElement;
+      const f = input.files?.[0] || null;
+      if (f) this.handleLogoFile(f);
+      if (input) input.value = '';
+    }
+    clearLogoImage(e: Event) {
+      e.stopPropagation();
+      this.logoPreviewUrl = null;
+      this.logoFileInput.nativeElement.value = '';
+      this.clienteForm.patchValue({ logotipo: this.DEFAULT_AVATAR_URL });
+      this.clienteForm.get('logotipo')?.setErrors(null);
+    }
+    private handleLogoFile(file: File) {
+      if (!this.isAllowedLogo(file)) {
+        this.clienteForm.get('logotipo')?.setErrors({ invalid: true });
+        return;
+      }
+      this.loadPreview(file, (url) => (this.logoPreviewUrl = url));
+      this.clienteForm.patchValue({ logotipo: file });
+      this.clienteForm.get('logotipo')?.setErrors(null);
+    }
+    private uploadingLogo = false;
+    private uploadLogo(file: File): void {
+      if (this.uploadingLogo) return;
+      this.uploadingLogo = true;
+
+      const fd = new FormData();
+      fd.append('file', file, file.name);
+      fd.append('folder', 'clientes');
+      fd.append('idModule', '1');
+
+      this.usuaService.uploadFile(fd)
+        .pipe(finalize(() => { this.uploadingLogo = false; }))
+        .subscribe({
+          next: (res: any) => {
+            const url = this.extractFileUrl(res);
+            if (url) {
+              this.clienteForm.patchValue({ logotipo: url });
+              this.logoPreviewUrl = this.isImageUrl(url) ? url : null;
+            } else {
+              this.clienteForm.get('logotipo')?.setErrors({ uploadFailed: true });
+            }
+          },
+          error: () => {
             this.clienteForm.get('logotipo')?.setErrors({ uploadFailed: true });
-          }
-        },
-        error: () => {
-          this.clienteForm.get('logotipo')?.setErrors({ uploadFailed: true });
-        },
-      });
-  }
-
-  openCsfFilePicker() {
-    this.csfFileInput.nativeElement.click();
-  }
-  onCsfDragOver(e: DragEvent) {
-    e.preventDefault();
-    this.csfDragging = true;
-  }
-  onCsfDragLeave(e: DragEvent) {
-    e.preventDefault();
-    this.csfDragging = false;
-  }
-  onCsfDrop(e: DragEvent) {
-    e.preventDefault();
-    this.csfDragging = false;
-    const f = e.dataTransfer?.files?.[0] || null;
-    if (f) this.handleCsfFile(f);
-  }
-  onCsfFileSelected(e: Event) {
-    const input = e.target as HTMLInputElement;
-    const f = input.files?.[0] || null;
-    if (f) this.handleCsfFile(f);
-    if (input) input.value = '';
-  }
-  clearCsfFile(e: Event) {
-    e.stopPropagation();
-    this.csfPreviewUrl = null;
-    this.csfFileName = null;
-    this.csfFileInput.nativeElement.value = '';
-    this.clienteForm.patchValue({ constanciaSituacionFiscal: this.DEFAULT_AVATAR_URL });
-    this.clienteForm.get('constanciaSituacionFiscal')?.setErrors(null);
-  }
-  private handleCsfFile(file: File) {
-    if (!this.isAllowedDoc(file)) {
-      this.clienteForm.get('constanciaSituacionFiscal')?.setErrors({ invalid: true });
-      return;
+          },
+        });
     }
-    this.csfFileName = file.name;
-    this.loadPreview(file, (url) => (this.csfPreviewUrl = url));
-    this.clienteForm.patchValue({ constanciaSituacionFiscal: file });
-    this.clienteForm.get('constanciaSituacionFiscal')?.setErrors(null);
-    this.uploadCsf(file);
+
+    openCsfFilePicker() {
+      this.csfFileInput.nativeElement.click();
+    }
+    onCsfDragOver(e: DragEvent) {
+      e.preventDefault();
+      this.csfDragging = true;
+    }
+    onCsfDragLeave(e: DragEvent) {
+      e.preventDefault();
+      this.csfDragging = false;
+    }
+    onCsfDrop(e: DragEvent) {
+      e.preventDefault();
+      this.csfDragging = false;
+      const f = e.dataTransfer?.files?.[0] || null;
+      if (f) this.handleCsfFile(f);
+    }
+    onCsfFileSelected(e: Event) {
+      const input = e.target as HTMLInputElement;
+      const f = input.files?.[0] || null;
+      if (f) this.handleCsfFile(f);
+      if (input) input.value = '';
+    }
+    clearCsfFile(e: Event) {
+      e.stopPropagation();
+      this.csfPreviewUrl = null;
+      this.csfFileName = null;
+      this.csfFileInput.nativeElement.value = '';
+      this.clienteForm.patchValue({ constanciaSituacionFiscal: this.DEFAULT_AVATAR_URL });
+      this.clienteForm.get('constanciaSituacionFiscal')?.setErrors(null);
+    }
+    private handleCsfFile(file: File) {
+  if (!this.isAllowedDoc(file)) {
+    this.clienteForm.get('constanciaSituacionFiscal')?.setErrors({ invalid: true });
+    return;
   }
-  private uploadingCsf = false;
-  private uploadCsf(file: File): void {
-    if (this.uploadingCsf) return;
-    this.uploadingCsf = true;
+  this.csfFileName = file.name;
+  this.loadPreview(file, (url) => (this.csfPreviewUrl = url));
+  this.clienteForm.patchValue({ constanciaSituacionFiscal: file });
+  this.clienteForm.get('constanciaSituacionFiscal')?.setErrors(null);
+}
+    private uploadingCsf = false;
+    private uploadCsf(file: File): void {
+      if (this.uploadingCsf) return;
+      this.uploadingCsf = true;
 
-    const fd = new FormData();
-    fd.append('file', file, file.name);
-    fd.append('folder', 'clientes');
-    fd.append('idModule', '1');
+      const fd = new FormData();
+      fd.append('file', file, file.name);
+      fd.append('folder', 'clientes');
+      fd.append('idModule', '1');
 
-    this.usuaService.uploadFile(fd)
-      .pipe(finalize(() => { this.uploadingCsf = false; }))
-      .subscribe({
-        next: (res: any) => {
-          const url = this.extractFileUrl(res);
-          if (url) {
-            this.clienteForm.patchValue({ constanciaSituacionFiscal: url });
-            this.csfPreviewUrl = this.isImageUrl(url) ? url : null;
-          } else {
+      this.usuaService.uploadFile(fd)
+        .pipe(finalize(() => { this.uploadingCsf = false; }))
+        .subscribe({
+          next: (res: any) => {
+            const url = this.extractFileUrl(res);
+            if (url) {
+              this.clienteForm.patchValue({ constanciaSituacionFiscal: url });
+              this.csfPreviewUrl = this.isImageUrl(url) ? url : null;
+            } else {
+              this.clienteForm.get('constanciaSituacionFiscal')?.setErrors({ uploadFailed: true });
+            }
+          },
+          error: () => {
             this.clienteForm.get('constanciaSituacionFiscal')?.setErrors({ uploadFailed: true });
-          }
-        },
-        error: () => {
-          this.clienteForm.get('constanciaSituacionFiscal')?.setErrors({ uploadFailed: true });
-        },
-      });
-  }
-
-  openCompDomFilePicker() {
-    this.compDomFileInput.nativeElement.click();
-  }
-  onCompDomDragOver(e: DragEvent) {
-    e.preventDefault();
-    this.compDomDragging = true;
-  }
-  onCompDomDragLeave(e: DragEvent) {
-    e.preventDefault();
-    this.compDomDragging = false;
-  }
-  onCompDomDrop(e: DragEvent) {
-    e.preventDefault();
-    this.compDomDragging = false;
-    const f = e.dataTransfer?.files?.[0] || null;
-    if (f) this.handleCompDomFile(f);
-  }
-  onCompDomFileSelected(e: Event) {
-    const input = e.target as HTMLInputElement;
-    const f = input.files?.[0] || null;
-    if (f) this.handleCompDomFile(f);
-    if (input) input.value = '';
-  }
-  clearCompDomFile(e: Event) {
-    e.stopPropagation();
-    this.compDomPreviewUrl = null;
-    this.compDomFileName = null;
-    this.compDomFileInput.nativeElement.value = '';
-    this.clienteForm.patchValue({ comprobanteDomicilio: this.DEFAULT_AVATAR_URL });
-    this.clienteForm.get('comprobanteDomicilio')?.setErrors(null);
-  }
-  private handleCompDomFile(file: File) {
-    if (!this.isAllowedDoc(file)) {
-      this.clienteForm.get('comprobanteDomicilio')?.setErrors({ invalid: true });
-      return;
+          },
+        });
     }
-    this.compDomFileName = file.name;
-    this.loadPreview(file, (url) => (this.compDomPreviewUrl = url));
-    this.clienteForm.patchValue({ comprobanteDomicilio: file });
-    this.clienteForm.get('comprobanteDomicilio')?.setErrors(null);
-    this.uploadCompDom(file);
+
+    openCompDomFilePicker() {
+      this.compDomFileInput.nativeElement.click();
+    }
+    onCompDomDragOver(e: DragEvent) {
+      e.preventDefault();
+      this.compDomDragging = true;
+    }
+    onCompDomDragLeave(e: DragEvent) {
+      e.preventDefault();
+      this.compDomDragging = false;
+    }
+    onCompDomDrop(e: DragEvent) {
+      e.preventDefault();
+      this.compDomDragging = false;
+      const f = e.dataTransfer?.files?.[0] || null;
+      if (f) this.handleCompDomFile(f);
+    }
+    onCompDomFileSelected(e: Event) {
+      const input = e.target as HTMLInputElement;
+      const f = input.files?.[0] || null;
+      if (f) this.handleCompDomFile(f);
+      if (input) input.value = '';
+    }
+    clearCompDomFile(e: Event) {
+      e.stopPropagation();
+      this.compDomPreviewUrl = null;
+      this.compDomFileName = null;
+      this.compDomFileInput.nativeElement.value = '';
+      this.clienteForm.patchValue({ comprobanteDomicilio: this.DEFAULT_AVATAR_URL });
+      this.clienteForm.get('comprobanteDomicilio')?.setErrors(null);
+    }
+    private handleCompDomFile(file: File) {
+  if (!this.isAllowedDoc(file)) {
+    this.clienteForm.get('comprobanteDomicilio')?.setErrors({ invalid: true });
+    return;
   }
-  private uploadingComp = false;
-  private uploadCompDom(file: File): void {
-    if (this.uploadingComp) return;
-    this.uploadingComp = true;
+  this.compDomFileName = file.name;
+  this.loadPreview(file, (url) => (this.compDomPreviewUrl = url));
+  this.clienteForm.patchValue({ comprobanteDomicilio: file });
+  this.clienteForm.get('comprobanteDomicilio')?.setErrors(null);
+}
+    private uploadingComp = false;
+    private uploadCompDom(file: File): void {
+      if (this.uploadingComp) return;
+      this.uploadingComp = true;
 
-    const fd = new FormData();
-    fd.append('file', file, file.name);
-    fd.append('folder', 'clientes');
-    fd.append('idModule', '1');
+      const fd = new FormData();
+      fd.append('file', file, file.name);
+      fd.append('folder', 'clientes');
+      fd.append('idModule', '1');
 
-    this.usuaService.uploadFile(fd)
-      .pipe(finalize(() => { this.uploadingComp = false; }))
-      .subscribe({
-        next: (res: any) => {
-          const url = this.extractFileUrl(res);
-          if (url) {
-            this.clienteForm.patchValue({ comprobanteDomicilio: url });
-            this.compDomPreviewUrl = this.isImageUrl(url) ? url : null;
-          } else {
+      this.usuaService.uploadFile(fd)
+        .pipe(finalize(() => { this.uploadingComp = false; }))
+        .subscribe({
+          next: (res: any) => {
+            const url = this.extractFileUrl(res);
+            if (url) {
+              this.clienteForm.patchValue({ comprobanteDomicilio: url });
+              this.compDomPreviewUrl = this.isImageUrl(url) ? url : null;
+            } else {
+              this.clienteForm.get('comprobanteDomicilio')?.setErrors({ uploadFailed: true });
+            }
+          },
+          error: () => {
             this.clienteForm.get('comprobanteDomicilio')?.setErrors({ uploadFailed: true });
-          }
-        },
-        error: () => {
-          this.clienteForm.get('comprobanteDomicilio')?.setErrors({ uploadFailed: true });
-        },
-      });
-  }
-
-  openActaFilePicker() {
-    this.actaFileInput.nativeElement.click();
-  }
-  onActaDragOver(e: DragEvent) {
-    e.preventDefault();
-    this.actaDragging = true;
-  }
-  onActaDragLeave(e: DragEvent) {
-    e.preventDefault();
-    this.actaDragging = false;
-  }
-  onActaDrop(e: DragEvent) {
-    e.preventDefault();
-    this.actaDragging = false;
-    const f = e.dataTransfer?.files?.[0] || null;
-    if (f) this.handleActaFile(f);
-  }
-  onActaFileSelected(e: Event) {
-    const input = e.target as HTMLInputElement;
-    const f = input.files?.[0] || null;
-    if (f) this.handleActaFile(f);
-    if (input) input.value = '';
-  }
-  clearActaFile(e: Event) {
-    e.stopPropagation();
-    this.actaPreviewUrl = null;
-    this.actaFileName = null;
-    this.actaFileInput.nativeElement.value = '';
-    this.clienteForm.patchValue({ actaConstitutiva: this.DEFAULT_AVATAR_URL });
-    this.clienteForm.get('actaConstitutiva')?.setErrors(null);
-  }
-  private handleActaFile(file: File) {
-    if (!this.isAllowedDoc(file)) {
-      this.clienteForm.get('actaConstitutiva')?.setErrors({ invalid: true });
-      return;
+          },
+        });
     }
-    this.actaFileName = file.name;
-    this.loadPreview(file, (url) => (this.actaPreviewUrl = url));
-    this.clienteForm.patchValue({ actaConstitutiva: file });
-    this.clienteForm.get('actaConstitutiva')?.setErrors(null);
-    this.uploadActa(file);
+
+    openActaFilePicker() {
+      this.actaFileInput.nativeElement.click();
+    }
+    onActaDragOver(e: DragEvent) {
+      e.preventDefault();
+      this.actaDragging = true;
+    }
+    onActaDragLeave(e: DragEvent) {
+      e.preventDefault();
+      this.actaDragging = false;
+    }
+    onActaDrop(e: DragEvent) {
+      e.preventDefault();
+      this.actaDragging = false;
+      const f = e.dataTransfer?.files?.[0] || null;
+      if (f) this.handleActaFile(f);
+    }
+    onActaFileSelected(e: Event) {
+      const input = e.target as HTMLInputElement;
+      const f = input.files?.[0] || null;
+      if (f) this.handleActaFile(f);
+      if (input) input.value = '';
+    }
+    clearActaFile(e: Event) {
+      e.stopPropagation();
+      this.actaPreviewUrl = null;
+      this.actaFileName = null;
+      this.actaFileInput.nativeElement.value = '';
+      this.clienteForm.patchValue({ actaConstitutiva: this.DEFAULT_AVATAR_URL });
+      this.clienteForm.get('actaConstitutiva')?.setErrors(null);
+    }
+    private handleActaFile(file: File) {
+  if (!this.isAllowedDoc(file)) {
+    this.clienteForm.get('actaConstitutiva')?.setErrors({ invalid: true });
+    return;
   }
-  private uploadingActa = false;
-  private uploadActa(file: File): void {
-    if (this.uploadingActa) return;
-    this.uploadingActa = true;
+  this.actaFileName = file.name;
+  this.loadPreview(file, (url) => (this.actaPreviewUrl = url));
+  this.clienteForm.patchValue({ actaConstitutiva: file });
+  this.clienteForm.get('actaConstitutiva')?.setErrors(null);
+}
+    private uploadingActa = false;
+    private uploadActa(file: File): void {
+      if (this.uploadingActa) return;
+      this.uploadingActa = true;
 
-    const fd = new FormData();
-    fd.append('file', file, file.name);
-    fd.append('folder', 'clientes');
-    fd.append('idModule', '1');
+      const fd = new FormData();
+      fd.append('file', file, file.name);
+      fd.append('folder', 'clientes');
+      fd.append('idModule', '1');
 
-    this.usuaService.uploadFile(fd)
-      .pipe(finalize(() => { this.uploadingActa = false; }))
-      .subscribe({
-        next: (res: any) => {
-          const url = this.extractFileUrl(res);
-          if (url) {
-            this.clienteForm.patchValue({ actaConstitutiva: url });
-            this.actaPreviewUrl = this.isImageUrl(url) ? url : null;
-          } else {
+      this.usuaService.uploadFile(fd)
+        .pipe(finalize(() => { this.uploadingActa = false; }))
+        .subscribe({
+          next: (res: any) => {
+            const url = this.extractFileUrl(res);
+            if (url) {
+              this.clienteForm.patchValue({ actaConstitutiva: url });
+              this.actaPreviewUrl = this.isImageUrl(url) ? url : null;
+            } else {
+              this.clienteForm.get('actaConstitutiva')?.setErrors({ uploadFailed: true });
+            }
+          },
+          error: () => {
             this.clienteForm.get('actaConstitutiva')?.setErrors({ uploadFailed: true });
-          }
-        },
-        error: () => {
-          this.clienteForm.get('actaConstitutiva')?.setErrors({ uploadFailed: true });
-        },
-      });
-  }
+          },
+        });
+    }
 
-  private extractFileUrl(res: any): string {
-    return (
-      res?.url ??
-      res?.Location ??
-      res?.data?.url ??
-      res?.data?.Location ??
-      res?.key ??
-      res?.Key ??
-      res?.path ??
-      res?.filePath ??
-      ''
-    );
-  }
-
-  private buildFD(file: File): FormData {
-    const fd = new FormData();
-    fd.append('file', file, file.name);
-    fd.append('folder', 'clientes');
-    fd.append('idModule', '1');
-    return fd;
-  }
-  
-  private resolveUrlForField(field: keyof typeof this.originalDocs, value: any) {
-    if (this.isFileLike(value)) {
-      return this.usuaService.uploadFile(this.buildFD(value)).pipe(
-        map((r: any) => this.extractFileUrl(r) || ''),
-        catchError(() => of(this.originalDocs[field] || ''))
+    private extractFileUrl(res: any): string {
+      return (
+        res?.url ??
+        res?.Location ??
+        res?.data?.url ??
+        res?.data?.Location ??
+        res?.key ??
+        res?.Key ??
+        res?.path ??
+        res?.filePath ??
+        ''
       );
     }
-    if (typeof value === 'string' && value.trim()) return of(value.trim());
-    return of(this.originalDocs[field] || '');
-  }
+
+    private buildFD(file: File): FormData {
+      const fd = new FormData();
+      fd.append('file', file, file.name);
+      fd.append('folder', 'clientes');
+      fd.append('idModule', '1');
+      return fd;
+    }
+
+    private resolveUrlForField(field: keyof typeof this.originalDocs, value: any) {
+      if (this.isFileLike(value)) {
+        return this.usuaService.uploadFile(this.buildFD(value)).pipe(
+          map((r: any) => this.extractFileUrl(r) || ''),
+          catchError(() => of(this.originalDocs[field] || ''))
+        );
+      }
+      if (typeof value === 'string' && value.trim()) return of(value.trim());
+      return of(this.originalDocs[field] || '');
+    }
 
 }

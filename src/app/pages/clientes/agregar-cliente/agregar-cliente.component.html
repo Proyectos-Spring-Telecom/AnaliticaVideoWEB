@@ -25,9 +25,16 @@
                                 <mat-icon aria-hidden="true">account_tree</mat-icon>
                             </span>
                             <div class="form-floating flex-grow-1">
-                                <input type="text" formControlName="idPadre" class="form-control" id="cuentaPadre"
-                                    placeholder="ID o nombre de cuenta padre">
-                                <label for="cuentaPadre">ID o nombre de cuenta padre</label>
+                                <select class="form-select" id="cuentaPadre" formControlName="idPadre">
+                                    <option [ngValue]="null" disabled>Selecciona una cuenta padre
+                                    </option>
+                                    <option *ngFor="let cliente of listaClientes" [ngValue]="cliente.id">
+                                        {{ cliente.nombre }}
+                                        {{ cliente.apellidoPaterno }}
+                                        {{ cliente.apellidoMaterno }}
+                                    </option>
+                                </select>
+                                <label for="cuentaPadre">Selecciona cuenta padre</label>
                             </div>
                         </div>
                     </div>
@@ -316,6 +323,7 @@
                     <div class="row g-4 mt-3 uploader-wrap">
 
                         <!-- Logotipo (imagen) -->
+                        <!-- Logotipo (imagen) -->
                         <div class="col-12 col-md-6 col-lg-3">
                             <label class="form-label perm-label d-block mb-2">Logotipo</label>
                             <div class="uploader-hero">
@@ -333,11 +341,11 @@
                                             <span class="uploader__badge">PNG · JPG</span>
                                         </div>
 
-                                        <div class="uploader__status"
-                                            *ngIf="logoPreviewUrl || clienteForm.get('logotipo')?.value">
-                                            <div class="uploader__filename" *ngIf="logoPreviewUrl">Imagen seleccionada
+                                        <div class="uploader__status" *ngIf="clienteForm.get('logotipo')?.value">
+                                            <div class="uploader__filename">
+                                                {{ clienteForm.get('logotipo')?.value?.name ||
+                                                clienteForm.get('logotipo')?.value }}
                                             </div>
-                                            <div class="uploader__ok">Imagen cargada correctamente.</div>
                                         </div>
 
                                         <input #logoFileInput type="file" accept="image/png,image/jpeg,image/webp"
@@ -366,8 +374,11 @@
 
                                         <div class="uploader__status"
                                             *ngIf="csfFileName || clienteForm.get('constanciaSituacionFiscal')?.value">
-                                            <div class="uploader__filename" *ngIf="csfFileName">{{ csfFileName }}</div>
-                                            <div class="uploader__ok">Archivo cargado correctamente.</div>
+                                            <div class="uploader__filename">
+                                                {{ csfFileName
+                                                || clienteForm.get('constanciaSituacionFiscal')?.value?.name
+                                                || clienteForm.get('constanciaSituacionFiscal')?.value }}
+                                            </div>
                                         </div>
 
                                         <input #csfFileInput type="file" accept="application/pdf"
@@ -397,9 +408,11 @@
 
                                         <div class="uploader__status"
                                             *ngIf="compDomFileName || clienteForm.get('comprobanteDomicilio')?.value">
-                                            <div class="uploader__filename" *ngIf="compDomFileName">{{ compDomFileName
-                                                }}</div>
-                                            <div class="uploader__ok">Archivo cargado correctamente.</div>
+                                            <div class="uploader__filename">
+                                                {{ compDomFileName
+                                                || clienteForm.get('comprobanteDomicilio')?.value?.name
+                                                || clienteForm.get('comprobanteDomicilio')?.value }}
+                                            </div>
                                         </div>
 
                                         <input #compDomFileInput type="file" accept="application/pdf"
@@ -429,9 +442,11 @@
 
                                         <div class="uploader__status"
                                             *ngIf="actaFileName || clienteForm.get('actaConstitutiva')?.value">
-                                            <div class="uploader__filename" *ngIf="actaFileName">{{ actaFileName }}
+                                            <div class="uploader__filename">
+                                                {{ actaFileName
+                                                || clienteForm.get('actaConstitutiva')?.value?.name
+                                                || clienteForm.get('actaConstitutiva')?.value }}
                                             </div>
-                                            <div class="uploader__ok">Archivo cargado correctamente.</div>
                                         </div>
 
                                         <input #actaFileInput type="file" accept="application/pdf"
@@ -442,10 +457,7 @@
                         </div>
 
                     </div>
-
-
                 </div>
-
                 <div class="d-flex flex-wrap gap-3 justify-content-start mt-4">
                     <button class="button-success" role="button" (click)="submit()"><i
                             class="fa fa-check"></i>&nbsp;&nbsp;{{submitButton}}</button>

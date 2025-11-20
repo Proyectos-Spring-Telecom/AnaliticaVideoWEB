@@ -26,7 +26,7 @@ export class InstalacionService {
     );
   }
 
-  agregarInstalacion(data: FormData) {
+  agregarInstalacion(data: any) {
     return this.http.post(
       environment.API_SECURITY + '/instalacion-equipo',
       data

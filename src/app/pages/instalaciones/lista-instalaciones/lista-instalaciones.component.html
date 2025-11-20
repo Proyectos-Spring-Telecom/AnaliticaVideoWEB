@@ -19,7 +19,7 @@
 
     <div class="surface">
         <div class="d-flex flex-wrap gap-10 justify-content-end w-100">
-            <button mat-flat-button class="bg-secondary">
+            <button mat-flat-button (click)="agregarInstalacion()" class="bg-secondary">
                 <i class="fa fa-plus"></i> Agregar</button>
             <button (click)="limpiarCampos()" mat-flat-button class="bg-success"><i class="fa fa-eraser"></i>
                 Limpiar</button>
@@ -47,15 +47,13 @@
                 <dxo-filter-row [visible]="showFilterRow"></dxo-filter-row>
                 <dxo-header-filter [visible]="showHeaderFilter"></dxo-header-filter>
                 <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
-                <dxi-column caption="Acciones" cellTemplate="Acciones" alignment="center" dataType="string" [width]="180"></dxi-column>
-                <dxi-column dataField="equipo.numeroSerie" caption="Equipo" alignment="center" dataType="number"></dxi-column>
-                <dxi-column
-  dataField="fhRegistro"
-  caption="Fecha de Registro"
-  alignment="center"
-  dataType="datetime"
-  [format]="'dd/MM/yyyy HH:mm'">
-</dxi-column>
+                <dxi-column caption="Acciones" cellTemplate="Acciones" alignment="center" dataType="string"
+                    [width]="180"></dxi-column>
+                <dxi-column dataField="equipo.numeroSerie" caption="Equipo" alignment="center"
+                    dataType="number"></dxi-column>
+                <dxi-column dataField="fhRegistro" caption="Fecha de Registro" alignment="center" dataType="datetime"
+                    [format]="'dd/MM/yyyy HH:mm'">
+                </dxi-column>
 
 
                 <dxi-column caption="Equipo" alignment="center" dataType="string" cellTemplate="tplEquipo"></dxi-column>

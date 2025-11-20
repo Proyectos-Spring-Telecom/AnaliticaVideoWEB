@@ -202,6 +202,7 @@ export class ListaClientesComponent implements OnInit {
       title: '¡Eliminar Cliente!',
       html: `Está seguro que requiere eliminar el cliente: <br> ${cliente.NombreCompleto}?`,
       icon: 'warning',
+      background: '#141a21',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
@@ -212,6 +213,7 @@ export class ListaClientesComponent implements OnInit {
         this.cliService.eliminarCliente(cliente.Id).subscribe(
           (response) => {
             Swal.fire({
+              background: '#141a21',
               title: '¡Eliminado!',
               html: `El cliente ha sido eliminado de forma exitosa.`,
               icon: 'success',
@@ -223,6 +225,7 @@ export class ListaClientesComponent implements OnInit {
           },
           (error) => {
             Swal.fire({
+              background: '#141a21',
               title: '¡Ops!',
               html: `Error al intentar eliminar el cliente.`,
               icon: 'error',
@@ -237,6 +240,7 @@ export class ListaClientesComponent implements OnInit {
   activar(rowData: any) {
     Swal.fire({
       title: '¡Activar!',
+      background: '#141a21',
       html: `¿Está seguro que requiere activar el cliente: <strong>${rowData.nombre}</strong>?`,
       icon: 'warning',
       showCancelButton: true,
@@ -249,6 +253,7 @@ export class ListaClientesComponent implements OnInit {
         this.cliService.updateEstatus(rowData.id, 1).subscribe(
           (response) => {
             Swal.fire({
+              background: '#141a21',
               title: '¡Confirmación Realizada!',
               html: `El cliente ha sido activado.`,
               icon: 'success',
@@ -263,6 +268,7 @@ export class ListaClientesComponent implements OnInit {
           (error) => {
             Swal.fire({
               title: '¡Ops!',
+              background: '#141a21',
               html: `${error}`,
               icon: 'error',
               confirmButtonColor: '#3085d6',
@@ -280,6 +286,7 @@ export class ListaClientesComponent implements OnInit {
       html: `¿Está seguro que requiere desactivar el cliente: <strong>${rowData.nombre}</strong>?`,
       icon: 'warning',
       showCancelButton: true,
+      background: '#141a21',
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Confirmar',
@@ -289,6 +296,7 @@ export class ListaClientesComponent implements OnInit {
         this.cliService.updateEstatus(rowData.id, 0).subscribe(
           (response) => {
             Swal.fire({
+              background: '#141a21',
               title: '¡Confirmación Realizada!',
               html: `El cliente ha sido desactivado.`,
               icon: 'success',
@@ -304,6 +312,7 @@ export class ListaClientesComponent implements OnInit {
               title: '¡Ops!',
               html: `${error}`,
               icon: 'error',
+              background: '#141a21',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Confirmar',
             })
@@ -413,6 +422,7 @@ export class ListaClientesComponent implements OnInit {
           .filter(col => (col.groupIndex ?? -1) >= 0);
         if (groupedColumns.length === 0) {
           Swal.fire({
+            background: '#141a21',
             title: '¡Ops!',
             text: 'Debes arrastar un encabezado de una columna para expandir o contraer grupos.',
             icon: 'warning',

@@ -1,20 +1,37 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { DxDataGridComponent } from 'devextreme-angular';
 import CustomStore from 'devextreme/data/custom_store';
 import { lastValueFrom } from 'rxjs';
 import { routeAnimation } from 'src/app/pipe/module-open.animation';
-import { InstalacionCentral } from 'src/app/services/moduleService/instalacion-central.service';
+import { ClientesService } from 'src/app/services/moduleService/clientes.service';
+import { InstalacionCentralSede } from 'src/app/services/moduleService/instalacion-central.service';
 import { ModulosService } from 'src/app/services/moduleService/modulos.service';
 import Swal from 'sweetalert2';
+
+declare const google: any;
+
 
 @Component({
   selector: 'app-lista-instalaciones-centrales',
   templateUrl: './lista-instalaciones-centrales.component.html',
   styleUrl: './lista-instalaciones-centrales.component.scss',
   standalone: false,
-  animations: [routeAnimation],
+  animations: [routeAnimation,
+    trigger('modalAnimation', [
+    transition(':enter', [
+      style({ opacity: 0 }),
+      animate('150ms ease-out', style({ opacity: 1 }))
+    ]),
+    transition(':leave', [
+      style({ opacity: 1 }),
+      animate('150ms ease-in', style({ opacity: 0 }))
+    ])
+  ])
+  ],
 })
 export class ListaInstalacionesCentralesComponent implements OnInit {
   public mensajeAgrupar: string =
@@ -22,7 +39,8 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
   public listaInstalaciones: any;
   public showFilterRow: boolean;
   public showHeaderFilter: boolean;
-  public loading: boolean;
+  public submitButton: string = 'Guardar';
+  public loading: boolean = false;
   public loadingMessage: string = 'Cargando...';
   public showExportGrid: boolean;
   public paginaActual: number = 1;
@@ -35,10 +53,14 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
   isGrouped: boolean = false;
   public paginaActualData: any[] = [];
   public filtroActivo: string = '';
+  public listaClientes: any[] = [];
+  public instForm: FormGroup;
 
   constructor(
     private router: Router,
-    private instalacionService: InstalacionCentral // private permissionsService: NgxPermissionsService
+    private fb: FormBuilder,
+    private instalacionService: InstalacionCentralSede,
+    private clieService: ClientesService,
   ) {
     this.showFilterRow = true;
     this.showHeaderFilter = true;
@@ -53,8 +75,8 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
   //   return this.permissionsService.getPermission(permission) !== undefined;
   // }
 
-  agregarModulo() {
-    this.router.navigateByUrl('/modulos/agregar-modulo');
+  agregarInsCentral() {
+    this.router.navigateByUrl('/instalaciones-centrales/agregar-instalacion-central');
   }
 
   actualizarModulo(idModulo: Number) {
@@ -174,21 +196,19 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
             this.instalacionService.obtenerInstalacionesData(page, take)
           );
           this.loading = false;
-
-          // Soportar distintos formatos de payload
           const rows: any[] = Array.isArray(resp?.data)
             ? resp.data
             : Array.isArray(resp?.items)
-            ? resp.items
-            : [];
+              ? resp.items
+              : [];
 
           const meta = resp?.paginated ??
             resp?.meta ?? {
-              total: resp?.total,
-              page: resp?.page,
-              lastPage: resp?.lastPage ?? resp?.pages,
-              perPage: resp?.perPage ?? resp?.limit,
-            };
+            total: resp?.total,
+            page: resp?.page,
+            lastPage: resp?.lastPage ?? resp?.pages,
+            perPage: resp?.perPage ?? resp?.limit,
+          };
 
           const totalRegistros =
             toNum(meta?.total) ?? toNum(resp?.total) ?? rows.length;
@@ -206,8 +226,8 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
               item?.estatus === 1
                 ? 'Activo'
                 : item?.estatus === 0
-                ? 'Inactivo'
-                : null,
+                  ? 'Inactivo'
+                  : null,
           }));
 
           this.totalRegistros = totalRegistros ?? 0;
@@ -248,7 +268,7 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
     try {
       const colsOpt = grid?.option('columns');
       if (Array.isArray(colsOpt) && colsOpt.length) columnas = colsOpt;
-    } catch {}
+    } catch { }
     if (!columnas.length && grid?.getVisibleColumns) {
       columnas = grid.getVisibleColumns();
     }
@@ -302,4 +322,6 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
     this.dataGrid.instance.refresh();
     this.isGrouped = false;
   }
+
+
 }

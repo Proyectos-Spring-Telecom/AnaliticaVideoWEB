@@ -226,3 +226,82 @@
 .encar{
   color: var(--mat-sys-on-surface-variant)
 }
+@media (min-width: 992px) {
+  .surface .insta-body {
+    max-height: calc(60vh - 64px);
+    min-height: calc(420px - 64px);
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 1400px) {
+  .surface .insta-body {
+    max-height: calc(65vh - 64px);
+  }
+}
+
+.surface .insta-body::-webkit-scrollbar {
+  width: 12px;
+}
+
+.surface .insta-body::-webkit-scrollbar-thumb {
+  background: #681330;
+  border-radius: 10px;
+  border: 2px solid #020617;
+  box-shadow: 0 0 6px rgba(0,0,0,.6);
+}
+
+.surface .insta-body::-webkit-scrollbar-track {
+  background: #020617;
+  border-radius: 10px;
+}
+
+.perm-wrapper .surface .insta-card .card-header {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.85rem;
+}
+
+.perm-wrapper .surface .insta-badge {
+  padding: 0 0.45rem;
+  font-size: 0.7rem;
+  min-width: 1.4rem;
+  text-align: center;
+}
+
+.perm-wrapper .surface .insta-card .card-body {
+  padding: 0.75rem 0.9rem 0.85rem;
+}
+
+.perm-wrapper .surface .insta-item {
+  margin: 0.25rem 0;
+  padding: 0.65rem 0.8rem;
+}
+
+.perm-wrapper .surface .insta-title {
+  font-size: 0.95rem;
+}
+
+.perm-wrapper .surface .insta-address {
+  font-size: 0.8rem;
+}
+
+.perm-wrapper .surface .insta-dot {
+  width: 8px;
+  height: 8px;
+}
+
+.perm-wrapper .surface .insta-card .btn.btn-sm,
+.perm-wrapper .surface .insta-card .btn-outline-primary.btn-sm,
+.perm-wrapper .surface .insta-card .btn-primary.btn-sm {
+  padding: 3px 9px;
+  font-size: 0.75rem;
+}
+
+/* Quitar scroll interno de la lista en escritorio */
+@media (min-width: 992px) {
+  .perm-wrapper .surface .insta-body {
+    max-height: none;
+    min-height: 0;
+    overflow-y: visible;  /* sin scroll interno */
+  }
+}

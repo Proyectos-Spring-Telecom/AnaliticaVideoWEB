@@ -192,40 +192,38 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-4 uploader-wrap">
-                            <label for="permConfirm" class="form-label perm-label">Imagen Perfil</label>
-                            <div class="uploader-hero">
-                                <div class="uploader" [class.dragging]="logoDragging"
-                                    (dragover)="onLogoDragOver($event)" (dragleave)="onLogoDragLeave($event)"
-                                    (drop)="onLogoDrop($event)">
-                                    <div class="uploader__glow"></div>
-                                    <div class="uploader__body">
-                                        <div class="uploader__icon">
-                                            <mat-icon>cloud_upload</mat-icon>
-                                        </div>
-                                        <h5 class="uploader__title">Sube tu imagen</h5>
-                                        <p class="uploader__subtitle">Arrastra y suelta aquí o</p>
-                                        <div class="uploader__cta">
-                                            <button mat-flat-button color="primary" type="button"
-                                                (click)="openLogoFilePicker()">Seleccionar archivo</button>
-                                            <span class="uploader__badge">PNG · JPG · WEBP · Máx. 3 MB</span>
-                                        </div>
+  <label for="permConfirm" class="form-label perm-label">Imagen Perfil</label>
+  <div class="uploader-hero">
+    <div class="uploader" [class.dragging]="logoDragging"
+         (dragover)="onLogoDragOver($event)"
+         (dragleave)="onLogoDragLeave($event)"
+         (drop)="onLogoDrop($event)">
+      <div class="uploader__glow"></div>
+      <div class="uploader__body">
+        <div class="uploader__icon">
+          <mat-icon>cloud_upload</mat-icon>
+        </div>
+        <h5 class="uploader__title">Sube tu imagen</h5>
+        <p class="uploader__subtitle">Arrastra y suelta aquí o</p>
+        <div class="uploader__cta">
+          <button mat-flat-button color="primary" type="button"
+                  (click)="openLogoFilePicker()">Seleccionar archivo</button>
+          <span class="uploader__badge">PNG · JPG · WEBP · Máx. 3 MB</span>
+        </div>
 
-                                        <div class="uploader__status"
-                                            *ngIf="logoFileName || logoUploading || logoUploadedOk">
-                                            <div class="uploader__filename" *ngIf="logoFileName">{{ logoFileName }}
-                                            </div>
-                                            <mat-progress-bar *ngIf="logoUploading"
-                                                mode="indeterminate"></mat-progress-bar>
-                                            <div class="uploader__ok" *ngIf="!logoUploading && logoUploadedOk">Imagen
-                                                cargada correctamente.</div>
-                                        </div>
+        <div class="uploader__status" *ngIf="logoFileName">
+          <div class="uploader__filename">{{ logoFileName }}</div>
+        </div>
 
-                                        <input #logoFileInput type="file" accept="image/png,image/jpeg,image/webp"
-                                            (change)="onLogoFileSelected($event)" class="uploader__input" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        <input #logoFileInput type="file"
+               accept="image/png,image/jpeg,image/webp"
+               (change)="onLogoFileSelected($event)"
+               class="uploader__input" />
+      </div>
+    </div>
+  </div>
+</div>
+
 
                 </div>
 

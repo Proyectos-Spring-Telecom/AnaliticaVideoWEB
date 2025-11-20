@@ -80,7 +80,7 @@ export class ListaRolesComponent implements OnInit {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar',
-      background: '#002136',
+      background: '#141a21',
     }).then((result) => {
       if (result.value) {
         this.rolService.updateEstatus(rowData.id, 1).subscribe(
@@ -89,7 +89,7 @@ export class ListaRolesComponent implements OnInit {
               title: '¡Confirmación Realizada!',
               html: `El rol ha sido activado.`,
               icon: 'success',
-              background: '#002136',
+              background: '#141a21',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Confirmar',
             });
@@ -103,7 +103,7 @@ export class ListaRolesComponent implements OnInit {
               title: '¡Ops!',
               html: `${error}`,
               icon: 'error',
-              background: '#002136',
+              background: '#141a21',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Confirmar',
             });
@@ -123,7 +123,7 @@ export class ListaRolesComponent implements OnInit {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar',
-      background: '#002136',
+      background: '#141a21',
     }).then((result) => {
       if (result.value) {
         this.rolService.updateEstatus(rowData.id, 0).subscribe(
@@ -132,7 +132,7 @@ export class ListaRolesComponent implements OnInit {
               title: '¡Confirmación Realizada!',
               html: `El rol ha sido desactivado.`,
               icon: 'success',
-              background: '#002136',
+              background: '#141a21',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Confirmar',
             });
@@ -145,7 +145,7 @@ export class ListaRolesComponent implements OnInit {
               title: '¡Ops!',
               html: `${error}`,
               icon: 'error',
-              background: '#002136',
+              background: '#141a21',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Confirmar',
             });

@@ -88,7 +88,7 @@ export const navItems: NavItem[] = [
       {
         displayName: 'Agregar Rol',
         // iconName: 'user-cog',
-        // route: '/roles',
+        route: '/roles/agregar-rol',
       },
       {
         displayName: 'Lista Roles',
