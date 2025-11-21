@@ -38,17 +38,21 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly PIN_URL = 'assets/images/logos/marker_spring.webp';
   private readonly CENTRAL_PIN_URL = 'assets/images/logos/marker_blue.webp';
 
+  get listaVisible(): any[] {
+    if (this.viewMode === 'centrales') {
+      return this.listaInstalaciones;
+    }
+    const c = this.selectedCentral;
+    return Array.isArray(c?.instalaciones) ? c.instalaciones : [];
+  }
 
   constructor(
     private insService: InstalacionCentral,
     private router: Router,
     private toastr: ToastrService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    // setTimeout(() => {
-    //   this.toastr.success('Guardado correctamente', '¡Operación Exitosa!');
-    // }, 0);
     this.obtenerInstalacionesCentral();
   }
 
@@ -71,7 +75,6 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
       anchor: new google.maps.Point(size / 2, size - 8),
     };
   }
-
 
   obtenerInstalacionesCentral() {
     this.insService.obtenerInstalacionCentral().subscribe((response: any) => {
@@ -157,7 +160,9 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
 
       marker.addListener('mouseover', () => this.showHover(marker, this.buildInfoHtml(c)));
       marker.addListener('mouseout', () => this.hideHover(marker));
-      marker.addListener('click', () => this.togglePin(marker, this.buildInfoHtml(c), { central: c }));
+      marker.addListener('click', () =>
+        this.togglePin(marker, this.buildInfoHtml(c), { central: c })
+      );
 
       this.markers.push(marker);
       bounds.extend(pos);
@@ -183,7 +188,6 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
 
       const pos = { lat, lng };
 
-      // En renderInstalacionesOnly()
       const marker = new google.maps.Marker({
         map: this.map,
         position: pos,
@@ -191,10 +195,17 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
         icon: this.pinIcon(this.PIN_URL, 80),
       });
 
-
-      marker.addListener('mouseover', () => this.showHover(marker, this.buildInfoHtmlInstalacion(c, ins)));
+      marker.addListener('mouseover', () =>
+        this.showHover(marker, this.buildInfoHtmlInstalacion(c, ins))
+      );
       marker.addListener('mouseout', () => this.hideHover(marker));
-      marker.addListener('click', () => this.togglePin(marker, this.buildInfoHtmlInstalacion(c, ins), { central: c, instalacion: ins }));
+      marker.addListener('click', () =>
+        this.togglePin(
+          marker,
+          this.buildInfoHtmlInstalacion(c, ins),
+          { central: c, instalacion: ins }
+        )
+      );
 
       this.markers.push(marker);
       bounds.extend(pos);
@@ -213,6 +224,13 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
 
   goToInstalaciones() {
     if (!this.selectedCentral) return;
+    this.viewMode = 'instalaciones';
+    this.clearPin();
+    this.renderAccordingMode();
+  }
+
+  verInstalacionesDeCentral(central: any) {
+    this.selectedCentral = central;
     this.viewMode = 'instalaciones';
     this.clearPin();
     this.renderAccordingMode();
@@ -296,7 +314,11 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
         this.map?.setZoom(Math.max(this.map?.getZoom() ?? 12, 15));
         const marker = this.markers[index];
         if (marker) {
-          this.togglePin(marker, this.buildInfoHtmlInstalacion(this.selectedCentral, ins), { central: this.selectedCentral, instalacion: ins });
+          this.togglePin(
+            marker,
+            this.buildInfoHtmlInstalacion(this.selectedCentral, ins),
+            { central: this.selectedCentral, instalacion: ins }
+          );
         }
       }
     }
@@ -434,15 +456,15 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
   `;
   }
 
-
   private formatDate(value: any): string {
     if (!value) return '—';
     const d = value instanceof Date ? value : new Date(value);
     if (Number.isNaN(d.getTime())) return '—';
-    // ej. "5 nov 2025, 10:44 a. m."
-    return new Intl.DateTimeFormat('es-MX', { dateStyle: 'medium', timeStyle: 'short' }).format(d);
+    return new Intl.DateTimeFormat('es-MX', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    }).format(d);
   }
-
 
   private loadGoogleMaps(): Promise<void> {
     if ((window as any).google?.maps) return Promise.resolve();
@@ -450,7 +472,9 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
 
     MonitoreoComponent.mapsLoading = new Promise<void>((resolve, reject) => {
       const s = document.createElement('script');
-      s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(this.apiKey)}&v=weekly&libraries=marker,places`;
+      s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(
+        this.apiKey
+      )}&v=weekly&libraries=marker,places`;
       s.async = true;
       s.defer = true;
       s.onload = () => resolve();

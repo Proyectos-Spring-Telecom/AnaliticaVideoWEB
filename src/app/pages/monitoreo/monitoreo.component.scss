@@ -192,11 +192,23 @@
 
 /* =========== Responsive =========== */
 @media (max-width: 991.98px) {
-  .surface .insta-body { max-height: 50vh; }
-  .surface .map-wrapper { height: 50vh; }
+  .surface .insta-body { max-height: 46vh; overflow-y: auto; }
+  .surface .map-wrapper { height: 46vh; }
+}
+@media (max-width: 767.98px) {
+  .surface { padding: 1.25rem 1rem; }
+  .surface .map-wrapper { margin-top: 1rem; }
+}
+@media (min-width: 992px) {
+  .surface .insta-body {
+    max-height: calc(60vh - 64px);
+    min-height: calc(420px - 64px);
+    overflow-y: auto;
+  }
 }
 @media (min-width: 1400px) {
   .surface .map-wrapper { height: 65vh; }
+  .surface .insta-body { max-height: calc(65vh - 64px); }
 }
 
 /* Botones "Centrales" e "Instalaciones" en rojo sólido, sin difuminado */
@@ -297,11 +309,16 @@
   font-size: 0.75rem;
 }
 
-/* Quitar scroll interno de la lista en escritorio */
+/* Scroll interno de la lista en escritorio para igualar altura del mapa */
 @media (min-width: 992px) {
   .perm-wrapper .surface .insta-body {
-    max-height: none;
-    min-height: 0;
-    overflow-y: visible;  /* sin scroll interno */
+    max-height: calc(60vh - 64px);
+    min-height: calc(420px - 64px);
+    overflow-y: auto;
+  }
+}
+@media (min-width: 1400px) {
+  .perm-wrapper .surface .insta-body {
+    max-height: calc(65vh - 64px);
   }
 }

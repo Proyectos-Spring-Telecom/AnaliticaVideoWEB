@@ -51,7 +51,7 @@
                                     <img [src]="d.data.Logotipo" alt="Logo" width="50">
                                 </ng-template>
                             </dxi-column> -->
-                            <!-- <dxi-column caption="Acciones" cellTemplate="Acciones" alignment="center" [width]="150"></dxi-column> -->
+                             <dxi-column caption="Acciones" cellTemplate="acciones" alignment="center" [width]="150"></dxi-column>
                             <dxi-column dataField="logotipo" caption="Imagen" cellTemplate="imagen" [width]="200" alignment="center">
                                 <dxo-header-filter [allowSearch]="true"></dxo-header-filter>
                             </dxi-column>
@@ -102,9 +102,9 @@
                             <dxo-export [enabled]="false" [allowExportSelectedData]="true"
                                 [texts]="{ exportAll: 'Exportar todos los datos a Excel', exportSelectedRows: 'Exportar filas seleccionadas a Excel' }">
                             </dxo-export>
-                            <dxi-column dataField="estatus" caption="Estatus" alignment="center" cellTemplate="est" dataType="string">
+                            <dxi-column dataField="estatusCliente" caption="Estatus" alignment="center" cellTemplate="est" dataType="string">
                     <div *dxTemplate="let f of 'est'">
-                        @if (f.data.estatus === 1) {
+                        @if (f.data.estatusCliente === 1) {
                         <span class="estatus estatus-activo">Activo</span>
                         } @else {
                         <span class="estatus estatus-inactivo">Inactivo</span>
