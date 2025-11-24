@@ -36,7 +36,7 @@
                 <dxo-group-panel [emptyPanelText]="mensajeAgrupar" [visible]="true"></dxo-group-panel>
                 <dxo-filter-row [visible]="showFilterRow"></dxo-filter-row>
                 <dxo-header-filter [visible]="showHeaderFilter"></dxo-header-filter>
-                <dxi-column caption="Acciones" cellTemplate="Acciones" alignment="center" [width]="150"></dxi-column>
+                <dxi-column caption="Acciones" cellTemplate="acciones" alignment="center" [width]="150"></dxi-column>
                 <dxi-column dataField="FotoPerfil" caption="Imagen" cellTemplate="imagen" [width]="200"
                     alignment="center">
                     <dxo-header-filter [allowSearch]="true"></dxo-header-filter>
@@ -47,22 +47,48 @@
                 <dxi-column dataField="UserName" caption="Correo Electrónico" alignment="center"
                     dataType="string"></dxi-column>
                 <dxi-column dataField="RolNombre" caption="Rol" alignment="center" dataType="string"></dxi-column>
-                <!-- <div *dxTemplate="let data of 'imagen'" style="text-align: center;">
+                <div *dxTemplate="let data of 'imagen'" style="text-align: center;">
                     <img *ngIf="data.value" style="max-width: 100px;" [src]="data.value" />
                     <img *ngIf="data.value == null" style="max-width: 100px;"
                         src="https://izzimoviles.s3.us-east-1.amazonaws.com/Imagenes/user.jpeg" />
-                </div> -->
+                </div>
+                <dxi-column caption="Cliente" alignment="center" cellTemplate="clien">
+                    <div *dxTemplate="let f of 'clien'">
+                        {{ f.data.clienteNombre || ' ' }} {{ f.data.ApellidoPaternoCliente || ' ' }} {{
+                        f.data.ApellidoMaternoCliente || ' ' }}
+                    </div>
+                </dxi-column>
                 <dxi-column dataField="estatus" caption="Estatus" alignment="center" dataType="string"
                     cellTemplate="est">
-                    <!-- <div *dxTemplate="let f of 'est'">
-                                        <span *ngIf="toNum(f.data.estatus) === 1" class="estatus estatus-activo">
-                                            Activo
-                                        </span>
-                                        <span *ngIf="toNum(f.data.estatus) !== 1" class="estatus estatus-inactivo">
-                                            Inactivo
-                                        </span>
-                                    </div> -->
+                    <div *dxTemplate="let f of 'est'">
+                        <span *ngIf="toNum(f.data.estatus) === 1" class="estatus estatus-activo">
+                            Activo
+                        </span>
+                        <span *ngIf="toNum(f.data.estatus) !== 1" class="estatus estatus-inactivo">
+                            Inactivo
+                        </span>
+                    </div>
                 </dxi-column>
+
+                <div *dxTemplate="let row of 'acciones'" class="d-flex gap-3 justify-content-center">
+                    <div>
+                        <button valueExpr="id" id="actualizarButton" class="btnAcciones"
+                            (click)="actualizarUsuario(row.data.id)">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                    </div>
+                    <div>
+                        @if (row.data.estatus === 0) {
+                        <button id="pinButton" class="btnAcciones" (click)="activar(row.data)">
+                            <i class="fa fa-arrow-up"></i>
+                        </button>
+                        } @else {
+                        <button id="deleteButton" class="btnAcciones" (click)="desactivar(row.data)">
+                            <i class="fa fa-arrow-down"></i>
+                        </button>
+                        }
+                    </div>
+                </div>
             </dx-data-grid>
         </div>
     </div>

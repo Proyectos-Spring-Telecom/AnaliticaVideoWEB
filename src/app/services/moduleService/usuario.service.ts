@@ -14,9 +14,13 @@ export class UsuariosService {
     return this.http.get<any>(`${environment.API_SECURITY}/usuarios/list`);
   }
 
-  obtenerUsuariosData(page: number, pageSize: number): Observable<any> {
-		return this.http.get(`${environment.API_SECURITY}/usuarios/${page}/${pageSize}`);
-	}
+  obtenerUsuariosData(page: number, limit: number): Observable<any> {
+    const pageNum = Number(page) || 1;
+    const limitNum = Number(limit) || 10;
+    return this.http.get(
+      `${environment.API_SECURITY}/usuarios/${pageNum}/${limitNum}`
+    );
+  }
 
   obtenerUsuariosRolOperador(): Observable <any>{
     return this.http.get<any>(`${environment.API_SECURITY}/usuarios/list/rol/operador`)

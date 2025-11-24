@@ -673,3 +673,40 @@ body {
   color: #fee2e2;
 }
 .estatus-inactivo::before { background: #f87171; }
+
+.uploader__filename--link {
+  display: block;
+  max-width: 100%;
+  padding: 0.45rem 0.9rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2b3a55, #181f2a);
+  color: #f5f5ff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+
+  /* que se vaya hacia abajo cuando es muy larga */
+  white-space: normal;
+  word-break: break-all;
+
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(120, 155, 255, 0.6);
+  transition:
+    transform 0.15s ease-out,
+    box-shadow 0.15s ease-out,
+    background 0.15s ease-out,
+    border-color 0.15s ease-out;
+}
+
+/* quitar el ícono del lado izquierdo si quedó de antes */
+.uploader__filename--link::before {
+  content: none;
+}
+
+.uploader__filename--link:hover {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+  background: linear-gradient(135deg, #3a4f7a, #1c2433);
+  border-color: rgba(160, 190, 255, 0.95);
+  color: #ffffff;
+}

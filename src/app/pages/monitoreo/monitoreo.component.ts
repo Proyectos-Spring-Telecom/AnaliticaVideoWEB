@@ -113,7 +113,10 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.MAP_ID) mapOptions.mapId = this.MAP_ID;
 
     this.map = new MapCtor(el, mapOptions);
-    this.infoWindow = new google.maps.InfoWindow({ disableAutoPan: false, maxWidth: 300 });
+    this.infoWindow = new google.maps.InfoWindow({
+      disableAutoPan: false,
+      maxWidth: 300,
+    });
 
     if (this.listaInstalaciones.length) this.renderAccordingMode();
 
@@ -158,7 +161,9 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
         icon: this.pinIcon(this.CENTRAL_PIN_URL, 80),
       });
 
-      marker.addListener('mouseover', () => this.showHover(marker, this.buildInfoHtml(c)));
+      marker.addListener('mouseover', () =>
+        this.showHover(marker, this.buildInfoHtml(c))
+      );
       marker.addListener('mouseout', () => this.hideHover(marker));
       marker.addListener('click', () =>
         this.togglePin(marker, this.buildInfoHtml(c), { central: c })
@@ -191,7 +196,9 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
       const marker = new google.maps.Marker({
         map: this.map,
         position: pos,
-        title: c?.nombreCliente ? `${c.nombreCliente} - Instalación` : 'Instalación',
+        title: c?.nombreCliente
+          ? `${c.nombreCliente} - Instalación`
+          : 'Instalación',
         icon: this.pinIcon(this.PIN_URL, 80),
       });
 
@@ -200,11 +207,10 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
       );
       marker.addListener('mouseout', () => this.hideHover(marker));
       marker.addListener('click', () =>
-        this.togglePin(
-          marker,
-          this.buildInfoHtmlInstalacion(c, ins),
-          { central: c, instalacion: ins }
-        )
+        this.togglePin(marker, this.buildInfoHtmlInstalacion(c, ins), {
+          central: c,
+          instalacion: ins,
+        })
       );
 
       this.markers.push(marker);
@@ -274,15 +280,19 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private fitBoundsNice(bounds: any) {
     this.map.fitBounds(bounds);
-    const listener = google.maps.event.addListenerOnce(this.map, 'bounds_changed', () => {
-      const z = this.map.getZoom();
-      if (z > 16) this.map.setZoom(16);
-      google.maps.event.removeListener(listener);
-    });
+    const listener = google.maps.event.addListenerOnce(
+      this.map,
+      'bounds_changed',
+      () => {
+        const z = this.map.getZoom();
+        if (z > 16) this.map.setZoom(16);
+        google.maps.event.removeListener(listener);
+      }
+    );
   }
 
   private clearMarkers() {
-    this.markers.forEach(m => m.setMap?.(null));
+    this.markers.forEach((m) => m.setMap?.(null));
     this.markers = [];
   }
 
@@ -331,8 +341,12 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
 
     google.maps.event.addListenerOnce(this.infoWindow, 'domready', () => {
       const root: HTMLElement | null = document.querySelector('.gm-style-iw');
-      const btnClose: HTMLElement | null = root?.querySelector('.iw-close') as HTMLElement;
-      const btnAction: HTMLElement | null = root?.querySelector('.iw-action') as HTMLElement;
+      const btnClose: HTMLElement | null = root?.querySelector(
+        '.iw-close'
+      ) as HTMLElement;
+      const btnAction: HTMLElement | null = root?.querySelector(
+        '.iw-action'
+      ) as HTMLElement;
 
       btnClose?.addEventListener('click', () => {
         if (pinned) this.clearPin();
@@ -342,8 +356,16 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  onInfoAction(_: any) {
-    this.router.navigateByUrl('/dashboard');
+  onInfoAction(payload: any) {
+    const numeroSerie =
+      payload?.instalacion?.equipo?.numeroSerie ??
+      payload?.instalacion?.numeroSerie;
+
+    if (!numeroSerie) {
+      return;
+    }
+
+    this.router.navigate(['/monitoreo', 'instalacion', numeroSerie]);
   }
 
   private static iwStylesInstalled = false;
@@ -406,10 +428,11 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
     </div>
   `;
   }
-
   private buildInfoHtmlInstalacion(c: any, ins: any): string {
     const estatusOk = Number(ins?.estatus) === 1;
-    const idEquipo = ins?.idEquipo ?? '—';
+
+    const numeroSerie = ins?.equipo?.numeroSerie ?? ins?.numeroSerie ?? '—';
+
     const fhRegFmt = this.formatDate(ins?.fhRegistro);
     const fhActFmt = this.formatDate(ins?.fechaActualizacion);
     const direccion = c?.direccion ?? '—';
@@ -422,18 +445,22 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
       box-shadow:0 12px 28px rgba(0,0,0,.20);
     ">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 6px;">
-        <h6 style="margin:0;font-size:1rem;font-weight:700;color:#fff;">${c?.nombreCliente ?? 'Instalación'}</h6>
+        <h6 style="margin:0;font-size:1rem;font-weight:700;color:#fff;">${
+          c?.nombreCliente ?? 'Instalación'
+        }</h6>
         <button class="iw-close" aria-label="Cerrar" style="background:transparent;border:0;cursor:pointer;color:#fff;font-size:18px;line-height:1;width:28px;height:28px;border-radius:8px;">✕</button>
       </div>
       <hr style="border:none;height:1px;background:rgba(255,255,255,.10);margin:6px 0;" />
       <div style="display:grid;grid-template-columns:1fr;gap:4px;font-size:.85rem;color:#c6cfde;">
         <div><strong>Encargado:</strong> ${c?.nombreEncargado ?? '—'}</div>
-        <div><strong>ID Equipo:</strong> ${idEquipo}</div>
+        <div><strong>Equipo:</strong> ${numeroSerie}</div>
         <div>
           <strong>Estatus:</strong>
           <span style="
             display:inline-block;padding:2px 8px;margin-left:6px;border-radius:999px;
-            background:${estatusOk ? '#16a34a' : '#ef4444'}; color:#fff; font-weight:600; font-size:.78rem;">
+            background:${
+              estatusOk ? '#16a34a' : '#ef4444'
+            }; color:#fff; font-weight:600; font-size:.78rem;">
             ${estatusOk ? 'Activo' : 'Inactivo'}
           </span>
         </div>
@@ -478,7 +505,8 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
       s.async = true;
       s.defer = true;
       s.onload = () => resolve();
-      s.onerror = () => reject(new Error('No se pudo cargar Google Maps JS API'));
+      s.onerror = () =>
+        reject(new Error('No se pudo cargar Google Maps JS API'));
       document.head.appendChild(s);
     });
 

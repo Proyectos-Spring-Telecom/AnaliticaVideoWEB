@@ -5,40 +5,53 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { routeAnimation } from 'src/app/pipe/module-open.animation';
 import { ClientesService } from 'src/app/services/moduleService/clientes.service';
 import { ModulosService } from 'src/app/services/moduleService/modulos.service';
-import { PermisosService } from 'src/app/services/moduleService/permisos.service';
 import { RolesService } from 'src/app/services/moduleService/roles.service';
 import { UsuariosService } from 'src/app/services/moduleService/usuario.service';
 import Swal from 'sweetalert2';
-
-const PASSWORD_CTRL = 'descripcion';
 
 @Component({
   selector: 'app-agregar-usuario',
   templateUrl: './agregar-usuario.component.html',
   styleUrl: './agregar-usuario.component.scss',
   standalone: false,
-  animations: [routeAnimation, 
+  animations: [
+    routeAnimation,
     trigger('fadeIn', [
-      transition(':enter', [style({ opacity: 0 }), animate('160ms ease-out', style({ opacity: 1 }))]),
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('160ms ease-out', style({ opacity: 1 })),
+      ]),
       transition(':leave', [animate('100ms ease-in', style({ opacity: 0 }))]),
     ]),
   ],
 })
 export class AgregarUsuarioComponent implements OnInit {
   hideConfirm = true;
-confirmName = 'cpwd_' + Math.random().toString(36).slice(2, 12);
+  confirmName = 'cpwd_' + Math.random().toString(36).slice(2, 12);
 
-hidePass = true;
+  hidePass = true;
   showPwdHints = false;
   animateHints = false;
   pwdValue = '';
 
-  private get hasMayus(): boolean { return /[A-Z]/.test(this.pwdValue); }
-  private get hasMinus(): boolean { return /[a-z]/.test(this.pwdValue); }
-  private get espCaracter(): boolean { return /[^A-Za-z0-9]/.test(this.pwdValue); }
-  private get hasNumber(): boolean { return /\d/.test(this.pwdValue); }
-  private get minCaracteres(): boolean { return this.pwdValue.length > 6; }
-  private get maxCaracteres(): boolean { return this.pwdValue.length < 16; }
+  private get hasMayus(): boolean {
+    return /[A-Z]/.test(this.pwdValue);
+  }
+  private get hasMinus(): boolean {
+    return /[a-z]/.test(this.pwdValue);
+  }
+  private get espCaracter(): boolean {
+    return /[^A-Za-z0-9]/.test(this.pwdValue);
+  }
+  private get hasNumber(): boolean {
+    return /\d/.test(this.pwdValue);
+  }
+  private get minCaracteres(): boolean {
+    return this.pwdValue.length > 6;
+  }
+  private get maxCaracteres(): boolean {
+    return this.pwdValue.length < 16;
+  }
 
   get currentRuleKey(): 'case' | 'special' | 'number' | 'length' | 'ok' {
     if (!(this.hasMayus && this.hasMinus)) return 'case';
@@ -50,36 +63,58 @@ hidePass = true;
 
   get currentRuleMsg(): string {
     switch (this.currentRuleKey) {
-      case 'case': return 'Al menos una mayúscula y minúsculas.';
-      case 'special': return 'Un caracter no alfanumérico (ejemplo: #?!&).';
-      case 'number': return 'Un número.';
-      case 'length': return 'La contraseña debe tener más de 6 caracteres y menos de 16.';
-      default: return '';
+      case 'case':
+        return 'Al menos una mayúscula y minúsculas.';
+      case 'special':
+        return 'Un caracter no alfanumérico (ejemplo: #?!&).';
+      case 'number':
+        return 'Un número.';
+      case 'length':
+        return 'La contraseña debe tener más de 6 caracteres y menos de 16.';
+      default:
+        return '';
     }
   }
 
-  onPwdFocus() { this.showPwdHints = true; setTimeout(() => this.animateHints = true, 0); }
-  onPwdBlur() { this.showPwdHints = false; this.animateHints = false; }
+  onPwdFocus() {
+    this.showPwdHints = true;
+    setTimeout(() => (this.animateHints = true), 0);
+  }
+  onPwdBlur() {
+    this.showPwdHints = false;
+    this.animateHints = false;
+  }
 
   confirmValue = '';
   confirmHintVisible = false;
   confirmMatch = false;
   private confirmTimer: any;
 
-  onPwdInput(e: Event) { this.pwdValue = (e.target as HTMLInputElement).value || ''; this.syncConfirmState(); }
+  onPwdInput(e: Event) {
+    this.pwdValue = (e.target as HTMLInputElement).value || '';
+    this.syncConfirmState();
+  }
   onConfirmInput(e: Event) {
     this.confirmValue = (e.target as HTMLInputElement).value || '';
     clearTimeout(this.confirmTimer);
-    this.confirmTimer = setTimeout(() => { this.validateConfirm(); this.confirmHintVisible = this.confirmValue.length > 0; }, 400);
+    this.confirmTimer = setTimeout(() => {
+      this.validateConfirm();
+      this.confirmHintVisible = this.confirmValue.length > 0;
+    }, 400);
   }
   onConfirmBlur() {
     clearTimeout(this.confirmTimer);
     this.validateConfirm();
     this.confirmHintVisible = this.confirmValue.length > 0;
   }
-  private validateConfirm() { this.confirmMatch = this.confirmValue === this.pwdValue; }
-  private syncConfirmState() { if (this.confirmHintVisible) this.validateConfirm(); }
+  private validateConfirm() {
+    this.confirmMatch = this.confirmValue === this.pwdValue;
+  }
+  private syncConfirmState() {
+    if (this.confirmHintVisible) this.validateConfirm();
+  }
 
+  public permisosSeleccionadosIds: number[] = [];
 
   public submitButton: string = 'Guardar';
   public loading: boolean = false;
@@ -91,9 +126,9 @@ hidePass = true;
   public listaRoles: any;
   public listaClientes: any;
 
+  public showInputsId = true;
   type = 'password';
   typeConfirm: string = 'password';
-  public permisosIds: number[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -101,26 +136,27 @@ hidePass = true;
     private route: Router,
     private activatedRouted: ActivatedRoute,
     private moduService: ModulosService,
-    private permService: PermisosService,
     private rolService: RolesService,
     private clienService: ClientesService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.obtenerClientes();
-    this.obtenerRoles();
-    this.obtenerModulos();
-    this.initForm();
+  this.obtenerClientes();
+  this.obtenerRoles();
+  this.obtenerModulos();
+  this.initForm();
 
-    this.activatedRouted.params.subscribe((params) => {
-      this.idUsuario = params['idUsuario'];
-      if (this.idUsuario) {
-        this.title = 'Actualizar Usuario';
-        this.obtenerUsuarioID();
-        this.inputContrasena = false;
-      }
-    });
-  }
+  this.activatedRouted.params.subscribe((params) => {
+    this.idUsuario = params['idUsuario'];
+    if (this.idUsuario) {
+      this.title = 'Actualizar Usuario';
+      this.obtenerUsuarioID();
+      this.showInputsId = false;
+      this.inputContrasena = false; // <- clave para que NO sea requerida al actualizar
+    }
+  });
+}
+
 
   passwordsMatchValidator(formGroup: FormGroup) {
     const password = formGroup.get('passwordHash')?.value;
@@ -143,10 +179,10 @@ hidePass = true;
         apellidoPaterno: ['', [Validators.required]],
         apellidoMaterno: ['', [Validators.required]],
         fotoPerfil: [null],
-        idRol: [null],
-        emailConfirmado: [0],
-        estatus: [1],
-        idCliente: [null],
+        idRol: [null, [Validators.required]],
+        emailConfirmado: [0, [Validators.required]],
+        estatus: [1, [Validators.required]],
+        idCliente: [null, [Validators.required]],
         permisosIds: this.fb.control<number[]>([]),
       },
       { validators: this.passwordsMatchValidator }
@@ -154,13 +190,17 @@ hidePass = true;
   }
 
   obtenerModulos() {
-    this.permService.obtenerPermisosAgrupados().subscribe((response: any) => {
-      let raw: any = response;
-      if (Array.isArray(response) && Array.isArray(response[0])) {
+    this.moduService.obtenerModulos().subscribe((response: any) => {
+      let raw: any = [];
+
+      if (Array.isArray(response?.data)) {
+        raw = response.data;
+      } else if (Array.isArray(response)) {
+        raw = response;
+      } else if (Array.isArray(response) && Array.isArray(response[0])) {
         raw = response[0];
       }
-      if (!Array.isArray(raw)) raw = [];
-      this.applyAssignedPermsToModules();
+
       this.listaModulos = raw.map((m: any) => ({
         id: Number(m?.Id ?? m?.id),
         nombre: m?.NombreModulo ?? m?.nombre ?? m?.Nombre ?? '',
@@ -171,9 +211,83 @@ hidePass = true;
           nombre: p?.Nombre ?? p?.nombre ?? '',
           descripcion: p?.Descripcion ?? p?.descripcion ?? '',
           estatus: p?.Estatus ?? p?.estatus,
+          asignado: p?.asignado ?? false,
         })),
       }));
+
+      this.applyAssignedPermsToModules();
+      this.syncPermisosSeleccionados();
     });
+  }
+
+  private syncPermisosSeleccionados(): void {
+    const ids: number[] = [];
+    this.listaModulos.forEach((m) => {
+      (m.permisos || []).forEach((p: any) => {
+        if (p.asignado && !ids.includes(p.id)) {
+          ids.push(p.id);
+        }
+      });
+    });
+    this.permisosSeleccionadosIds = ids;
+    this.usuarioForm.patchValue({ permisosIds: this.permisosSeleccionadosIds });
+  }
+
+  onPermChange(modulo: any, permiso: any, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const checked = input.checked;
+
+    permiso.asignado = checked;
+    const id = Number(permiso.id);
+
+    if (checked) {
+      if (!this.permisosSeleccionadosIds.includes(id)) {
+        this.permisosSeleccionadosIds = [...this.permisosSeleccionadosIds, id];
+      }
+    } else {
+      this.permisosSeleccionadosIds = this.permisosSeleccionadosIds.filter(
+        (x) => x !== id
+      );
+    }
+
+    this.usuarioForm.patchValue({ permisosIds: this.permisosSeleccionadosIds });
+  }
+
+  onModuleToggle(modulo: any, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const checked = input.checked;
+    const permisos = modulo.permisos || [];
+
+    permisos.forEach((permiso: any) => {
+      permiso.asignado = checked;
+      const id = Number(permiso.id);
+
+      if (checked) {
+        if (!this.permisosSeleccionadosIds.includes(id)) {
+          this.permisosSeleccionadosIds = [
+            ...this.permisosSeleccionadosIds,
+            id,
+          ];
+        }
+      } else {
+        this.permisosSeleccionadosIds = this.permisosSeleccionadosIds.filter(
+          (x) => x !== id
+        );
+      }
+    });
+
+    this.usuarioForm.patchValue({ permisosIds: this.permisosSeleccionadosIds });
+  }
+
+  isModuleFullyAssigned(modulo: any): boolean {
+    if (
+      !modulo ||
+      !Array.isArray(modulo.permisos) ||
+      modulo.permisos.length === 0
+    ) {
+      return false;
+    }
+    return modulo.permisos.every((p: any) => !!p.asignado);
   }
 
   obtenerRoles() {
@@ -200,90 +314,71 @@ hidePass = true;
   trackModulo = (_: number, m: any) => m.id ?? m.Id;
   trackPermiso = (_: number, p: any) => p.id ?? p.Id;
 
-  onToggle(permiso: any, checked: boolean) {
-    const idNum = this.getPermisoId(permiso);
-    if (idNum === null) return;
-    permiso.estatus = checked ? 1 : 0;
-    if (checked) {
-      if (!this.permisosIds.includes(idNum)) this.permisosIds.push(idNum);
-    } else {
-      this.permisosIds = this.permisosIds.filter((id) => id !== idNum);
-    }
-    this.usuarioForm.patchValue({ permisosIds: this.permisosIds });
-  }
-
   obtenerUsuarioID() {
-    this.usuaService.obtenerUsuario(this.idUsuario).subscribe((response: any) => {
-      console.log('[USUARIO][RAW]', response);
+    this.usuaService
+      .obtenerUsuario(this.idUsuario)
+      .subscribe((response: any) => {
+        const data = response?.data ?? {};
 
-      const data = response?.data ?? {};
-
-      const usuarios = Array.isArray(data?.usuario)
-        ? data.usuario
-        : Array.isArray(data?.usuarios)
+        const usuarios = Array.isArray(data?.usuario)
+          ? data.usuario
+          : Array.isArray(data?.usuarios)
           ? data.usuarios
           : data?.usuario
-            ? [data.usuario]
-            : [];
-
-      const u = usuarios[0] ?? {};
-
-      const perms = Array.isArray(data?.permiso)
-        ? data.permiso
-        : Array.isArray(data?.permisos)
-          ? data.permisos
+          ? [data.usuario]
           : [];
 
-      this.permisosIds = Array.from(
-        new Set(
-          (perms || [])
-            .filter((p: any) => Number(p?.estatus) === 1)
-            .map((p: any) => this.getPermisoId(p))
-            .filter((n: any): n is number => Number.isFinite(n))
-        )
-      );
+        const u = usuarios[0] ?? {};
 
-      this.usuarioForm.patchValue({ permisosIds: this.permisosIds });
-      this.applyAssignedPermsToModules?.();
+        const perms = Array.isArray(data?.permiso)
+  ? data.permiso
+  : Array.isArray(data?.permisos)
+  ? data.permisos
+  : [];
 
-      this.usuarioForm.patchValue({
-        userName: u?.userName ?? '',
-        telefono: u?.telefono ?? '',
-        nombre: u?.nombre ?? '',
-        apellidoPaterno: u?.apellidoPaterno ?? '',
-        apellidoMaterno: u?.apellidoMaterno ?? '',
-        fotoPerfil: u?.fotoPerfil ?? this.usuarioForm.get('fotoPerfil')?.value,
-        emailConfirmado: Number(u?.emailConfirmado ?? 0),
-        estatus: Number(u?.estatus ?? 1),
-        idRol: u?.idRol != null ? Number(u.idRol) : null,
-        idCliente: u?.idCliente != null ? Number(u.idCliente) : null,
-        permisosIds: this.permisosIds,
+const permisosAsignadosIds: number[] = Array.from(
+  new Set<number>(
+    (perms || [])
+      .filter((p: any) => Number(p?.estatus) === 1)
+      .map((p: any) => this.getPermisoId(p))
+      .filter((n: any): n is number => typeof n === 'number' && Number.isFinite(n))
+  )
+);
+
+
+        this.permisosSeleccionadosIds = permisosAsignadosIds;
+        this.usuarioForm.patchValue({ permisosIds: permisosAsignadosIds });
+        this.applyAssignedPermsToModules();
+
+        this.usuarioForm.patchValue({
+          userName: u?.userName ?? '',
+          telefono: u?.telefono ?? '',
+          nombre: u?.nombre ?? '',
+          apellidoPaterno: u?.apellidoPaterno ?? '',
+          apellidoMaterno: u?.apellidoMaterno ?? '',
+          fotoPerfil:
+            u?.fotoPerfil ?? this.usuarioForm.get('fotoPerfil')?.value,
+          emailConfirmado: Number(u?.emailConfirmado ?? 0),
+          estatus: Number(u?.estatus ?? 1),
+          idRol: u?.idRol != null ? Number(u.idRol) : null,
+          idCliente: u?.idCliente != null ? Number(u.idCliente) : null,
+        });
       });
-
-    });
-  }
-
-
-  isPermisoAsignado(id: any): boolean {
-    const nid = this.getPermisoId({ idPermiso: id, id });
-    return (
-      nid !== null &&
-      Array.isArray(this.permisosIds) &&
-      this.permisosIds.includes(nid)
-    );
   }
 
   private applyAssignedPermsToModules(): void {
     if (!Array.isArray(this.listaModulos)) return;
-    const asignados = new Set((this.permisosIds || []).map(Number));
+    const asignados = new Set((this.permisosSeleccionadosIds || []).map(Number));
     this.listaModulos = this.listaModulos.map((m) => ({
       ...m,
       permisos: (m.permisos || []).map((p: any) => {
         const idNum = Number(p?.id ?? p?.Id);
+        const activo = asignados.has(idNum);
         return {
           ...p,
           id: idNum,
-          estatus: asignados.has(idNum) ? 1 : 0,
+          estatus: activo ? 1 : 0,
+          asignado: activo,
         };
       }),
     }));
@@ -312,23 +407,16 @@ hidePass = true;
   logoPreviewUrl: string | ArrayBuffer | null = null;
   logoDragging = false;
   private logoFile: File | null = null;
-  logoUploading = false;
-logoUploadedOk = false;
-logoFileName = '';
+  logoFileName = '';
 
-
-  private readonly DEFAULT_AVATAR_URL = 'https://wallpapercat.com/w/full/9/5/a/945731-3840x2160-desktop-4k-matte-black-wallpaper-image.jpg';
   private readonly MAX_MB = 3;
-  private readonly S3_FOLDER = 'usuarios';
-  private readonly S3_ID_MODULE = 2;
 
   private isImage(file: File) {
     return /^image\/(png|jpe?g|webp)$/i.test(file.type);
   }
   private isAllowed(file: File) {
     const okImg = this.isImage(file);
-    const okDoc = /(pdf|msword|officedocument|excel)/i.test(file.type);
-    return (okImg || okDoc) && file.size <= this.MAX_MB * 1024 * 1024;
+    return okImg && file.size <= this.MAX_MB * 1024 * 1024;
   }
   private loadPreview(
     file: File,
@@ -342,47 +430,6 @@ logoFileName = '';
     reader.onload = () => setter(reader.result);
     reader.readAsDataURL(file);
   }
-
-  private buildS3Payload(file: File | null): FormData {
-    const fd = new FormData();
-    if (file) {
-      fd.append('file', file, file.name);
-    } else {
-      fd.append('file', this.DEFAULT_AVATAR_URL);
-    }
-    fd.append('folder', this.S3_FOLDER);
-    fd.append('idModule', String(this.S3_ID_MODULE));
-    return fd;
-  }
-
-private uploadLogoAuto(): void {
-  const fd = new FormData();
-  if (this.logoFile) {
-    fd.append('file', this.logoFile, this.logoFile.name);
-  } else {
-    fd.append('file', this.DEFAULT_AVATAR_URL);
-  }
-  fd.append('folder', 'usuarios');
-  fd.append('idModule', '2');
-
-  this.usuaService.uploadFile(fd).subscribe({
-    next: (res: any) => {
-      const url = res?.url ?? res?.Location ?? res?.data?.url ?? '';
-      if (url) {
-        this.usuarioForm.patchValue({ fotoPerfil: url });
-        if (/\.(png|jpe?g|webp|gif|bmp|svg|avif)(\?.*)?$/i.test(url)) {
-          this.logoPreviewUrl = url;
-        }
-        this.logoUploadedOk = true;
-      }
-      this.logoUploading = false;
-    },
-    error: () => {
-      this.logoUploading = false;
-      this.logoUploadedOk = false;
-    },
-  });
-}
 
   openLogoFilePicker() {
     this.logoFileInput.nativeElement.click();
@@ -414,26 +461,85 @@ private uploadLogoAuto(): void {
     this.logoPreviewUrl = null;
     this.logoFileInput.nativeElement.value = '';
     this.logoFile = null;
-    this.usuarioForm.patchValue({ logotipo: this.DEFAULT_AVATAR_URL });
-    this.usuarioForm.get('logotipo')?.setErrors(null);
-    this.uploadLogoAuto();
+    this.logoFileName = '';
+    this.usuarioForm.patchValue({ fotoPerfil: null });
   }
 
-private handleLogoFile(file: File) {
-  if (!this.isAllowed(file)) {
-    this.usuarioForm.get('logotipo')?.setErrors({ invalid: true });
-    return;
-  }
-  this.logoUploading = true;
-  this.logoUploadedOk = false;
-  this.logoFileName = file.name;
+  private handleLogoFile(file: File) {
+    if (!this.isAllowed(file)) {
+      this.usuarioForm.get('fotoPerfil')?.setErrors({ invalid: true });
+      return;
+    }
 
-  this.loadPreview(file, (url) => (this.logoPreviewUrl = url));
-  this.logoFile = file;
-  this.usuarioForm.patchValue({ logotipo: file });
-  this.usuarioForm.get('logotipo')?.setErrors(null);
-  this.uploadLogoAuto();
-}
+    this.logoFileName = file.name;
+    this.logoFile = file;
+    this.loadPreview(file, (url) => (this.logoPreviewUrl = url));
+    this.usuarioForm.get('fotoPerfil')?.setErrors(null);
+  }
+
+  private buildFormDataParaAgregar(): FormData {
+    const v = this.usuarioForm.value;
+    const formData = new FormData();
+
+    formData.append('userName', v.userName);
+    formData.append('passwordHash', v.passwordHash);
+    formData.append(
+      'emailConfirmado',
+      String(v.emailConfirmado ?? 0)
+    );
+    formData.append('nombre', v.nombre);
+    formData.append('apellidoPaterno', v.apellidoPaterno);
+    formData.append('apellidoMaterno', v.apellidoMaterno || '');
+    formData.append('telefono', v.telefono || '');
+    formData.append('estatus', String(v.estatus ?? 1));
+    formData.append('idRol', String(v.idRol));
+    formData.append('idCliente', String(v.idCliente));
+
+    this.permisosSeleccionadosIds.forEach((id) =>
+      formData.append('permisosIds', id.toString())
+    );
+
+    if (this.logoFile) {
+      formData.append('fotoPerfil', this.logoFile, this.logoFile.name);
+    } else if (v.fotoPerfil) {
+      formData.append('fotoPerfil', v.fotoPerfil);
+    }
+
+    return formData;
+  }
+
+  private buildFormDataParaActualizar(): FormData {
+    const v = this.usuarioForm.value;
+    const formData = new FormData();
+
+    formData.append(
+      'emailConfirmado',
+      String(v.emailConfirmado ?? 0)
+    );
+    formData.append('nombre', v.nombre);
+    formData.append('apellidoPaterno', v.apellidoPaterno);
+    formData.append('apellidoMaterno', v.apellidoMaterno || '');
+    formData.append('telefono', v.telefono || '');
+    formData.append('estatus', String(v.estatus ?? 1));
+    formData.append('idRol', String(v.idRol));
+    formData.append('idCliente', String(v.idCliente));
+
+    this.permisosSeleccionadosIds.forEach((id) =>
+      formData.append('permisosIds', id.toString())
+    );
+
+    if (this.logoFile) {
+      formData.append('fotoPerfil', this.logoFile, this.logoFile.name);
+    } else if (v.fotoPerfil) {
+      formData.append('fotoPerfil', v.fotoPerfil);
+    }
+
+    if (this.inputContrasena && v.passwordHash) {
+      formData.append('passwordHash', v.passwordHash);
+    }
+
+    return formData;
+  }
 
   agregar() {
     if (this.loading) return;
@@ -442,6 +548,9 @@ private handleLogoFile(file: File) {
     this.loading = true;
 
     this.usuarioForm.markAllAsTouched();
+    this.usuarioForm.patchValue({
+      permisosIds: this.permisosSeleccionadosIds,
+    });
 
     const etiquetas: Record<string, string> = {
       userName: 'Correo electrónico',
@@ -454,11 +563,13 @@ private handleLogoFile(file: File) {
       fotoPerfil: 'Foto de perfil',
       idRol: 'Rol',
       estatus: 'Estatus',
+      idCliente: 'Cliente',
       permisosIds: 'Permisos',
     };
 
-    if (this.usuarioForm.invalid) {
+    if (this.usuarioForm.invalid || this.permisosSeleccionadosIds.length === 0) {
       const camposFaltantes: string[] = [];
+
       Object.keys(this.usuarioForm.controls).forEach((key) => {
         const control = this.usuarioForm.get(key);
         if (control?.errors?.['required']) {
@@ -466,12 +577,15 @@ private handleLogoFile(file: File) {
         }
       });
 
-      const mensajes: string[] = [...camposFaltantes];
-      if (this.usuarioForm.hasError('passwordMismatch')) {
-        mensajes.push('Las contraseñas no coinciden');
+      if (this.permisosSeleccionadosIds.length === 0) {
+        camposFaltantes.push('Permisos');
       }
 
-      const lista = mensajes
+      if (this.usuarioForm.hasError('passwordMismatch')) {
+        camposFaltantes.push('Las contraseñas no coinciden');
+      }
+
+      const lista = camposFaltantes
         .map(
           (campo, index) => `
         <div style="padding:8px 12px;border-left:4px solid #d9534f;
@@ -485,6 +599,8 @@ private handleLogoFile(file: File) {
       this.loading = false;
 
       Swal.fire({
+        color: '#ffffff',
+          background: '#141a21',
         title: '¡Faltan campos obligatorios!',
         html: `
         <p style="text-align:center;font-size:15px;margin-bottom:16px;color:white">
@@ -499,30 +615,15 @@ private handleLogoFile(file: File) {
       return;
     }
 
-    const { confirmPassword, idCliente, idRol, permisosIds, ...rest } = this.usuarioForm.value;
+    const formData = this.buildFormDataParaAgregar();
 
-    const toNumOrNull = (v: any) =>
-      v === null || v === undefined || v === '' ? null : Number(v);
-
-    const payload = {
-      ...rest,
-      idCliente: toNumOrNull(idCliente),
-      idRol: toNumOrNull(idRol),
-      permisosIds: (permisosIds || []).map((x: any) => Number(x)),
-    };
-
-    if (!payload.permisosIds || payload.permisosIds.length === 0) {
-      this.submitButton = 'Guardar';
-      this.loading = false;
-      this.mostrarAlertaPermisos();
-      return;
-    }
-
-    this.usuaService.agregarUsuario(payload).subscribe({
+    this.usuaService.agregarUsuario(formData).subscribe({
       next: () => {
         this.submitButton = 'Guardar';
         this.loading = false;
         Swal.fire({
+          color: '#ffffff',
+          background: '#141a21',
           title: '¡Operación Exitosa!',
           text: `Se agregó un nuevo usuario de manera exitosa.`,
           icon: 'success',
@@ -535,6 +636,8 @@ private handleLogoFile(file: File) {
         this.submitButton = 'Guardar';
         this.loading = false;
         Swal.fire({
+          color: '#ffffff',
+          background: '#141a21',
           title: '¡Ops!',
           text: `Ocurrió un error al agregar el usuario.`,
           icon: 'error',
@@ -545,11 +648,12 @@ private handleLogoFile(file: File) {
     });
   }
 
-
   actualizar() {
     if (this.loading) return;
+
     this.submitButton = 'Cargando...';
     this.loading = true;
+
     if (!this.inputContrasena) {
       const passCtrl = this.usuarioForm.get('passwordHash');
       const confirmCtrl = this.usuarioForm.get('confirmPassword');
@@ -558,6 +662,12 @@ private handleLogoFile(file: File) {
       confirmCtrl?.clearValidators();
       confirmCtrl?.updateValueAndValidity({ emitEvent: false });
     }
+
+    this.usuarioForm.markAllAsTouched();
+    this.usuarioForm.patchValue({
+      permisosIds: this.permisosSeleccionadosIds,
+    });
+
     const etiquetas: Record<string, string> = {
       userName: 'Correo electrónico',
       passwordHash: 'Contraseña',
@@ -571,33 +681,42 @@ private handleLogoFile(file: File) {
       idCliente: 'Cliente',
       permisosIds: 'Permisos',
     };
+
     const camposFaltantes: string[] = [];
     Object.keys(this.usuarioForm.controls).forEach((key) => {
       if (
         !this.inputContrasena &&
         (key === 'passwordHash' || key === 'confirmPassword')
-      )
+      ) {
         return;
+      }
       const control = this.usuarioForm.get(key);
       if (control?.errors?.['required']) {
         camposFaltantes.push(etiquetas[key] || key);
       }
     });
-    const listaMensajes: string[] = [...camposFaltantes];
-    if (this.inputContrasena && this.usuarioForm.hasError('passwordMismatch')) {
-      listaMensajes.push('Las contraseñas no coinciden');
+
+    if (this.permisosSeleccionadosIds.length === 0) {
+      camposFaltantes.push('Permisos');
     }
-    if (this.usuarioForm.invalid || listaMensajes.length > 0) {
+
+    if (this.inputContrasena && this.usuarioForm.hasError('passwordMismatch')) {
+      camposFaltantes.push('Las contraseñas no coinciden');
+    }
+
+    if (this.usuarioForm.invalid || camposFaltantes.length > 0) {
       this.submitButton = 'Actualizar';
       this.loading = false;
       Swal.fire({
+        color: '#ffffff',
+          background: '#141a21',
         title: '¡Faltan campos obligatorios!',
         html: `
         <p style="text-align: center; font-size: 15px; margin-bottom: 16px; color: white">
           Los siguientes <strong>campos</strong> requieren atención:
         </p>
         <div style="max-height: 350px; overflow-y: auto;">
-          ${listaMensajes
+          ${camposFaltantes
             .map(
               (msg, idx) => `
             <div style="padding:8px 12px;border-left:4px solid #d9534f;background:#caa8a8;text-align:center;margin-bottom:8px;border-radius:4px;">
@@ -612,35 +731,16 @@ private handleLogoFile(file: File) {
       });
       return;
     }
-    const {
-      userName,
-      confirmPassword,
-      passwordHash,
-      idRol,
-      idCliente,
-      permisosIds,
-      ...rest
-    } = this.usuarioForm.value;
-    const payload: any = {
-      ...rest,
-      idRol: Number(idRol),
-      idCliente: Number(idCliente),
-      permisosIds: (permisosIds || []).map((x: any) => Number(x)),
-    };
-    if (!payload.permisosIds || payload.permisosIds.length === 0) {
-      this.submitButton = 'Actualizar';
-      this.loading = false;
-      this.mostrarAlertaPermisos();
-      return;
-    }
-    if (this.inputContrasena && passwordHash) {
-      payload.passwordHash = passwordHash;
-    }
-    this.usuaService.actualizarUsuario(this.idUsuario, payload).subscribe({
+
+    const formData = this.buildFormDataParaActualizar();
+
+    this.usuaService.actualizarUsuario(this.idUsuario, formData).subscribe({
       next: () => {
         this.submitButton = 'Actualizar';
         this.loading = false;
         Swal.fire({
+          color: '#ffffff',
+          background: '#141a21',
           title: '¡Operación Exitosa!',
           text: `Los datos del usuario se actualizaron correctamente.`,
           icon: 'success',
@@ -653,6 +753,8 @@ private handleLogoFile(file: File) {
         this.submitButton = 'Actualizar';
         this.loading = false;
         Swal.fire({
+          color: '#ffffff',
+          background: '#141a21',
           title: '¡Ops!',
           text: `Ocurrió un error al actualizar el usuario.`,
           icon: 'error',
@@ -663,27 +765,7 @@ private handleLogoFile(file: File) {
     });
   }
 
-  private mostrarAlertaPermisos(): void {
-    const html = `
-      <div style="max-height:350px;overflow-y:auto;">
-        <div style="padding:8px 12px;border-left:4px solid #d9534f;
-                    background:#caa8a8;text-align:center;margin-bottom:8px;border-radius:4px;">
-          <strong style="color:#b02a37;">Debes asignar los permisos correspondientes al usuario.</strong>
-        </div>
-      </div>
-    `;
-    Swal.fire({
-      title: '¡Faltan permisos!',
-      html,
-      icon: 'warning',
-      confirmButtonText: 'De acuerdo',
-      showCancelButton: false,
-      customClass: { popup: 'swal2-padding swal2-border' },
-    });
-  }
-
   regresar() {
     this.route.navigateByUrl('/usuarios');
   }
-
 }

@@ -127,50 +127,59 @@ export class ListaUsuariosComponent implements OnInit {
 
   setupDataSource() {
     this.loading = true;
+
+    const defaultPageSize = this.pageSize || 10;
+
     this.listaUsuarios = new CustomStore({
       key: 'id',
       load: async (loadOptions: any) => {
         const skipValue = Number(loadOptions?.skip) || 0;
-        const takeValue = Number(loadOptions?.take) || this.pageSize;
+        const takeValue = Number(loadOptions?.take) || defaultPageSize;
         const page = Math.floor(skipValue / takeValue) + 1;
+
         try {
           const response: any = await lastValueFrom(
             this.usuService.obtenerUsuariosData(page, takeValue)
           );
+
           this.loading = false;
-          const totalPaginas = Number(response?.paginated?.limit) || 0;
-          const totalRegistros = Number(response?.paginated?.total) || 0;
-          const paginaActual = Number(response?.paginated?.page) || page;
+
+          const paginated = response?.paginated ?? {};
+          const data = Array.isArray(response?.data) ? response.data : [];
+
+          const totalRegistros = Number(paginated.total ?? data.length ?? 0);
+          const paginaActual = Number(paginated.page ?? page);
+          const limite = Number(paginated.limit ?? takeValue);
 
           this.totalRegistros = totalRegistros;
           this.paginaActual = paginaActual;
-          this.totalPaginas = totalPaginas;
+          this.totalPaginas = limite;
 
-          let dataTransformada = (
-            Array.isArray(response?.data) ? response.data : []
-          ).map((item: any) => {
-            const nombre = item?.Nombre || '';
-            const paterno = item?.ApellidoPaterno || '';
-            const materno = item?.ApellidoMaterno || '';
+          const dataTransformada = data.map((item: any) => {
+            const nombre = item?.Nombre ?? item?.nombre ?? '';
+            const paterno =
+              item?.ApellidoPaterno ?? item?.apellidoPaterno ?? '';
+            const materno =
+              item?.ApellidoMaterno ?? item?.apellidoMaterno ?? '';
 
             return {
               ...item,
-              id: Number(item?.Id),
-              idRol: Number(item?.IdRol),
-              idCliente: Number(item?.IdCliente),
-
+              id: Number(item?.Id ?? item?.id),
+              idRol: Number(item?.IdRol ?? item?.idRol),
+              idCliente: Number(item?.IdCliente ?? item?.idCliente),
               NombreCompleto: [nombre, paterno, materno]
                 .filter(Boolean)
                 .join(' '),
             };
           });
-          // dataTransformada.sort((a, b) => b.id - a.id);
+
           this.paginaActualData = dataTransformada;
+
           return {
             data: dataTransformada,
             totalCount: totalRegistros,
           };
-        } catch (error) {
+        } catch (_error) {
           this.loading = false;
           return { data: [], totalCount: 0 };
         }
@@ -189,6 +198,8 @@ export class ListaUsuariosComponent implements OnInit {
 
   eliminarUsuario(usuario: any) {
     Swal.fire({
+      color: '#ffffff',
+      background: '#141a21',
       title: '¡Eliminar Usuario!',
       html: `¿Está seguro que requiere eliminar el usuario: <br> ${usuario.NombreCompleto}?`,
       icon: 'warning',
@@ -202,6 +213,8 @@ export class ListaUsuariosComponent implements OnInit {
         this.usuService.eliminarUsuario(usuario.Id).subscribe(
           (response) => {
             Swal.fire({
+              color: '#ffffff',
+              background: '#141a21',
               title: '¡Eliminado!',
               html: `El usuario ha sido eliminado de forma exitosa.`,
               icon: 'success',
@@ -213,6 +226,8 @@ export class ListaUsuariosComponent implements OnInit {
           },
           (error) => {
             Swal.fire({
+              color: '#ffffff',
+              background: '#141a21',
               title: '¡Ops!',
               html: `Error al intentar eliminar el usuario.`,
               icon: 'error',
@@ -226,6 +241,8 @@ export class ListaUsuariosComponent implements OnInit {
 
   activar(rowData: any) {
     Swal.fire({
+      color: '#ffffff',
+      background: '#141a21',
       title: '¡Activar!',
       html: `¿Está seguro que requiere activar el usuario: <br> <strong>${rowData.NombreCompleto}</strong>?`,
       icon: 'warning',
@@ -239,6 +256,8 @@ export class ListaUsuariosComponent implements OnInit {
         this.usuService.updateEstatus(rowData.id, 1).subscribe(
           (response) => {
             Swal.fire({
+              color: '#ffffff',
+              background: '#141a21',
               title: '¡Confirmación Realizada!',
               html: `El usuario ha sido activado.`,
               icon: 'success',
@@ -252,6 +271,8 @@ export class ListaUsuariosComponent implements OnInit {
           },
           (error) => {
             Swal.fire({
+              color: '#ffffff',
+              background: '#141a21',
               title: '¡Ops!',
               html: `${error}`,
               icon: 'error',
@@ -266,6 +287,8 @@ export class ListaUsuariosComponent implements OnInit {
 
   desactivar(rowData: any) {
     Swal.fire({
+      color: '#ffffff',
+      background: '#141a21',
       title: '¡Desactivar!',
       html: `¿Está seguro que requiere desactivar el usuario:<br> <strong>${rowData.NombreCompleto}</strong>?`,
       icon: 'warning',
@@ -279,6 +302,8 @@ export class ListaUsuariosComponent implements OnInit {
         this.usuService.updateEstatus(rowData.id, 0).subscribe(
           (response) => {
             Swal.fire({
+              color: '#ffffff',
+              background: '#141a21',
               title: '¡Confirmación Realizada!',
               html: `El usuario ha sido desactivado.`,
               icon: 'success',
@@ -291,6 +316,8 @@ export class ListaUsuariosComponent implements OnInit {
           },
           (error) => {
             Swal.fire({
+              color: '#ffffff',
+              background: '#141a21',
               title: '¡Ops!',
               html: `${error}`,
               icon: 'error',
@@ -310,6 +337,8 @@ export class ListaUsuariosComponent implements OnInit {
       .filter((col) => (col.groupIndex ?? -1) >= 0);
     if (groupedColumns.length === 0) {
       Swal.fire({
+        color: '#ffffff',
+        background: '#141a21',
         title: '¡Ops!',
         text: 'Debes arrastar un encabezado de una columna para expandir o contraer grupos.',
         icon: 'warning',
@@ -333,5 +362,5 @@ export class ListaUsuariosComponent implements OnInit {
 
   // hasPermission(permission: string): boolean {
   //   return this.permissionsService.getPermission(permission) !== undefined;
-  // }
+  // }1
 }

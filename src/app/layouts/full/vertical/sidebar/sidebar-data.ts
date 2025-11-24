@@ -71,7 +71,7 @@ export const navItems: NavItem[] = [
       {
         displayName: 'Agregar Usuario',
         // iconName: 'user-cog',
-        // route: '/roles',
+        route: '/usuarios/agregar-usuario',
       },
       {
         displayName: 'Lista Usuarios',
