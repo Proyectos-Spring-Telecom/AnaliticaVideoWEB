@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class InstalacionCentralSede {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   obtenerInstalacionesData(page: number, limit: number): Observable<any> {
     const params = new HttpParams()
@@ -45,9 +45,9 @@ export class InstalacionCentralSede {
     );
   }
 
-  actualizarInstalacion(idCliente: number, saveForm: any): Observable<any> {
-    return this.http.put(
-      `${environment.API_SECURITY}/instalacion-central/` + idCliente,
+  actualizarInstalacion(idSedeCentral: number, saveForm: any): Observable<any> {
+    return this.http.patch(
+      `${environment.API_SECURITY}/instalacion-central/${idSedeCentral}`,
       saveForm
     );
   }

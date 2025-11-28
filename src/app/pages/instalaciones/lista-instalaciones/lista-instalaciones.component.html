@@ -49,6 +49,11 @@
                 <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
                 <dxi-column caption="Acciones" cellTemplate="Acciones" alignment="center" dataType="string"
                     [width]="180"></dxi-column>
+                    <dxi-column dataField="nombreCliente" caption="Cliente" alignment="center" cellTemplate="client"
+                    dataType="string">
+                <div *dxTemplate="let r of 'client'">
+                    {{ r.data?.equipo?.cliente.nombre }} {{ r.data?.equipo?.cliente.apellidoPaterno }} {{ r.data?.equipo?.cliente.apellidoMaterno }}
+                </div></dxi-column>
                 <dxi-column dataField="equipo.numeroSerie" caption="Equipo" alignment="center"
                     dataType="number"></dxi-column>
                 <dxi-column dataField="fhRegistro" caption="Fecha de Registro" alignment="center" dataType="datetime"
@@ -74,7 +79,7 @@
                 <div *dxTemplate="let row of 'Acciones'" class="d-flex gap-3 justify-content-center">
                     <div>
                         <button valueExpr="id" id="actualizarButton" class="btnAcciones"
-                            (click)="actualizarModulo(row.data.id)">
+                            (click)="actualizarInstalacion(row.data.id)">
                             <i class="fa fa-edit"></i>
                         </button>
                     </div>
@@ -88,6 +93,12 @@
                             <i class="fa fa-arrow-down"></i>
                         </button>
                         }
+                    </div>
+                    <div>
+                        <button valueExpr="id" id="detalleIns" class="btnAcciones"
+                            (click)="verInstalacion(row.data.equipo.numeroSerie)">
+                            <i class="fa fa-eye"></i>
+                        </button>
                     </div>
                 </div>
                 <dxo-export [enabled]="false" [allowExportSelectedData]="true"

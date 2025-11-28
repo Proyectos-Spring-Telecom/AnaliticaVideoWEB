@@ -79,8 +79,8 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
     this.router.navigateByUrl('/instalaciones-centrales/agregar-instalacion-central');
   }
 
-  actualizarModulo(idModulo: Number) {
-    this.router.navigateByUrl('/modulos/editar-modulo/' + idModulo);
+  actualizarCede(idSedeCentral: Number) {
+    this.router.navigateByUrl('/instalaciones-centrales/editar-instalacion-central/' + idSedeCentral);
   }
 
   activar(rowData: any) {

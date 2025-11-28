@@ -18,7 +18,7 @@ export class AgregarInstalacionCentralComponent implements OnInit {
   public submitButton: string = 'Guardar';
   public loading: boolean = false;
   public instForm: FormGroup;
-  public idModulo: number;
+  public idSedeCentral: number;
   public title = 'Agregar Instalación Central';
   public listaClientes: any[] = [];
   selectedFileName: string = '';
@@ -37,9 +37,10 @@ export class AgregarInstalacionCentralComponent implements OnInit {
     this.initForm();
     this.activatedRouted.params.subscribe(
       (params) => {
-        this.idModulo = params['idModulo'];
-        if (this.idModulo) {
+        this.idSedeCentral = params['idSedeCentral'];
+        if (this.idSedeCentral) {
           this.title = 'Actualizar Instalación Central';
+          this.obtenerInstalacionSentral();
         }
       }
     )
@@ -57,6 +58,57 @@ export class AgregarInstalacionCentralComponent implements OnInit {
       lng: ['', Validators.required],
       nombre: ['', Validators.required]
     });
+  }
+
+  obtenerInstalacionSentral() {
+    this.instalacionService.obtenerInstalacion(this.idSedeCentral).subscribe(
+      (response: any) => {
+        const data = response.data ?? response;
+
+        this.instForm.patchValue({
+          idEquipo: data.idEquipo,
+          idCliente: data.idCliente,
+          nombre: data.nombre,
+          idSedeCentral: data.idSedeCentral,
+          lat: data.lat,
+          lng: data.lng
+        });
+
+        this.latSeleccionada = Number(data.lat);
+        this.lngSeleccionada = Number(data.lng);
+
+        this.actualizarMarcadorDesdeCoords();
+      }
+    );
+  }
+
+  private actualizarMarcadorDesdeCoords(): void {
+    const w = window as any;
+
+    if (!this.map || this.latSeleccionada == null || this.lngSeleccionada == null || !w.google || !w.google.maps) {
+      return;
+    }
+
+    const iconUrl = this.PIN_URL.startsWith('http')
+      ? this.PIN_URL
+      : `${window.location.origin}/${this.PIN_URL}`;
+
+    if (this.marker) {
+      this.marker.setMap(null);
+    }
+
+    this.marker = new w.google.maps.Marker({
+      position: { lat: this.latSeleccionada, lng: this.lngSeleccionada },
+      map: this.map,
+      icon: {
+        url: iconUrl,
+        scaledSize: new w.google.maps.Size(70, 70),
+        anchor: new w.google.maps.Point(35, 70)
+      }
+    });
+
+    this.map.setCenter({ lat: this.latSeleccionada, lng: this.lngSeleccionada });
+    this.map.setZoom(15);
   }
 
   obtenerClientes() {
@@ -289,18 +341,17 @@ export class AgregarInstalacionCentralComponent implements OnInit {
   submit() {
     this.submitButton = 'Cargando...';
     this.loading = true;
-    if (this.idModulo) {
+    if (this.idSedeCentral) {
       this.actualizar();
     } else {
       this.agregar();
     }
   }
 
-
-
   actualizar() {
     this.submitButton = 'Cargando...';
     this.loading = true;
+
     if (this.instForm.invalid) {
       this.submitButton = 'Guardar';
       this.loading = false;
@@ -342,8 +393,17 @@ export class AgregarInstalacionCentralComponent implements OnInit {
           popup: 'swal2-padding swal2-border'
         }
       });
+      return;
     }
-    this.instalacionService.actualizarInstalacion(this.idModulo, this.instForm.value).subscribe(
+
+    const payload = {
+      nombre: this.instForm.value.nombre,
+      idCliente: Number(this.instForm.value.idCliente),
+      lat: Number(this.instForm.value.lat),
+      lng: Number(this.instForm.value.lng)
+    };
+
+    this.instalacionService.actualizarInstalacion(this.idSedeCentral, payload).subscribe(
       (response: any) => {
         this.submitButton = 'Actualizar';
         this.loading = false;
@@ -373,6 +433,7 @@ export class AgregarInstalacionCentralComponent implements OnInit {
       }
     );
   }
+
 
   regresar() {
     this.route.navigateByUrl('/instalaciones-centrales');

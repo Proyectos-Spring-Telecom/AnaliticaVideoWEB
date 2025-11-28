@@ -33,21 +33,21 @@ export class InstalacionService {
     );
   }
 
-  eliminarInstalacion(idCliente: Number) {
+  eliminarInstalacion(idInstalacion: Number) {
     return this.http.delete(
-      environment.API_SECURITY + '/instalacion-equipo/' + idCliente
+      environment.API_SECURITY + '/instalacion-equipo/' + idInstalacion
     );
   }
 
-  obtenerInstalacion(idCliente: number): Observable<any> {
+  obtenerInstalacion(idInstalacion: number): Observable<any> {
     return this.http.get<any>(
-      environment.API_SECURITY + '/instalacion-equipo/' + idCliente
+      environment.API_SECURITY + '/instalacion-equipo/' + idInstalacion
     );
   }
 
-  actualizarInstalacion(idCliente: number, saveForm: any): Observable<any> {
-    return this.http.put(
-      `${environment.API_SECURITY}/instalacion-equipo/` + idCliente,
+  actualizarInstalacion(idInstalacion: number, saveForm: any): Observable<any> {
+    return this.http.patch(
+      `${environment.API_SECURITY}/instalacion-equipo/${idInstalacion}`,
       saveForm
     );
   }

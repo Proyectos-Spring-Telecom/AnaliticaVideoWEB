@@ -13,7 +13,7 @@ const routes: Routes =
     component: AgregarInstalacionCentralComponent
   },
   {
-    path: 'editar-instalacion-central/:idInstalacion',
+    path: 'editar-instalacion-central/:idSedeCentral',
     component: AgregarInstalacionCentralComponent,
   },
 ];

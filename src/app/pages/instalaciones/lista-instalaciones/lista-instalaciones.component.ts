@@ -66,8 +66,12 @@ export class ListaInstalacionesComponent implements OnInit {
     this.router.navigateByUrl('/instalaciones/agregar-instalacion');
   }
 
-  actualizarModulo(idModulo: Number) {
-    this.router.navigateByUrl('/modulos/editar-modulo/' + idModulo);
+  actualizarInstalacion(idInstalacion: Number) {
+    this.router.navigateByUrl('/instalaciones/editar-instalacion/' + idInstalacion);
+  }
+
+  verInstalacion(numeroSerie: any){
+    this.router.navigateByUrl('/monitoreo/instalacion/' + numeroSerie);
   }
 
   activar(rowData: any) {

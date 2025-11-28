@@ -618,6 +618,16 @@ body {
   border-color: #19348b;
 }
 
+#detalleIns {
+  background: linear-gradient(180deg, #681330 0%,#580f27 100%);
+  border-color: #681330;
+  color: #fff;
+}
+#detalleIns:hover {
+  background: linear-gradient(180deg, #580f27 0%, #580f27 100%);
+  border-color: #19348b;
+}
+
 #pinButton {
   background: linear-gradient(180deg, #1f9e5a 0%, #166534 100%);
   border-color: #14532d;
