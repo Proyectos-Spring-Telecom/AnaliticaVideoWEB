@@ -18,6 +18,10 @@ export class EquipoService {
         return this.http.get(`${environment.API_SECURITY}/equipos`);
     }
 
+    obtenerEquiposDisponibles(): Observable<any> {
+        return this.http.get(`${environment.API_SECURITY}/equipos/disponibles`);
+    }
+
     agregarEquipo(data: FormData) {
         return this.http.post(environment.API_SECURITY + '/equipos', data);
     }

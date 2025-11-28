@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { DxDataGridComponent } from 'devextreme-angular';
 import { io, Socket } from 'socket.io-client';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { routeAnimation } from 'src/app/pipe/module-open.animation';
 import { InstalacionCentral } from 'src/app/services/moduleService/instalacionesCentral.service';
@@ -89,8 +89,13 @@ export class MonitoreoInstalacionComponent implements OnInit {
     private incidencias: InstalacionCentral,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
+
+  regresar(){
+    this.router.navigateByUrl('/monitoreo')
+  }
 
   ngOnInit(): void {
     this.numeroSerie = this.route.snapshot.paramMap.get('numeroSerie') ?? '';
@@ -169,7 +174,7 @@ export class MonitoreoInstalacionComponent implements OnInit {
 
         this.cdr.detectChanges();
       },
-      error: () => {},
+      error: () => { },
     });
   }
 
@@ -197,7 +202,7 @@ export class MonitoreoInstalacionComponent implements OnInit {
           this.totalFiltrado = Number(resp?.total ?? regs.length);
           this.recalcularDesdeRegistros(regs);
         },
-        error: () => {},
+        error: () => { },
         complete: () => (this.loading = false),
       });
   }
@@ -232,7 +237,7 @@ export class MonitoreoInstalacionComponent implements OnInit {
         if (Array.isArray(resp?.edadesHombres))
           this.chartEdadesHombres = this.ensureEdadShape(resp.edadesHombres);
       },
-      error: () => {},
+      error: () => { },
       complete: () => (this.loading = false),
     });
   }
@@ -271,8 +276,8 @@ export class MonitoreoInstalacionComponent implements OnInit {
     try {
       const a = new Audio('assets/images/notificacaion.mp3');
       a.volume = 0.8;
-      a.play().catch(() => {});
-    } catch {}
+      a.play().catch(() => { });
+    } catch { }
   }
 
   customizeEdadTooltip = (p: any) => ({
@@ -519,8 +524,8 @@ export class MonitoreoInstalacionComponent implements OnInit {
           typeof x?.hora === 'string'
             ? x.hora
             : x?.hour != null
-            ? String(x.hour).padStart(2, '0') + ':00'
-            : '00:00';
+              ? String(x.hour).padStart(2, '0') + ':00'
+              : '00:00';
         const hombres = Number(x?.hombres ?? x?.male ?? 0);
         const mujeres = Number(x?.mujeres ?? x?.female ?? 0);
         return { hora, hombres, mujeres };
@@ -533,16 +538,16 @@ export class MonitoreoInstalacionComponent implements OnInit {
       typeof k === 'number'
         ? k
         : (
-            {
-              '0-20': 1,
-              '0 - 20': 1,
-              '21-40': 2,
-              '21 - 40': 2,
-              '41-60': 3,
-              '41 - 60': 3,
-              '61+': 4,
-            } as any
-          )[k] || 1;
+          {
+            '0-20': 1,
+            '0 - 20': 1,
+            '21-40': 2,
+            '21 - 40': 2,
+            '41-60': 3,
+            '41 - 60': 3,
+            '61+': 4,
+          } as any
+        )[k] || 1;
     return arr.map((x) => {
       const rango = x?.rango ?? x?.label ?? '';
       const valor = Number(x?.valor ?? x?.count ?? 0);

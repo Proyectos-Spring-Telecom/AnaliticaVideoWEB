@@ -23,7 +23,7 @@
               <span class="input-group-text fw-bold">
                 <mat-icon aria-hidden="true">view_module</mat-icon>
               </span>
-              <div class="form-floating flex-grow-1">
+              <div class="form-floating flex-grow-1 perm-select-floating">
                 <select class="form-control" formControlName="idModulo">
                   <option [ngValue]="null" selected disabled hidden></option>
                   <option *ngFor="let modulo of listaModulos" [ngValue]="modulo.id">

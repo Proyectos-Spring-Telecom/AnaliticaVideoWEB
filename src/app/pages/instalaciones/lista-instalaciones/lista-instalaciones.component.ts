@@ -1,13 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { DxDataGridComponent } from 'devextreme-angular';
 import CustomStore from 'devextreme/data/custom_store';
 import { lastValueFrom } from 'rxjs';
 import { routeAnimation } from 'src/app/pipe/module-open.animation';
-import { InstalacionCentralSede } from 'src/app/services/moduleService/instalacion-central.service';
 import { InstalacionService } from 'src/app/services/moduleService/instalaciones.service';
-import { ModulosService } from 'src/app/services/moduleService/modulos.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -37,9 +34,17 @@ export class ListaInstalacionesComponent implements OnInit {
   public paginaActualData: any[] = [];
   public filtroActivo: string = '';
 
+  mostrarModalMapa = false;
+  instalacionSeleccionada: any = null;
+  map: any = null;
+  marker: any = null;
+
+  private readonly apiKey = 'AIzaSyDuJ3IBZIs2mRbR4alTg7OZIsk0sXEJHhg';
+  private readonly PIN_URL = '/assets/images/logos/marker_spring.webp';
+
   constructor(
     private router: Router,
-    private instalacionService: InstalacionService // private permissionsService: NgxPermissionsService
+    private instalacionService: InstalacionService
   ) {
     this.showFilterRow = true;
     this.showHeaderFilter = true;
@@ -47,12 +52,7 @@ export class ListaInstalacionesComponent implements OnInit {
 
   ngOnInit() {
     this.obtenerInstalaciones();
-    // this.obtenerlistaInstalaciones();
   }
-
-  // hasPermission(permission: string): boolean {
-  //   return this.permissionsService.getPermission(permission) !== undefined;
-  // }.
 
   obtenerInstalaciones() {
     this.loading = true;
@@ -70,7 +70,7 @@ export class ListaInstalacionesComponent implements OnInit {
     this.router.navigateByUrl('/instalaciones/editar-instalacion/' + idInstalacion);
   }
 
-  verInstalacion(numeroSerie: any){
+  verInstalacion(numeroSerie: any) {
     this.router.navigateByUrl('/monitoreo/instalacion/' + numeroSerie);
   }
 
@@ -89,7 +89,7 @@ export class ListaInstalacionesComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.instalacionService.updateEstatus(rowData.id, 1).subscribe(
-          (response) => {
+          () => {
             Swal.fire({
               background: '#141a21',
               color: '#ffffff',
@@ -102,7 +102,6 @@ export class ListaInstalacionesComponent implements OnInit {
 
             this.obtenerInstalaciones();
             this.dataGrid.instance.refresh();
-            // this.obtenerlistaInstalaciones();
           },
           (error) => {
             Swal.fire({
@@ -135,7 +134,7 @@ export class ListaInstalacionesComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.instalacionService.updateEstatus(rowData.id, 0).subscribe(
-          (response) => {
+          () => {
             Swal.fire({
               title: '¡Confirmación Realizada!',
               html: `El módulo ha sido desactivado.`,
@@ -147,7 +146,6 @@ export class ListaInstalacionesComponent implements OnInit {
             });
             this.obtenerInstalaciones();
             this.dataGrid.instance.refresh();
-            // this.obtenerlistaInstalaciones();
           },
           (error) => {
             Swal.fire({
@@ -163,7 +161,6 @@ export class ListaInstalacionesComponent implements OnInit {
         );
       }
     });
-    // console.log('Desactivar:', rowData);
   }
 
   onPageIndexChanged(e: any) {
@@ -188,7 +185,6 @@ export class ListaInstalacionesComponent implements OnInit {
           );
           this.loading = false;
 
-          // Soportar distintos formatos de payload
           const rows: any[] = Array.isArray(resp?.data)
             ? resp.data
             : Array.isArray(resp?.items)
@@ -314,5 +310,82 @@ export class ListaInstalacionesComponent implements OnInit {
     this.dataGrid.instance.pageIndex(0);
     this.dataGrid.instance.refresh();
     this.isGrouped = false;
+  }
+
+  verMapaInstalacion(instalacion: any) {
+    this.instalacionSeleccionada = instalacion;
+    this.mostrarModalMapa = true;
+
+    if (!this.instalacionSeleccionada?.lat || !this.instalacionSeleccionada?.lng) {
+      return;
+    }
+
+    setTimeout(() => {
+      this.loadGoogleMaps()
+        .then(() => this.initMapInstalacion())
+        .catch(err => console.error('No se pudo cargar Google Maps', err));
+    }, 0);
+  }
+
+  cerrarModalMapa() {
+    this.mostrarModalMapa = false;
+    this.instalacionSeleccionada = null;
+    this.map = null;
+    this.marker = null;
+  }
+
+  loadGoogleMaps(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const w = window as any;
+
+      if (w.google && w.google.maps) {
+        resolve();
+        return;
+      }
+
+      const existingScript = document.querySelector('script[data-gmaps="true"]');
+      if (existingScript) {
+        existingScript.addEventListener('load', () => resolve());
+        existingScript.addEventListener('error', e => reject(e));
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${this.apiKey}`;
+      script.async = true;
+      script.defer = true;
+      script.setAttribute('data-gmaps', 'true');
+      script.onload = () => resolve();
+      script.onerror = e => reject(e);
+      document.head.appendChild(script);
+    });
+  }
+
+  initMapInstalacion(): void {
+    const mapElement = document.getElementById('map');
+    if (!mapElement) return;
+
+    const w = window as any;
+    if (!w.google || !w.google.maps) return;
+
+    const lat = Number(this.instalacionSeleccionada.lat);
+    const lng = Number(this.instalacionSeleccionada.lng);
+
+    this.map = new w.google.maps.Map(mapElement, {
+      center: { lat, lng },
+      zoom: 15
+    });
+
+    const iconUrl = this.PIN_URL;
+
+    this.marker = new w.google.maps.Marker({
+      position: { lat, lng },
+      map: this.map,
+      icon: {
+        url: iconUrl,
+        scaledSize: new w.google.maps.Size(70, 70),
+        anchor: new w.google.maps.Point(35, 70)
+      }
+    });
   }
 }

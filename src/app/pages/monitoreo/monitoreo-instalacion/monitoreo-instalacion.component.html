@@ -2,6 +2,11 @@
 
   <section class="container-fluid mt-1 p-5">
 
+    <div class="d-flex justify-content-end mb-3">
+      <button type="button" class="button-danger" (click)="regresar()">
+        Regresar
+      </button>
+    </div>
     <div class="panel p-3 mb-3 d-flex align-items-center justify-content-between border-start border-5 rounded"
       [class.highlight-hombre]="highlightActive && colorEstado === 'hombre'"
       [class.highlight-mujer]="highlightActive && colorEstado === 'mujer'">

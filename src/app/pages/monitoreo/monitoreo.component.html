@@ -24,7 +24,7 @@
           <div class="card-header d-flex align-items-center justify-content-between">
             <div>
               <ng-container *ngIf="viewMode === 'centrales'; else headerInstalaciones">
-                Clientes
+                Instalaciones Centrales
               </ng-container>
               <ng-template #headerInstalaciones>
                 Instalaciones del cliente: {{ selectedCentral?.nombreCliente }}
@@ -36,38 +36,46 @@
           </div>
           <div class="card-body insta-body">
             <ng-container *ngIf="listaVisible.length > 0; else noInstalacionesTpl">
-              <div
-  class="insta-item"
-  *ngFor="let item of listaVisible; let i = index"
-  [class.central]="viewMode === 'centrales'"
-  [class.instalacion]="viewMode === 'instalaciones'"
-  [class.active]="viewMode === 'centrales' && item.id === selectedId"
-  (click)="selectInstalacion(item, i)"
->
+              <div class="insta-item" *ngFor="let item of listaVisible; let i = index"
+                [class.central]="viewMode === 'centrales'" [class.instalacion]="viewMode === 'instalaciones'"
+                [class.active]="viewMode === 'centrales' && item.id === selectedId"
+                (click)="selectInstalacion(item, i)">
 
                 <div class="d-flex justify-content-between align-items-start mb-1">
                   <div>
                     <div class="insta-title">
-                      {{ viewMode === 'centrales' ? item.nombreCliente : (item.nombreInstalacion || item.nombre ||
-                      'Instalación') }}
+                      <ng-container *ngIf="viewMode === 'centrales'; else tituloInstalacion">
+                        <strong>Cliente:</strong> {{ item.nombreCliente }}
+                      </ng-container>
+                      <ng-template #tituloInstalacion>
+                        <strong>Instalación:</strong> {{ item.nombreInstalacion || item.nombre || 'Instalación' }}
+                      </ng-template>
                     </div>
+
                     <div class="small encar" *ngIf="viewMode === 'centrales'">
-                      Encargado: {{ item.nombreEncargado }}
+                      <strong>Instalación:</strong> {{ item.nombreInstalacion || item.nombre || 'Instalación' }}
+                    </div>
+
+                    <div class="small encar" *ngIf="viewMode === 'centrales'">
+                      <strong>Encargado:</strong> {{ item.nombreEncargado }}
                     </div>
                     <div class="small encar" *ngIf="viewMode === 'instalaciones'">
-                      Encargado: {{ selectedCentral?.nombreEncargado }}
+                      <strong>Encargado:</strong> {{ selectedCentral?.nombreEncargado }}
                     </div>
                   </div>
                   <div class="insta-dot ok"></div>
                 </div>
+
                 <div class="insta-address mt-1">
                   <mat-icon>place</mat-icon>
                   <span>
+                    <strong>Dirección:</strong>
                     {{ viewMode === 'centrales'
                     ? item.direccion
                     : (selectedCentral?.direccion || item.direccion) }}
                   </span>
                 </div>
+
                 <div class="d-flex justify-content-end gap-2 mt-2">
                   <ng-container *ngIf="viewMode === 'centrales'; else botonesInstalaciones">
                     <!-- <button type="button" class="btn btn-sm" (click)="goToCentrales(); $event.stopPropagation()">

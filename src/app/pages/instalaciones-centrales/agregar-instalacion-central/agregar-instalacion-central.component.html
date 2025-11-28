@@ -23,10 +23,9 @@
                             <span class="input-group-text fw-bold">
                                 <mat-icon aria-hidden="true">account_tree</mat-icon>
                             </span>
-                            <div class="form-floating flex-grow-1">
+                            <div class="form-floating flex-grow-1 perm-select-floating">
                                 <select class="form-select" id="idCliente" formControlName="idCliente">
-                                    <option [ngValue]="null" disabled>Selecciona un cliente
-                                    </option>
+                                    <!-- <option [ngValue]="null" disabled>Selecciona un cliente</option> -->
                                     <option *ngFor="let cliente of listaClientes" [ngValue]="cliente.id">
                                         {{ cliente.nombre }}
                                         {{ cliente.apellidoPaterno }}

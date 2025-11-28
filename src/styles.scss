@@ -230,7 +230,7 @@ body {
   position: relative;
 }
 
-.perm-ig .form-floating::after {
+.perm-ig .perm-select-floating::after {
   content: '▾';
   position: absolute;
   right: 1rem;
@@ -625,7 +625,7 @@ body {
 }
 #detalleIns:hover {
   background: linear-gradient(180deg, #580f27 0%, #580f27 100%);
-  border-color: #19348b;
+  border-color: #681330;
 }
 
 #pinButton {
@@ -683,6 +683,45 @@ body {
   color: #fee2e2;
 }
 .estatus-inactivo::before { background: #f87171; }
+
+.estatus-disponible {
+  background: #064e3b;
+  border-color: #022c22;
+  color: #bbf7d0;
+}
+.estatus-disponible::before {
+  background: #22c55e;
+}
+
+/* Instalado (azul) */
+.estatus-instalado {
+  background: #0f2942;
+  border-color: #0b1b2d;
+  color: #dbeafe;
+}
+.estatus-instalado::before {
+  background: #60a5fa;
+}
+
+/* En reparación (ámbar) */
+.estatus-reparacion {
+  background: #451a03;
+  border-color: #2c1202;
+  color: #ffedd5;
+}
+.estatus-reparacion::before {
+  background: #fb923c;
+}
+
+/* Descompuesto (rojo vino) */
+.estatus-descompuesto {
+  background: #4c0519;
+  border-color: #2b0410;
+  color: #fee2e2;
+}
+.estatus-descompuesto::before {
+  background: #f97373;
+}
 
 .uploader__filename--link {
   display: block;

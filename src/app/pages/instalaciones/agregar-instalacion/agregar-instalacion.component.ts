@@ -75,7 +75,7 @@ export class AgregarInstalacionComponent implements OnInit, AfterViewInit {
   }
 
   obtenerEquipos() {
-    this.equiposService.obtenerEquipos().subscribe((response) => {
+    this.equiposService.obtenerEquiposDisponibles().subscribe((response) => {
       this.listaEquipos = (response.data || []).map((c: any) => ({
         ...c,
         id: Number(c.id),
@@ -84,26 +84,25 @@ export class AgregarInstalacionComponent implements OnInit, AfterViewInit {
   }
 
   obtenerInstalacion() {
-  this.instalacionService.obtenerInstalacion(this.idInstalacion).subscribe(
-    (response: any) => {
-      const data = response.data ?? response;
+    this.instalacionService.obtenerInstalacion(this.idInstalacion).subscribe(
+      (response: any) => {
+        const data = response.data ?? response;
 
-      this.insEquipoForm.patchValue({
-        idEquipo: data.idEquipo,
-        idCliente: data.idCliente,
-        idSedeCentral: data.idSedeCentral,
-        lat: data.lat,
-        lng: data.lng
-      });
+        this.insEquipoForm.patchValue({
+          idEquipo: data.idEquipo,
+          idCliente: data.idCliente,
+          idSedeCentral: data.idSedeCentral,
+          lat: data.lat,
+          lng: data.lng
+        });
 
-      this.latSeleccionada = Number(data.lat);
-      this.lngSeleccionada = Number(data.lng);
+        this.latSeleccionada = Number(data.lat);
+        this.lngSeleccionada = Number(data.lng);
 
-      this.actualizarMarcadorDesdeCoords();
-    }
-  );
-}
-
+        this.actualizarMarcadorDesdeCoords();
+      }
+    );
+  }
 
   initForm() {
     this.insEquipoForm = this.fb.group({
@@ -227,113 +226,112 @@ export class AgregarInstalacionComponent implements OnInit, AfterViewInit {
   }
 
   actualizar() {
-  this.submitButton = 'Actualizando...';
-  this.loading = true;
+    this.submitButton = 'Actualizando...';
+    this.loading = true;
 
-  const etiquetas: any = {
-    idEquipo: 'Equipo',
-    idCliente: 'Cliente',
-    idSedeCentral: 'Sede Central',
-  };
+    const etiquetas: any = {
+      idEquipo: 'Equipo',
+      idCliente: 'Cliente',
+      idSedeCentral: 'Sede Central',
+    };
 
-  const camposFaltantes: string[] = [];
+    const camposFaltantes: string[] = [];
 
-  Object.keys(this.insEquipoForm.controls).forEach(key => {
-    const control = this.insEquipoForm.get(key);
-    if (control?.invalid && control.errors?.['required']) {
-      if (key !== 'lat' && key !== 'lng') {
-        camposFaltantes.push(etiquetas[key] || key);
+    Object.keys(this.insEquipoForm.controls).forEach(key => {
+      const control = this.insEquipoForm.get(key);
+      if (control?.invalid && control.errors?.['required']) {
+        if (key !== 'lat' && key !== 'lng') {
+          camposFaltantes.push(etiquetas[key] || key);
+        }
       }
+    });
+
+    const faltaUbicacion = !this.latSeleccionada || !this.lngSeleccionada;
+    if (faltaUbicacion) {
+      camposFaltantes.push('Ubicación de la instalación');
     }
-  });
 
-  const faltaUbicacion = !this.latSeleccionada || !this.lngSeleccionada;
-  if (faltaUbicacion) {
-    camposFaltantes.push('Ubicación de la instalación');
-  }
+    if (camposFaltantes.length) {
+      this.submitButton = 'Actualizar';
+      this.loading = false;
 
-  if (camposFaltantes.length) {
-    this.submitButton = 'Actualizar';
-    this.loading = false;
-
-    const lista = camposFaltantes
-      .map(
-        (campo, index) => `
+      const lista = camposFaltantes
+        .map(
+          (campo, index) => `
         <div style="padding: 8px 12px; border-left: 4px solid #d9534f;
                     background: #caa8a8; text-align: center; margin-bottom: 8px;
                     border-radius: 4px;">
           <strong style="color: #b02a37;">${index + 1}. ${campo}</strong>
         </div>
       `
-      )
-      .join('');
+        )
+        .join('');
 
-    Swal.fire({
-      background: '#141a21',
-      color: '#ffffff',
-      title: '¡Faltan datos de la instalación!',
-      html: `
+      Swal.fire({
+        background: '#141a21',
+        color: '#ffffff',
+        title: '¡Faltan datos de la instalación!',
+        html: `
           <p style="text-align: center; font-size: 15px; margin-bottom: 16px; color: white">
             Los siguientes <strong>campos obligatorios</strong> están vacíos.<br>
             Por favor complétalos antes de continuar:
           </p>
           <div style="max-height: 350px; overflow-y: auto;">${lista}</div>
         `,
-      icon: 'error',
-      confirmButtonText: 'Entendido',
-      customClass: {
-        popup: 'swal2-padding swal2-border'
-      }
-    });
-    return;
-  }
-
-  const payload = {
-    idEquipo: this.insEquipoForm.value.idEquipo,
-    lat: Number(this.latSeleccionada),
-    lng: Number(this.lngSeleccionada),
-    idCliente: Number(this.insEquipoForm.value.idCliente),
-    idSedeCentral: Number(this.insEquipoForm.value.idSedeCentral)
-  };
-
-  this.instalacionService.actualizarInstalacion(this.idInstalacion, payload).subscribe(
-    (response: any) => {
-      this.submitButton = 'Actualizar';
-      this.loading = false;
-      Swal.fire({
-        background: '#141a21',
-        color: '#ffffff',
-        title: '¡Operación Exitosa!',
-        text: `Los datos de la instalación de equipo se actualizaron correctamente.`,
-        icon: 'success',
-        confirmButtonColor: '#3085d6',
-        confirmButtonText: 'Confirmar',
-      });
-      this.regresar();
-    },
-    (error: any) => {
-      this.submitButton = 'Actualizar';
-      this.loading = false;
-      Swal.fire({
-        background: '#141a21',
-        color: '#ffffff',
-        title: '¡Ops!',
-        text: error.error.message,
         icon: 'error',
-        confirmButtonColor: '#3085d6',
-        confirmButtonText: 'Confirmar',
+        confirmButtonText: 'Entendido',
+        customClass: {
+          popup: 'swal2-padding swal2-border'
+        }
       });
+      return;
     }
-  );
-}
 
+    const payload = {
+      idEquipo: this.insEquipoForm.value.idEquipo,
+      lat: Number(this.latSeleccionada),
+      lng: Number(this.lngSeleccionada),
+      idCliente: Number(this.insEquipoForm.value.idCliente),
+      idSedeCentral: Number(this.insEquipoForm.value.idSedeCentral)
+    };
+
+    this.instalacionService.actualizarInstalacion(this.idInstalacion, payload).subscribe(
+      (response: any) => {
+        this.submitButton = 'Actualizar';
+        this.loading = false;
+        Swal.fire({
+          background: '#141a21',
+          color: '#ffffff',
+          title: '¡Operación Exitosa!',
+          text: `Los datos de la instalación de equipo se actualizaron correctamente.`,
+          icon: 'success',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Confirmar',
+        });
+        this.regresar();
+      },
+      (error: any) => {
+        this.submitButton = 'Actualizar';
+        this.loading = false;
+        Swal.fire({
+          background: '#141a21',
+          color: '#ffffff',
+          title: '¡Ops!',
+          text: error.error.message,
+          icon: 'error',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Confirmar',
+        });
+      }
+    );
+  }
 
   regresar() {
     this.route.navigateByUrl('/instalaciones');
   }
 
   private readonly apiKey = 'AIzaSyDuJ3IBZIs2mRbR4alTg7OZIsk0sXEJHhg';
-  private readonly PIN_URL = 'assets/images/logos/marker_spring.webp';
+  private readonly PIN_URL = '/assets/images/logos/marker_spring.webp';
 
   map: any = null;
   marker: any = null;
@@ -382,9 +380,7 @@ export class AgregarInstalacionComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const iconUrl = this.PIN_URL.startsWith('http')
-      ? this.PIN_URL
-      : `${window.location.origin}/${this.PIN_URL}`;
+    const iconUrl = this.PIN_URL;
 
     if (this.marker) {
       this.marker.setMap(null);
@@ -430,9 +426,7 @@ export class AgregarInstalacionComponent implements OnInit, AfterViewInit {
         lng
       });
 
-      const iconUrl = this.PIN_URL.startsWith('http')
-        ? this.PIN_URL
-        : `${window.location.origin}/${this.PIN_URL}`;
+      const iconUrl = this.PIN_URL;
 
       if (this.marker) {
         this.marker.setMap(null);

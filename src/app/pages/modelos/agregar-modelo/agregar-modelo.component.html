@@ -23,7 +23,7 @@
                             <span class="input-group-text fw-bold">
                                 <mat-icon aria-hidden="true">view_module</mat-icon>
                             </span>
-                            <div class="form-floating flex-grow-1">
+                            <div class="form-floating flex-grow-1 perm-select-floating">
                                 <select  for="permNombres" class="form-control" formControlName="idMarca">
                                     <option [ngValue]="null" selected disabled hidden></option>
                                     <option *ngFor="let producto of listaMarcas" [ngValue]="producto.id">
@@ -39,7 +39,7 @@
                             <span class="input-group-text fw-bold">
                                 <mat-icon aria-hidden="true">view_module</mat-icon>
                             </span>
-                            <div class="form-floating flex-grow-1">
+                            <div class="form-floating flex-grow-1 perm-select-floating">
                                 <select  for="permNombres" class="form-control" formControlName="idProducto">
                                     <option [ngValue]="null" selected disabled hidden></option>
                                     <option *ngFor="let producto of listaProductos" [ngValue]="producto.id">

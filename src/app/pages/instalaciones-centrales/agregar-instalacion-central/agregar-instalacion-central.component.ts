@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { routeAnimation } from 'src/app/pipe/module-open.animation';
@@ -14,7 +14,7 @@ import Swal from 'sweetalert2';
   standalone: false,
   animations: [routeAnimation],
 })
-export class AgregarInstalacionCentralComponent implements OnInit {
+export class AgregarInstalacionCentralComponent implements OnInit, AfterViewInit {
   public submitButton: string = 'Guardar';
   public loading: boolean = false;
   public instForm: FormGroup;
@@ -33,19 +33,16 @@ export class AgregarInstalacionCentralComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.obtenerClientes()
+    this.obtenerClientes();
     this.initForm();
-    this.activatedRouted.params.subscribe(
-      (params) => {
-        this.idSedeCentral = params['idSedeCentral'];
-        if (this.idSedeCentral) {
-          this.title = 'Actualizar Instalación Central';
-          this.obtenerInstalacionSentral();
-        }
+    this.activatedRouted.params.subscribe((params) => {
+      this.idSedeCentral = params['idSedeCentral'];
+      if (this.idSedeCentral) {
+        this.title = 'Actualizar Instalación Central';
+        this.obtenerInstalacionSentral();
       }
-    )
+    });
   }
-
 
   cerrarModalAgregar(): void {
     this.modalAgregarVisible = false;
@@ -56,7 +53,7 @@ export class AgregarInstalacionCentralComponent implements OnInit {
       idCliente: ['', Validators.required],
       lat: ['', Validators.required],
       lng: ['', Validators.required],
-      nombre: ['', Validators.required]
+      nombre: ['', Validators.required],
     });
   }
 
@@ -71,7 +68,7 @@ export class AgregarInstalacionCentralComponent implements OnInit {
           nombre: data.nombre,
           idSedeCentral: data.idSedeCentral,
           lat: data.lat,
-          lng: data.lng
+          lng: data.lng,
         });
 
         this.latSeleccionada = Number(data.lat);
@@ -89,9 +86,7 @@ export class AgregarInstalacionCentralComponent implements OnInit {
       return;
     }
 
-    const iconUrl = this.PIN_URL.startsWith('http')
-      ? this.PIN_URL
-      : `${window.location.origin}/${this.PIN_URL}`;
+    const iconUrl = this.PIN_URL;
 
     if (this.marker) {
       this.marker.setMap(null);
@@ -103,8 +98,8 @@ export class AgregarInstalacionCentralComponent implements OnInit {
       icon: {
         url: iconUrl,
         scaledSize: new w.google.maps.Size(70, 70),
-        anchor: new w.google.maps.Point(35, 70)
-      }
+        anchor: new w.google.maps.Point(35, 70),
+      },
     });
 
     this.map.setCenter({ lat: this.latSeleccionada, lng: this.lngSeleccionada });
@@ -122,27 +117,27 @@ export class AgregarInstalacionCentralComponent implements OnInit {
 
   map: any = null;
 
-
   ngAfterViewInit(): void {
     this.loadGoogleMaps()
       .then(() => {
         this.initMap();
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('No se pudo cargar Google Maps', err);
       });
   }
-
 
   abrirModalAgregar(): void {
     this.modalAgregarVisible = true;
 
     setTimeout(() => {
-      this.loadGoogleMaps().then(() => {
-        this.initMap();
-      }).catch(err => {
-        console.error('No se pudo cargar Google Maps', err);
-      });
+      this.loadGoogleMaps()
+        .then(() => {
+          this.initMap();
+        })
+        .catch((err) => {
+          console.error('No se pudo cargar Google Maps', err);
+        });
     }, 50);
   }
 
@@ -184,7 +179,7 @@ export class AgregarInstalacionCentralComponent implements OnInit {
 
     this.map = new w.google.maps.Map(mapElement, {
       center: { lat: 19.4326, lng: -99.1332 },
-      zoom: 12
+      zoom: 12,
     });
 
     this.map.addListener('click', (e: any) => {
@@ -196,12 +191,10 @@ export class AgregarInstalacionCentralComponent implements OnInit {
 
       this.instForm.patchValue({
         lat,
-        lng
+        lng,
       });
 
-      const iconUrl = this.PIN_URL.startsWith('http')
-        ? this.PIN_URL
-        : `${window.location.origin}/${this.PIN_URL}`;
+      const iconUrl = this.PIN_URL;
 
       if (this.marker) {
         this.marker.setMap(null);
@@ -212,28 +205,23 @@ export class AgregarInstalacionCentralComponent implements OnInit {
         map: this.map,
         icon: {
           url: iconUrl,
-          scaledSize: new w.google.maps.Size(60, 60),   // antes 40x40
-          anchor: new w.google.maps.Point(30, 60)
-        }
+          scaledSize: new w.google.maps.Size(60, 60),
+          anchor: new w.google.maps.Point(30, 60),
+        },
       });
 
       this.map.panTo({ lat, lng });
     });
   }
 
-
-
-
   private readonly apiKey = 'AIzaSyDuJ3IBZIs2mRbR4alTg7OZIsk0sXEJHhg';
   modalAgregarVisible = false;
 
-  private readonly PIN_URL = 'assets/images/logos/marker_spring.webp';
+  private readonly PIN_URL = '/assets/images/logos/marker_blue.webp';
 
   latSeleccionada: number | null = null;
   lngSeleccionada: number | null = null;
   marker: any = null;
-
-
 
   agregar() {
     this.submitButton = 'Cargando...';
@@ -245,7 +233,7 @@ export class AgregarInstalacionCentralComponent implements OnInit {
 
       const etiquetas: any = {
         idCliente: 'Cliente',
-        nombre: 'Nombre de la Instalación'
+        nombre: 'Nombre de la Instalación',
       };
 
       const camposFaltantes: string[] = [];
@@ -259,8 +247,7 @@ export class AgregarInstalacionCentralComponent implements OnInit {
         }
       });
 
-      const faltaUbicacion =
-        this.instForm.get('lat')?.invalid || this.instForm.get('lng')?.invalid;
+      const faltaUbicacion = this.instForm.get('lat')?.invalid || this.instForm.get('lng')?.invalid;
 
       if (faltaUbicacion) {
         camposFaltantes.push('Ubicación de la instalación');
@@ -318,7 +305,7 @@ export class AgregarInstalacionCentralComponent implements OnInit {
           background: '#141a21',
           color: '#ffffff',
         });
-        this.regresar()
+        this.regresar();
       },
       (error: any) => {
         this.submitButton = 'Guardar';
@@ -335,8 +322,6 @@ export class AgregarInstalacionCentralComponent implements OnInit {
       }
     );
   }
-
-
 
   submit() {
     this.submitButton = 'Cargando...';
@@ -357,24 +342,28 @@ export class AgregarInstalacionCentralComponent implements OnInit {
       this.loading = false;
       const etiquetas: any = {
         idCliente: 'Cliente',
-        nombre: 'Nombre de la Instalación'
+        nombre: 'Nombre de la Instalación',
       };
 
       const camposFaltantes: string[] = [];
-      Object.keys(this.instForm.controls).forEach(key => {
+      Object.keys(this.instForm.controls).forEach((key) => {
         const control = this.instForm.get(key);
         if (control?.invalid && control.errors?.['required']) {
           camposFaltantes.push(etiquetas[key] || key);
         }
       });
 
-      const lista = camposFaltantes.map((campo, index) => `
+      const lista = camposFaltantes
+        .map(
+          (campo, index) => `
           <div style="padding: 8px 12px; border-left: 4px solid #d9534f;
                       background: #caa8a8; text-align: center; margin-bottom: 8px;
                       border-radius: 4px;">
             <strong style="color: #b02a37;">${index + 1}. ${campo}</strong>
           </div>
-        `).join('');
+        `
+        )
+        .join('');
 
       Swal.fire({
         background: '#141a21',
@@ -390,8 +379,8 @@ export class AgregarInstalacionCentralComponent implements OnInit {
         icon: 'error',
         confirmButtonText: 'Entendido',
         customClass: {
-          popup: 'swal2-padding swal2-border'
-        }
+          popup: 'swal2-padding swal2-border',
+        },
       });
       return;
     }
@@ -400,7 +389,7 @@ export class AgregarInstalacionCentralComponent implements OnInit {
       nombre: this.instForm.value.nombre,
       idCliente: Number(this.instForm.value.idCliente),
       lat: Number(this.instForm.value.lat),
-      lng: Number(this.instForm.value.lng)
+      lng: Number(this.instForm.value.lng),
     };
 
     this.instalacionService.actualizarInstalacion(this.idSedeCentral, payload).subscribe(
@@ -433,7 +422,6 @@ export class AgregarInstalacionCentralComponent implements OnInit {
       }
     );
   }
-
 
   regresar() {
     this.route.navigateByUrl('/instalaciones-centrales');

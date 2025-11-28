@@ -39,7 +39,7 @@ interface inbox {
 interface profiledd {
   id: number;
   title: string;
-  link: string;
+  link?: string;
   new?: boolean;
 }
 
@@ -242,7 +242,7 @@ export class HeaderComponent {
     {
       id: 1,
       title: 'Perfil de Usuario',
-      link: '/',
+      // link: '/',
     },
     // {
     //   id: 2,

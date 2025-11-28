@@ -24,10 +24,9 @@
                             <span class="input-group-text fw-bold">
                                 <mat-icon aria-hidden="true">account_tree</mat-icon>
                             </span>
-                            <div class="form-floating flex-grow-1">
+                            <div class="form-floating flex-grow-1 perm-select-floating">
                                 <select class="form-select" id="cuentaPadre" required formControlName="idPadre">
-                                    <option [ngValue]="null" disabled>Selecciona una cuenta padre
-                                    </option>
+                                    <!-- <option [ngValue]="null" disabled>Selecciona una cuenta padre </option> -->
                                     <option *ngFor="let cliente of listaClientes" [ngValue]="cliente.id">
                                         {{ cliente.nombre }}
                                         {{ cliente.apellidoPaterno }}
@@ -59,9 +58,9 @@
                             <span class="input-group-text fw-bold">
                                 <mat-icon aria-hidden="true">person</mat-icon>
                             </span>
-                            <div class="form-floating flex-grow-1">
+                            <div class="form-floating flex-grow-1 perm-select-floating">
                                 <select class="form-select" id="tipoPersona" formControlName="tipoPersona" required>
-                                    <option [ngValue]="null"></option>
+                                    <!-- <option [ngValue]="null"></option> -->
                                     <option [ngValue]="1">Física</option>
                                     <option [ngValue]="2">Moral</option>
                                 </select>

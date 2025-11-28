@@ -1,7 +1,6 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatIcon } from '@angular/material/icon';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DxDataGridComponent } from 'devextreme-angular';
 import CustomStore from 'devextreme/data/custom_store';
@@ -9,28 +8,25 @@ import { lastValueFrom } from 'rxjs';
 import { routeAnimation } from 'src/app/pipe/module-open.animation';
 import { ClientesService } from 'src/app/services/moduleService/clientes.service';
 import { InstalacionCentralSede } from 'src/app/services/moduleService/instalacion-central.service';
-import { ModulosService } from 'src/app/services/moduleService/modulos.service';
 import Swal from 'sweetalert2';
-
-declare const google: any;
-
 
 @Component({
   selector: 'app-lista-instalaciones-centrales',
   templateUrl: './lista-instalaciones-centrales.component.html',
   styleUrl: './lista-instalaciones-centrales.component.scss',
   standalone: false,
-  animations: [routeAnimation,
+  animations: [
+    routeAnimation,
     trigger('modalAnimation', [
-    transition(':enter', [
-      style({ opacity: 0 }),
-      animate('150ms ease-out', style({ opacity: 1 }))
-    ]),
-    transition(':leave', [
-      style({ opacity: 1 }),
-      animate('150ms ease-in', style({ opacity: 0 }))
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('150ms ease-out', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        style({ opacity: 1 }),
+        animate('150ms ease-in', style({ opacity: 0 }))
+      ])
     ])
-  ])
   ],
 })
 export class ListaInstalacionesCentralesComponent implements OnInit {
@@ -56,6 +52,14 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
   public listaClientes: any[] = [];
   public instForm: FormGroup;
 
+  mostrarModalMapa = false;
+  instalacionSeleccionada: any = null;
+  map: any = null;
+  marker: any = null;
+
+  private readonly apiKey = 'AIzaSyDuJ3IBZIs2mRbR4alTg7OZIsk0sXEJHhg';
+  private readonly PIN_URL = '/assets/images/logos/marker_blue.webp';
+
   constructor(
     private router: Router,
     private fb: FormBuilder,
@@ -68,12 +72,7 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
 
   ngOnInit() {
     this.setupDataSource();
-    // this.obtenerlistaInstalaciones();
   }
-
-  // hasPermission(permission: string): boolean {
-  //   return this.permissionsService.getPermission(permission) !== undefined;
-  // }
 
   agregarInsCentral() {
     this.router.navigateByUrl('/instalaciones-centrales/agregar-instalacion-central');
@@ -98,7 +97,7 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.instalacionService.updateEstatus(rowData.id, 1).subscribe(
-          (response) => {
+          () => {
             Swal.fire({
               background: '#141a21',
               color: '#ffffff',
@@ -111,7 +110,6 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
 
             this.setupDataSource();
             this.dataGrid.instance.refresh();
-            // this.obtenerlistaInstalaciones();
           },
           (error) => {
             Swal.fire({
@@ -144,7 +142,7 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.instalacionService.updateEstatus(rowData.id, 0).subscribe(
-          (response) => {
+          () => {
             Swal.fire({
               title: '¡Confirmación Realizada!',
               html: `El módulo ha sido desactivado.`,
@@ -156,7 +154,6 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
             });
             this.setupDataSource();
             this.dataGrid.instance.refresh();
-            // this.obtenerlistaInstalaciones();
           },
           (error) => {
             Swal.fire({
@@ -172,7 +169,6 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
         );
       }
     });
-    // console.log('Desactivar:', rowData);
   }
 
   onPageIndexChanged(e: any) {
@@ -268,7 +264,7 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
     try {
       const colsOpt = grid?.option('columns');
       if (Array.isArray(colsOpt) && colsOpt.length) columnas = colsOpt;
-    } catch { }
+    } catch {}
     if (!columnas.length && grid?.getVisibleColumns) {
       columnas = grid.getVisibleColumns();
     }
@@ -323,5 +319,80 @@ export class ListaInstalacionesCentralesComponent implements OnInit {
     this.isGrouped = false;
   }
 
+  verMapaInstalacionCentral(central: any) {
+    this.instalacionSeleccionada = central;
+    this.mostrarModalMapa = true;
 
+    if (!this.instalacionSeleccionada?.lat || !this.instalacionSeleccionada?.lng) {
+      return;
+    }
+
+    setTimeout(() => {
+      this.loadGoogleMaps()
+        .then(() => this.initMapInstalacionCentral())
+        .catch(err => console.error('No se pudo cargar Google Maps', err));
+    }, 0);
+  }
+
+  cerrarModalMapa() {
+    this.mostrarModalMapa = false;
+    this.instalacionSeleccionada = null;
+    this.map = null;
+    this.marker = null;
+  }
+
+  loadGoogleMaps(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const w = window as any;
+
+      if (w.google && w.google.maps) {
+        resolve();
+        return;
+      }
+
+      const existingScript = document.querySelector('script[data-gmaps="true"]');
+      if (existingScript) {
+        existingScript.addEventListener('load', () => resolve());
+        existingScript.addEventListener('error', e => reject(e));
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${this.apiKey}`;
+      script.async = true;
+      script.defer = true;
+      script.setAttribute('data-gmaps', 'true');
+      script.onload = () => resolve();
+      script.onerror = e => reject(e);
+      document.head.appendChild(script);
+    });
+  }
+
+  initMapInstalacionCentral(): void {
+    const mapElement = document.getElementById('map');
+    if (!mapElement) return;
+
+    const w = window as any;
+    if (!w.google || !w.google.maps) return;
+
+    const lat = Number(this.instalacionSeleccionada.lat);
+    const lng = Number(this.instalacionSeleccionada.lng);
+
+    this.map = new w.google.maps.Map(mapElement, {
+      center: { lat, lng },
+      zoom: 15
+    });
+
+    const iconUrl = this.PIN_URL;
+
+    this.marker = new w.google.maps.Marker({
+      position: { lat, lng },
+      map: this.map,
+      icon: {
+        url: iconUrl,
+        scaledSize: new w.google.maps.Size(70, 70),
+        anchor: new w.google.maps.Point(35, 70)
+      }
+    });
+  }
 }
