@@ -45,16 +45,19 @@
                   <div>
                     <div class="insta-title">
                       <ng-container *ngIf="viewMode === 'centrales'; else tituloInstalacion">
-                        <strong>Cliente:</strong> {{ item.nombreCliente }}
+                        <strong>Instalación:</strong> {{ item.nombreInstalacion || item.nombre || 'Instalación' }}
                       </ng-container>
                       <ng-template #tituloInstalacion>
-                        <strong>Instalación:</strong> {{ item.nombreInstalacion || item.nombre || 'Instalación' }}
+                        <strong>Equipo:</strong>
+                        {{ item.equipo?.numeroSerie || item.numeroSerie || '—' }}
                       </ng-template>
                     </div>
 
+
                     <div class="small encar" *ngIf="viewMode === 'centrales'">
-                      <strong>Instalación:</strong> {{ item.nombreInstalacion || item.nombre || 'Instalación' }}
+                      <strong>Cliente:</strong> {{ item.nombreCliente }}
                     </div>
+
 
                     <div class="small encar" *ngIf="viewMode === 'centrales'">
                       <strong>Encargado:</strong> {{ item.nombreEncargado }}

@@ -1,45 +1,26 @@
-
-
 export class User {
-    id: any
-    user : UserInfo;
+    id: string
     token: string;
-    permisos: any[];
-    imagenPerfil?: string | null;
-    newImage: any;
-    validPassword: any;
-}
-
-export class rol {
-    id: string;
+    refreshToken?: string;
     nombre: string;
-    estatus: number;
-}
-
-export class UserInfo {
-    id: any;
-    validPassword: any
-    rol: rol;
-    userName: string;
-    emailConfirmed: string;
-    password: string;
-    telefono: any;
-    cadena?: any;
-    estatus?: boolean;
-    nombre: string;
-    username: any;
     apellidoPaterno?: string;
     apellidoMaterno?: string;
     nombreCompleto?: string;
+    telefono: any;
+    fechaCreacion: any;
+    ultimoLogin: any;
     permisos: any[];
     email:string;
-    cliente: any;
-    sucursal?: any;
-    idCliente?:number;
-    idSucursal:number;
-    idCadena?:number;
+    idCliente?:any;
     imagenPerfil: string;
-    idCaja: number;
-    idRol: any;
-    caja: any;
+    user: any;
+    rol: any;
+    userName: any;
+    rolNombre: any;
+    fotoPerfil: any;
+    logo: any;
+    nombreCliente: any;
+    apellidoPaternoCliente: any;
+    apellidoMaternoCliente: any;
+
 }

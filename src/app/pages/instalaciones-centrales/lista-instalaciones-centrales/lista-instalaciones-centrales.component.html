@@ -41,9 +41,7 @@
                     showInfo: true,
                     infoText: 'Página {0} de {1}', 
                     visible: true 
-                }"
-                (onPageIndexChanged)=" onPageIndexChanged($event)"
-                (onOptionChanged)="onGridOptionChanged($event)">
+                }" (onPageIndexChanged)=" onPageIndexChanged($event)" (onOptionChanged)="onGridOptionChanged($event)">
 
                 <dxo-search-panel [visible]="true" [width]="200" placeholder="Buscar..."></dxo-search-panel>
                 <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[20]" [showInfo]="true"></dxo-pager>
@@ -55,7 +53,8 @@
                 <dxi-column caption="Acciones" cellTemplate="Acciones" alignment="center" dataType="string"
                     [width]="220"></dxi-column>
 
-                <dxi-column dataField="nombreCliente" caption="Cliente" alignment="center" dataType="number"></dxi-column>
+                <dxi-column dataField="nombreCliente" caption="Cliente" alignment="center"
+                    dataType="number"></dxi-column>
 
                 <dxi-column dataField="nombre" caption="Nombre Instalación" alignment="center" dataType="string"
                     cellTemplate="nomInstalacion">
@@ -66,8 +65,6 @@
                 </dxi-column>
 
                 <dxi-column dataField="direccion" caption="Dirección" alignment="center" dataType="string"></dxi-column>
-                <dxi-column dataField="nombreCliente" caption="Nombre Cliente" alignment="center"
-                    dataType="string"></dxi-column>
                 <dxi-column dataField="nombreEncargado" caption="Nombre Encargado" alignment="center"
                     dataType="string"></dxi-column>
 
@@ -89,10 +86,34 @@
                         <dxo-search-panel [visible]="true" [width]="200" placeholder="Buscar..."></dxo-search-panel>
                         <dxo-paging [pageSize]="10"></dxo-paging>
                         <dxo-pager [showInfo]="true"></dxo-pager>
-                        <dxi-column dataField="idEquipo" caption="ID Equipo" alignment="center"
+                        <dxi-column dataField="equipo.numeroSerie" caption="N° Serie Equipo" alignment="center"
                             dataType="number"></dxi-column>
-                        <dxi-column dataField="fechaActualizacion" caption="Fecha Actualización" alignment="center"
-                            cellTemplate="tplFechaActualizacion"></dxi-column>
+                        <dxi-column dataField="estadoEquipo.nombre" caption="Estado Equipo" alignment="center"
+                            cellTemplate="tplEstadoEquipo" dataType="string">
+                        </dxi-column>
+
+                        <div *dxTemplate="let e of 'tplEstadoEquipo'">
+                            @if (e.data.equipo.estadoEquipo?.id === 1) {
+                            <span class="estatus estatus-disponible">
+                                {{ e.data.equipo.estadoEquipo?.nombre || 'Sin estado' }}
+                            </span>
+                            } @else if (e.data.equipo.estadoEquipo?.id === 2) {
+                            <span class="estatus estatus-instalado">
+                                {{ e.data.equipo.estadoEquipo?.nombre || 'Sin estado' }}
+                            </span>
+                            } @else if (e.data.equipo.estadoEquipo?.id === 3) {
+                            <span class="estatus estatus-reparacion">
+                                {{ e.data.equipo.estadoEquipo?.nombre || 'Sin estado' }}
+                            </span>
+                            } @else if (e.data.equipo.estadoEquipo?.id === 4) {
+                            <span class="estatus estatus-descompuesto">
+                                {{ e.data.equipo.estadoEquipo?.nombre || 'Sin estado' }}
+                            </span>
+                            } @else {
+                            <span class="estatus">Sin estado</span>
+                            }
+                        </div>
+
                         <dxi-column dataField="fhRegistro" caption="Fecha Registro" alignment="center"
                             cellTemplate="tplFhRegistro"></dxi-column>
                         <dxi-column dataField="estatus" caption="Estatus" alignment="center" cellTemplate="est"

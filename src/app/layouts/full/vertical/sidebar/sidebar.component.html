@@ -6,7 +6,7 @@
     <!-- User profile image -->
     <div class="profile-img">
       <img
-        src="https://analitica-video.s3.us-east-1.amazonaws.com/Usuarios/user.png"
+        [src]="showImage"
         alt="user"
         width="50"
         class="rounded-circle"
@@ -21,7 +21,7 @@
         href="javascript:void(0)"
         class="text-decoration-none d-flex align-items-center text-white w-100 f-s-16"
       >
-        Spring Telecom
+        {{showNombre+ ' ' + showApellidoPaterno + ' ' + showApellidoMaterno}}
         <!-- <i-tabler name="chevron-down" class="icon-18 m-l-auto"></i-tabler> -->
       </a>
     </div>

@@ -87,10 +87,10 @@ export class AppSideLoginComponent implements OnInit {
     this.auth
       .authenticate(this.credentials)
       .pipe(
-        catchError((error) => {
+        catchError((error: any) => {
           this.loading = false;
           this.textLogin = 'Iniciar Sesión';
-          this.toastr.error('Credenciales Incorrectas.', '¡Ops!');
+          this.toastr.error(error?.message, '¡Ops!');
           this.isDisabled = false;
           return throwError(() => '');
         })

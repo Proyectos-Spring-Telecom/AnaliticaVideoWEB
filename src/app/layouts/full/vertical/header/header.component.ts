@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { BrandingComponent } from '../sidebar/branding.component';
 import { AppSettings } from 'src/app/config';
+import { AuthenticationService } from 'src/app/services/auth.service';
 
 interface notifications {
   id: number;
@@ -116,6 +117,11 @@ export class HeaderComponent {
       icon: '/assets/images/flag/icon-flag-de.svg',
     },
   ];
+  public showNombre: any;
+  public showApellidoPaterno: any;
+  public showApellidoMaterno: any;
+  public showRol: any;
+  public showEmail: any;
 
   @Output() optionsChange = new EventEmitter<AppSettings>();
 
@@ -125,8 +131,15 @@ export class HeaderComponent {
     private settings: CoreService,
     private vsidenav: CoreService,
     public dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private users: AuthenticationService,
   ) {
+    const user = this.users.getUser();
+    this.showNombre = user?.nombre;
+    this.showApellidoPaterno = user?.apellidoPaterno || '';
+    this.showApellidoMaterno = user?.apellidoMaterno || '';
+    this.showRol = user?.rolNombre;
+    this.showEmail = user?.userName;
     translate.setDefaultLang('en');
   }
 

@@ -88,12 +88,6 @@
                     [format]="'dd/MM/yyyy HH:mm'">
                 </dxi-column>
 
-
-                <dxi-column caption="Equipo" alignment="center" dataType="string" cellTemplate="tplEquipo"></dxi-column>
-                <div *dxTemplate="let r of 'tplEquipo'">
-                    {{ r.data?.equipo?.numeroSerie }} / {{ r.data?.equipo?.idModelo }}
-                </div>
-
                 <dxi-column dataField="estatus" caption="Estatus" alignment="center" cellTemplate="est"
                     dataType="string">
                     <div *dxTemplate="let f of 'est'">
@@ -125,7 +119,7 @@
                     <div>
                         <button valueExpr="id" id="detalleIns" class="btnAcciones"
                             (click)="verInstalacion(row.data.equipo.numeroSerie)">
-                            <i class="fa fa-eye"></i>
+                            <i class="fa fa-line-chart"></i>
                         </button>
                     </div>
                     <div>

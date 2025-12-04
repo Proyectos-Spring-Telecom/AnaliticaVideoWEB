@@ -50,7 +50,7 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
     private insService: InstalacionCentral,
     private router: Router,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.obtenerInstalacionesCentral();
@@ -403,7 +403,7 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private buildInfoHtml(item: any): string {
-    const name = item?.nombreCliente ?? '';
+    const name = item?.nombre ?? item?.nombreInstalacion ?? 'Instalación';
     const enc = item?.nombreEncargado ?? '';
     const dir = item?.direccion ?? '';
 
@@ -428,6 +428,7 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
     </div>
   `;
   }
+
   private buildInfoHtmlInstalacion(c: any, ins: any): string {
     const estatusOk = Number(ins?.estatus) === 1;
 
@@ -445,22 +446,18 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
       box-shadow:0 12px 28px rgba(0,0,0,.20);
     ">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 6px;">
-        <h6 style="margin:0;font-size:1rem;font-weight:700;color:#fff;">${
-          c?.nombreCliente ?? 'Instalación'
-        }</h6>
+        <h6 style="margin:0;font-size:1rem;font-weight:700;color:#fff;">Equipo: ${numeroSerie}</h6>
         <button class="iw-close" aria-label="Cerrar" style="background:transparent;border:0;cursor:pointer;color:#fff;font-size:18px;line-height:1;width:28px;height:28px;border-radius:8px;">✕</button>
       </div>
       <hr style="border:none;height:1px;background:rgba(255,255,255,.10);margin:6px 0;" />
       <div style="display:grid;grid-template-columns:1fr;gap:4px;font-size:.85rem;color:#c6cfde;">
         <div><strong>Encargado:</strong> ${c?.nombreEncargado ?? '—'}</div>
-        <div><strong>Equipo:</strong> ${numeroSerie}</div>
+        <div><strong>Cliente:</strong> ${c?.nombreCliente ?? '—'}</div>
         <div>
           <strong>Estatus:</strong>
           <span style="
             display:inline-block;padding:2px 8px;margin-left:6px;border-radius:999px;
-            background:${
-              estatusOk ? '#16a34a' : '#ef4444'
-            }; color:#fff; font-weight:600; font-size:.78rem;">
+            background:${estatusOk ? '#16a34a' : '#ef4444'}; color:#fff; font-weight:600; font-size:.78rem;">
             ${estatusOk ? 'Activo' : 'Inactivo'}
           </span>
         </div>
@@ -482,6 +479,7 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
     </div>
   `;
   }
+
 
   private formatDate(value: any): string {
     if (!value) return '—';

@@ -417,21 +417,21 @@
       <div class="d-flex align-items-center">
         <div class="m-l-16">
           <h6 class="f-s-14 f-w-600 m-0 d-flex align-items-center">
-            Spring Telecom - 
-            <span class="f-s-14 d-block text-success m-l-4">SA</span>
+            {{showNombre+ ' ' + showApellidoPaterno + ' ' + showApellidoMaterno}} - 
+            <span class="f-s-14 d-block text-success m-l-4"> {{showRol}} </span>
           </h6>
-          <span>root&#64;springTelecom.mx</span>
+          <span> {{showEmail}} </span>
         </div>
       </div>
     </div>
     <div class="p-16">
       @for(profile of profiledd; track profile.title) {
       <a
-        class="p-8 text-decoration-none d-block text-hover-primary"
+        class="p-8 text-decoration-none d-block"
         [routerLink]="[profile.link]"
       >
         <div class="d-flex align-items-center">
-          <h5 class="f-s-14 f-w-500 m-0 textprimary hover-text">
+          <h5 class="f-s-14 f-w-500 m-0 hover-text">
             {{ profile.title }}
           </h5>
           @if(profile.new) {

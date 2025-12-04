@@ -650,18 +650,74 @@ export class AgregarClienteComponent implements OnInit {
     e.preventDefault();
     this.logoDragging = false;
   }
-  onLogoDrop(e: DragEvent) {
-    e.preventDefault();
-    this.logoDragging = false;
-    const f = e.dataTransfer?.files?.[0] || null;
-    if (f) this.handleLogoFile(f);
-  }
+
+
   onLogoFileSelected(e: Event) {
     const input = e.target as HTMLInputElement;
     const f = input.files?.[0] || null;
     if (f) this.handleLogoFile(f);
     if (input) input.value = '';
   }
+
+  onLogoDrop(e: DragEvent) {
+    e.preventDefault();
+    this.logoDragging = false;
+    const f = e.dataTransfer?.files?.[0] || null;
+    if (f) this.handleLogoFile(f);
+  }
+
+  private handleLogoFile(file: File) {
+    if (!this.isAllowedLogo(file)) {
+      this.clienteForm.get('logotipo')?.setErrors({ invalid: true });
+      return;
+    }
+
+    this.validateLogoDimensions(file, 799, 286).then(isValid => {
+      if (!isValid) {
+        this.logoPreviewUrl = null;
+        this.clienteForm.patchValue({ logotipo: null });
+        this.clienteForm.get('logotipo')?.setErrors({ invalidDimensions: true });
+
+        Swal.fire({
+          color: '#ffffff',
+        background: '#141a21',
+          icon: 'warning',
+          title: '¡Dimensiones Inválidas!',
+          text: 'El logotipo debe medir exactamente 799 x 286 px.'
+        });
+
+        return;
+      }
+
+      this.loadPreview(file, (url) => (this.logoPreviewUrl = url));
+      this.clienteForm.patchValue({ logotipo: file });
+      this.clienteForm.get('logotipo')?.setErrors(null);
+    });
+  }
+
+  private validateLogoDimensions(file: File, width: number, height: number): Promise<boolean> {
+    return new Promise(resolve => {
+      const img = new Image();
+      const objectUrl = URL.createObjectURL(file);
+
+      img.onload = () => {
+        const isValid = img.width === width && img.height === height;
+        URL.revokeObjectURL(objectUrl);
+        resolve(isValid);
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(false);
+      };
+
+      img.src = objectUrl;
+    });
+  }
+
+
+
+
   clearLogoImage(e: Event) {
     e.stopPropagation();
     this.logoPreviewUrl = null;
@@ -669,15 +725,7 @@ export class AgregarClienteComponent implements OnInit {
     this.clienteForm.patchValue({ logotipo: this.DEFAULT_AVATAR_URL });
     this.clienteForm.get('logotipo')?.setErrors(null);
   }
-  private handleLogoFile(file: File) {
-    if (!this.isAllowedLogo(file)) {
-      this.clienteForm.get('logotipo')?.setErrors({ invalid: true });
-      return;
-    }
-    this.loadPreview(file, (url) => (this.logoPreviewUrl = url));
-    this.clienteForm.patchValue({ logotipo: file });
-    this.clienteForm.get('logotipo')?.setErrors(null);
-  }
+
   private uploadingLogo = false;
   private uploadLogo(file: File): void {
     if (this.uploadingLogo) return;
