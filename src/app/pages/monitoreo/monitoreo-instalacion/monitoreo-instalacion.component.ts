@@ -404,26 +404,11 @@ export class MonitoreoInstalacionComponent implements OnInit {
     const yyyy = Number(yyS);
     const [hS, mS] = tpart.split(':');
     if (!(dd && mm && yyyy)) return s;
-    const meses = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
+    const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
     const hh = Number(hS || 0);
     const mi = Number(mS || 0);
-    const ampm = hh >= 12 ? 'PM' : 'AM';
-    const hh12 = ((hh + 11) % 12) + 1;
     const pad2 = (n: number) => String(n).padStart(2, '0');
-    return `${pad2(dd)}-${meses[mm - 1]}-${yyyy} ${hh12}:${pad2(mi)} ${ampm}`;
+    return `${pad2(dd)}-${meses[mm - 1]}-${yyyy} ${pad2(hh)}:${pad2(mi)}`;
   }
 
   private normalizeItem = (x: any) => {
