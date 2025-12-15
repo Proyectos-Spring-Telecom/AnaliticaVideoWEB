@@ -54,6 +54,7 @@ export class AgregarInstalacionCentralComponent implements OnInit, AfterViewInit
       lat: ['', Validators.required],
       lng: ['', Validators.required],
       nombre: ['', Validators.required],
+      nroPisos: [null],
     });
   }
 
@@ -69,6 +70,7 @@ export class AgregarInstalacionCentralComponent implements OnInit, AfterViewInit
           idSedeCentral: data.idSedeCentral,
           lat: data.lat,
           lng: data.lng,
+          nroPisos: data.nroPisos,
         });
 
         this.latSeleccionada = Number(data.lat);
@@ -290,6 +292,7 @@ export class AgregarInstalacionCentralComponent implements OnInit, AfterViewInit
       idCliente: Number(this.instForm.value.idCliente),
       lat: Number(this.instForm.value.lat),
       lng: Number(this.instForm.value.lng),
+      nroPisos: this.instForm.value.nroPisos ? Number(this.instForm.value.nroPisos) : null,
     };
 
     this.instalacionService.agregarInstalacion(payload).subscribe(
@@ -390,6 +393,7 @@ export class AgregarInstalacionCentralComponent implements OnInit, AfterViewInit
       idCliente: Number(this.instForm.value.idCliente),
       lat: Number(this.instForm.value.lat),
       lng: Number(this.instForm.value.lng),
+      nroPisos: this.instForm.value.nroPisos ? Number(this.instForm.value.nroPisos) : null,
     };
 
     this.instalacionService.actualizarInstalacion(this.idSedeCentral, payload).subscribe(
