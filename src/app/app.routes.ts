@@ -90,6 +90,11 @@ export const routes: Routes = [
           import('./pages/equipos/equipos.module').then((m) => m.EquiposModule),
       },
       {
+        path: 'departamentos',
+        loadChildren: () =>
+          import('./pages/departamentos/departamentos.module').then((m) => m.DepartamentosModule),
+      },
+      {
         path: 'monitoreo',
         loadChildren: () =>
           import('./pages/monitoreo/monitoreo.module').then((m) => m.MonitoreoModule),

@@ -438,6 +438,13 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
     const fhActFmt = this.formatDate(ins?.fechaActualizacion);
     const direccion = c?.direccion ?? '—';
 
+    const nroPisoHtml = (ins?.nroPiso !== null && ins?.nroPiso !== undefined) 
+      ? `<div><strong>Número de Piso:</strong> ${ins.nroPiso}</div>` 
+      : '';
+    const nombreDepartamentoHtml = ins?.nombreDepartamento 
+      ? `<div><strong>Departamento:</strong> ${ins.nombreDepartamento}</div>` 
+      : '';
+
     return `
     <div style="
       background:#151f35; color:#e5e7eb;
@@ -451,6 +458,8 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
       </div>
       <hr style="border:none;height:1px;background:rgba(255,255,255,.10);margin:6px 0;" />
       <div style="display:grid;grid-template-columns:1fr;gap:4px;font-size:.85rem;color:#c6cfde;">
+        ${nroPisoHtml}
+        ${nombreDepartamentoHtml}
         <div><strong>Encargado:</strong> ${c?.nombreEncargado ?? '—'}</div>
         <div><strong>Cliente:</strong> ${c?.nombreCliente ?? '—'}</div>
         <div>

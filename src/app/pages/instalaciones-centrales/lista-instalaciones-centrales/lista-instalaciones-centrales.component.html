@@ -64,6 +64,14 @@
                     </div>
                 </dxi-column>
 
+                <dxi-column dataField="nroPisos" caption="Número de Pisos" alignment="center" dataType="number"
+                    cellTemplate="nroPisosTemplate">
+                    <div *dxTemplate="let f of 'nroPisosTemplate'">
+                        <div *ngIf="f.data.nroPisos !== null && f.data.nroPisos !== undefined">{{ f.data.nroPisos }}</div>
+                        <div *ngIf="f.data.nroPisos === null || f.data.nroPisos === undefined">Sin Información</div>
+                    </div>
+                </dxi-column>
+
                 <dxi-column dataField="direccion" caption="Dirección" alignment="center" dataType="string"></dxi-column>
                 <dxi-column dataField="nombreEncargado" caption="Nombre Encargado" alignment="center"
                     dataType="string"></dxi-column>

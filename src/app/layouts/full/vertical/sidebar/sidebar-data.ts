@@ -40,6 +40,10 @@ export const navItems: NavItem[] = [
         displayName: 'Equipos',
         route: '/equipos',
       },
+      {
+        displayName: 'Departamentos',
+        route: '/departamentos',
+      },
       // {
       //   displayName: 'Bitácora',
       //   iconName: 'date',

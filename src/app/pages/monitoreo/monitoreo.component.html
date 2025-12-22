@@ -62,6 +62,12 @@
                     <div class="small encar" *ngIf="viewMode === 'centrales'">
                       <strong>Encargado:</strong> {{ item.nombreEncargado }}
                     </div>
+                    <div class="small encar" *ngIf="viewMode === 'instalaciones' && item.nroPiso !== null && item.nroPiso !== undefined">
+                      <strong>Número de Piso:</strong> {{ item.nroPiso }}
+                    </div>
+                    <div class="small encar" *ngIf="viewMode === 'instalaciones' && item.nombreDepartamento">
+                      <strong>Departamento:</strong> {{ item.nombreDepartamento }}
+                    </div>
                     <div class="small encar" *ngIf="viewMode === 'instalaciones'">
                       <strong>Encargado:</strong> {{ selectedCentral?.nombreEncargado }}
                     </div>

@@ -60,4 +60,10 @@ export class InstalacionCentralSede {
       .patch(url, body, { responseType: 'text' })
       .pipe(catchError((error) => throwError(() => error)));
   }
+
+  obtenerPisos(idInstalacionCentral: number): Observable<any> {
+    return this.http.get<any>(
+      `${environment.API_SECURITY}/instalacion-central/pisos/${idInstalacionCentral}`
+    );
+  }
 }
