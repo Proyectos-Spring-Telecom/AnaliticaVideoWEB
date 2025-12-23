@@ -35,8 +35,8 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly apiKey = 'AIzaSyDuJ3IBZIs2mRbR4alTg7OZIsk0sXEJHhg';
 
   private readonly MAP_ID?: string = undefined;
-  private readonly PIN_URL = 'assets/images/logos/marker_spring.webp';
-  private readonly CENTRAL_PIN_URL = 'assets/images/logos/marker_blue.webp';
+  private readonly PIN_URL = 'assets/images/logos/markerInstalacion.png';
+  private readonly CENTRAL_PIN_URL = 'assets/images/logos/markerCliente.png';
 
   get listaVisible(): any[] {
     if (this.viewMode === 'centrales') {
@@ -68,11 +68,12 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private pinIcon(url: string, size = 100): any {
+  private pinIcon(url: string, width: number, height: number) {
     return {
       url,
-      scaledSize: new google.maps.Size(size, size),
-      anchor: new google.maps.Point(size / 2, size - 8),
+      scaledSize: new google.maps.Size(width, height),
+      origin: new google.maps.Point(0, 0),
+      anchor: new google.maps.Point(width / 2, height)
     };
   }
 
@@ -158,7 +159,7 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
         map: this.map,
         position: pos,
         title: c.nombreCliente || 'Central',
-        icon: this.pinIcon(this.CENTRAL_PIN_URL, 80),
+        icon: this.pinIcon(this.CENTRAL_PIN_URL, 40, 60),
       });
 
       marker.addListener('mouseover', () =>
@@ -199,7 +200,7 @@ export class MonitoreoComponent implements OnInit, AfterViewInit, OnDestroy {
         title: c?.nombreCliente
           ? `${c.nombreCliente} - Instalación`
           : 'Instalación',
-        icon: this.pinIcon(this.PIN_URL, 80),
+        icon: this.pinIcon(this.PIN_URL, 40, 60),
       });
 
       marker.addListener('mouseover', () =>

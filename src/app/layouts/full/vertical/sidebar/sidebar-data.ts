@@ -119,6 +119,9 @@ export const navItems: NavItem[] = [
     iconName: 'building-warehouse',
     route: '/instalaciones',
   },
+  {
+    navCap: 'Reportes',
+  },
   // {
   //   displayName: 'Incidencias',
   //   iconName: 'alert-triangle',

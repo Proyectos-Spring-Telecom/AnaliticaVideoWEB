@@ -24,7 +24,7 @@
           <div class="card-header d-flex align-items-center justify-content-between">
             <div>
               <ng-container *ngIf="viewMode === 'centrales'; else headerInstalaciones">
-                Instalaciones Centrales
+                Clientes
               </ng-container>
               <ng-template #headerInstalaciones>
                 Instalaciones del cliente: {{ selectedCentral?.nombreCliente }}
